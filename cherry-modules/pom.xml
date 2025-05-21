@@ -8,7 +8,7 @@
         <artifactId>cherry-admin</artifactId>
         <version>${revision}</version>
     </parent>
-    }
+
     <artifactId>cherry-modules</artifactId>
     <packaging>pom</packaging>
 

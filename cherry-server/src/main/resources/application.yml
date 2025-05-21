@@ -20,3 +20,103 @@ server:
       # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
       worker: 256
 
+
+# 日志配置
+logging:
+  level:
+    org.dromara: @logging.level@
+    org.springframework: warn
+    org.mybatis.spring.mapper: error
+    org.apache.fury: warn
+  config: classpath:logback-plus.xml
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+
+# Spring配置
+spring:
+  application:
+    # name: RuoYi-Vue-Plus
+    name: Cherry-Admin
+  threads:
+    # 开启虚拟线程 仅jdk21可用
+    virtual:
+      enabled: false
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    active: @profiles.active@
+
+springdoc:
+  api-docs:
+    # 是否开启接口文档
+    enabled: true
+  #  swagger-ui:
+  #    # 持久化认证数据
+  #    persistAuthorization: true
+  info:
+    # 标题
+    title: '标题：Cherry-Admin 多租户管理系统_接口文档'
+    # 描述
+    description: '描述：用于管理集团旗下公司的人员信息,具体包括XXX,XXX模块...'
+    # 版本
+    # version: '版本号: ${ruoyi.version}'
+    version: '版本号: ${revision}'
+    # 作者信息
+    contact:
+      name: keer2345
+      email: keer2345@qq.com
+      url: https://github.com/keer2345/CherryAdmin
+  components:
+    # 鉴权方式配置
+    security-schemes:
+      apiKey:
+        type: APIKEY
+        in: HEADER
+        name: ${sa-token.token-name}
+  #这里定义了两个分组，可定义多个，也可以不定义
+  group-configs:
+    - group: 1.演示模块
+      # packages-to-scan: org.dromara.demo
+      packages-to-scan: com.cherry.demo
+    - group: 2.通用模块
+      # packages-to-scan: org.dromara.web
+      packages-to-scan: com.cherry.web
+    - group: 3.系统模块
+      # packages-to-scan: org.dromara.system
+      packages-to-scan: com.cherry.system
+    - group: 4.代码生成模块
+      # packages-to-scan: org.dromara.generator
+      packages-to-scan: com.cherry.generator
+    - group: 5.工作流模块
+      # packages-to-scan: org.dromara.workflow
+      packages-to-scan: com.cherry.workflow
+
+# 全局线程池相关配置
+# 如使用JDK21请直接使用虚拟线程 不要开启此配置
+thread-pool:
+  # 是否开启线程池
+  enabled: false
+  # 队列最大长度
+  queueCapacity: 128
+  # 线程池维护线程所允许的空闲时间
+  keepAliveSeconds: 300
+
+--- # Actuator 监控端点的配置项
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+    logfile:
+      external-file: ./logs/sys-console.log

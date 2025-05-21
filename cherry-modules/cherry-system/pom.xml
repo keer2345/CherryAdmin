@@ -16,7 +16,10 @@
     </description>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-web</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

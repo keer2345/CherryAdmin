@@ -16,6 +16,6 @@ public class CherryApplication {
     SpringApplication application = new SpringApplication(CherryApplication.class);
     application.setApplicationStartup(new BufferingApplicationStartup(2048));
     application.run(args);
-    System.out.println("(♥◠‿◠)ﾉﾞ  RuoYi-Vue-Plus启动成功   ლ(´ڡ`ლ)ﾞ");
+    System.out.println("(♥◠‿◠)ﾉﾞ  Cherry Server 启动成功   ლ(´ڡ`ლ)ﾞ");
   }
 }

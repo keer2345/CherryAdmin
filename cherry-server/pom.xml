@@ -19,11 +19,22 @@
     <dependencies>
         <dependency>
             <groupId>com.cherry</groupId>
-            <artifactId>cherry-common-core</artifactId>
+            <artifactId>cherry-common-doc</artifactId>
         </dependency>
         <dependency>
             <groupId>com.cherry</groupId>
-            <artifactId>cherry-common-web</artifactId>
+            <artifactId>cherry-system</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

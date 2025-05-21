@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cherry</groupId>
         <artifactId>cherry-common</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>cherry-common-doc</artifactId>
@@ -14,7 +14,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.cherry</groupId>
-                    <artifactId>cherry-system</artifactId>
+                    <artifactId>cherry-common-core</artifactId>
                 </dependency>
             </dependencies>
 
