@@ -15,6 +15,7 @@
 
     <modules>
         <module>cherry-monitor-admin</module>
+        <module>cherry-snailjob-server</module>
     </modules>
 
 </project>

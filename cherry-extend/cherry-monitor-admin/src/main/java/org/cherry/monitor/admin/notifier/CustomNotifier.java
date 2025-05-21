@@ -23,7 +23,6 @@ import static de.codecentric.boot.admin.server.domain.values.StatusInfo.STATUS_U
 @Slf4j
 @Component
 public class CustomNotifier extends AbstractEventNotifier {
-  // todo
 
   protected CustomNotifier(InstanceRepository repository) {
     super(repository);
