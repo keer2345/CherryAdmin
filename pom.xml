@@ -106,6 +106,7 @@
         <module>cherry-extend</module>
         <module>cherry-server</module>
         <module>cherry-common</module>
+        <module>cherry-modules</module>
     </modules>
 
     <!-- todo -->
@@ -135,6 +136,15 @@
             <dependency>
                 <groupId>com.cherry</groupId>
                 <artifactId>cherry-common-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- modules 的依赖配置-->
+            <dependency>
+                <groupId>com.cherry</groupId>
+                <artifactId>cherry-modules-bom</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>

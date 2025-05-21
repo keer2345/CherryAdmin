@@ -8,19 +8,18 @@
         <artifactId>cherry-admin</artifactId>
         <version>${revision}</version>
     </parent>
-
-    <artifactId>cherry-common</artifactId>
+    }
+    <artifactId>cherry-modules</artifactId>
     <packaging>pom</packaging>
 
-
     <description>
-        common 通用模块
+        cherry-modules 业务模块
     </description>
+
     <modules>
-        <module>cherry-common-bom</module>
-        <module>cherry-common-core</module>
-        <module>cherry-common-web</module>
-        <module>cherry-common-doc</module>
+        <module>cherry-modules-bom</module>
+        <module>cherry-system</module>
     </modules>
+
 
 </project>

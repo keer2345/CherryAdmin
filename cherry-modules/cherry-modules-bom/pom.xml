@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.cherry</groupId>
-    <artifactId>cherry-common-bom</artifactId>
+    <artifactId>cherry-modules-bom</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <description>
-       cherry-common-bom common依赖项
+        cherry-modules-bom common依赖项
     </description>
 
     <properties>
@@ -19,27 +19,13 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- 核心模块 -->
             <dependency>
                 <groupId>com.cherry</groupId>
-                <artifactId>cherry-common-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 接口模块 -->
-            <dependency>
-                <groupId>com.cherry</groupId>
-                <artifactId>cherry-common-doc</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- web服务 -->
-            <dependency>
-                <groupId>com.cherry</groupId>
-                <artifactId>cherry-common-web</artifactId>
+                <artifactId>cherry-system</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
 </project>

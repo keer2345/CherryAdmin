@@ -5,22 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.cherry</groupId>
-        <artifactId>cherry-admin</artifactId>
+        <artifactId>cherry-modules</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>cherry-common</artifactId>
-    <packaging>pom</packaging>
-
+    <artifactId>cherry-system</artifactId>
 
     <description>
-        common 通用模块
+        system系统模块
     </description>
-    <modules>
-        <module>cherry-common-bom</module>
-        <module>cherry-common-core</module>
-        <module>cherry-common-web</module>
-        <module>cherry-common-doc</module>
-    </modules>
+
+    <dependencies>
+
+    </dependencies>
 
 </project>
