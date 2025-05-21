@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  cherry-monitor:
+    image: cherry-monitor:1.0.0
+    build:
+      context: ../../cherry-extend/cherry-monitor-admin
+    container_name: cherry-monitor
+    restart: always
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+#    ports:
+#      - "7090:7090"
+    volumes:
+      - /docker/cherry/monitor/logs:/cherry/monitor/logs
+    privileged: true
+    # posts 模式与 host 网络模式不能同时使用
+    network_mode: "host"
+
+  cherry-snailjob:
+    image: cherry-snailjob:1.0.0
+    build:
+      context: ../../cherry-extend/cherry-snailjob-server
+    container_name: cherry-snailjob
+    restart: always
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+#    ports:
+#      - "6800:6800"
+    volumes:
+      - /docker/cherry/snailjob/logs:/cherry/snailjob/logs
+    privileged: true
+    # posts 模式与 host 网络模式不能同时使用
+    network_mode: "host"

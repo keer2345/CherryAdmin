@@ -7,9 +7,9 @@ LABEL maintainer="Cherry Admin"
 
 RUN mkdir -p /cherry/monitor/logs
 
-WORKDIR /cherry/monitor
+WORKDIR /cherry/snailjob
 
-COPY ./target/cherry-monitor-admin.jar ./app.jar
+COPY ./target/cherry-snailjob-server.jar ./app.jar
 
 SHELL ["/bin/bash", "-c"]
 
@@ -19,7 +19,7 @@ ENV JAVA_OPTS="-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
 ## 应用参数
 ENV ARGS=""
 
-EXPOSE 7090
+EXPOSE 6800
 
 ## 启动后端项目
 CMD java ${JAVA_OPTS} -jar app.jar $ARGS

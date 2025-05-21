@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>5.3.1</revision>
+        <revision>1.0.0</revision>
         <spring-boot.version>3.4.4</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
