@@ -21,6 +21,7 @@
         <module>cherry-common-core</module>
         <module>cherry-common-web</module>
         <module>cherry-common-doc</module>
+        <module>cherry-common-json</module>
     </modules>
 
 </project>

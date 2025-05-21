@@ -9,5 +9,6 @@
 |                | cherry-common-core                |       |    1%    |
 |                | cherry-common-doc                 |       |    1%    |
 |                | cherry-common-web                 |       |    1%    |
+|                | cherry-common-json                |       |    1%    |
 | cherry-modules | cherry-modules-bom                |       |   10%    |
 |                | cherry-system                     |       |    1%    |
