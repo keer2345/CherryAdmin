@@ -20,6 +20,10 @@
             <groupId>com.cherry</groupId>
             <artifactId>cherry-common-json</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-redis</artifactId>
+        </dependency>
 
         <!-- SpringBoot Web容器 -->
         <dependency>
@@ -39,5 +43,14 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-captcha</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
     </dependencies>
 </project>

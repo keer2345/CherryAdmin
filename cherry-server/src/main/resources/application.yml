@@ -20,6 +20,17 @@ server:
       # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
       worker: 256
 
+captcha:
+  enable: true
+  # 页面 <参数设置> 可开启关闭 验证码校验
+  # 验证码类型 math 数组计算 char 字符验证
+  type: MATH
+  # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
+  category: CIRCLE
+  # 数字验证码位数
+  numberLength: 1
+  # 字符验证码长度
+  charLength: 4
 
 # 日志配置
 logging:

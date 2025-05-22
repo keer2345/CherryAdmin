@@ -23,6 +23,7 @@
         <module>cherry-common-doc</module>
         <module>cherry-common-json</module>
         <module>cherry-common-encrypt</module>
+        <module>cherry-common-redis</module>
     </modules>
 
 </project>
