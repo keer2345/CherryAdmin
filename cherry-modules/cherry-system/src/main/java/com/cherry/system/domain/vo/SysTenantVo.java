@@ -1,5 +1,7 @@
 package com.cherry.system.domain.vo;
 
+import com.cherry.system.domain.SysTenant;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 import java.io.Serial;
@@ -14,7 +16,7 @@ import java.util.Date;
  */
 @Data
 // @ExcelIgnoreUnannotated
-// @AutoMapper(target = SysTenant.class)
+@AutoMapper(target = SysTenant.class)
 public class SysTenantVo implements Serializable {
   // todo
 

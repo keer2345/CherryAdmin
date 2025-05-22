@@ -1,4 +1,4 @@
-package com.cherry.common.core.domain;
+package com.cherry.common.core.domain.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

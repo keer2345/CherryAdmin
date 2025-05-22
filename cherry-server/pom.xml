@@ -17,6 +17,13 @@
     </description>
 
     <dependencies>
+
+        <!-- Mysql驱动包 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.cherry</groupId>
             <artifactId>cherry-common-doc</artifactId>

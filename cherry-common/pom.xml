@@ -25,6 +25,7 @@
         <module>cherry-common-encrypt</module>
         <module>cherry-common-redis</module>
         <module>cherry-common-tenant</module>
+        <module>cherry-common-mybatis</module>
     </modules>
 
 </project>
