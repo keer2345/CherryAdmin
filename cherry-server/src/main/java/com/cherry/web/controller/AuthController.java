@@ -6,6 +6,7 @@ import com.cherry.common.core.domain.LoginBody;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.utils.MessageUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.core.utils.ValidatorUtils;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.system.domain.vo.SysClientVo;
 import com.cherry.web.domain.vo.LoginVo;
@@ -34,12 +35,13 @@ public class AuthController {
    *
    * @param body
    */
+  // @ApiEncrypt
   @PostMapping("/login")
   public R<LoginVo> login(@RequestBody String body) {
-      log.info("v2: {}",body);
-      log.info("v3: "+body);
+      log.info("t1: {}", body);
     LoginBody loginBody = JsonUtils.parseObject(body, LoginBody.class);
-    // ValidatorUtils.validate(loginBody);
+      log.info("t2: {}",loginBody.toString());
+    ValidatorUtils.validate(loginBody);
 
     // 授权类型和客户端id
     String clientId = loginBody.getClientId();

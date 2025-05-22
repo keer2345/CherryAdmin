@@ -7,7 +7,7 @@
 |                | [cherry-snailjob-server](ch02.md) |       |   100%   |
 | cherry-common  | cherry-common-bom                 |       |   10%    |
 |                | cherry-common-core                |       |    1%    |
-|                | [cherry-common-doc](ch03.md)      |       |    1%    |
+|                | [cherry-common-doc](ch03.md)      |       |   100%   |
 |                | cherry-common-web                 |       |    1%    |
 |                | cherry-common-json                |       |    1%    |
 | cherry-modules | cherry-modules-bom                |       |   10%    |

@@ -46,6 +46,11 @@
                 <artifactId>cherry-common-json</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.cherry</groupId>
+                <artifactId>cherry-common-encrypt</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
