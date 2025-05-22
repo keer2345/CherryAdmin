@@ -6,7 +6,6 @@ import com.cherry.common.core.domain.LoginBody;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.utils.MessageUtils;
 import com.cherry.common.core.utils.StringUtils;
-import com.cherry.common.core.utils.ValidatorUtils;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.system.domain.vo.SysClientVo;
 import com.cherry.web.domain.vo.LoginVo;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 认证
+ *
  * @author keer
  * @date 2025-05-21
  */
@@ -35,6 +36,8 @@ public class AuthController {
    */
   @PostMapping("/login")
   public R<LoginVo> login(@RequestBody String body) {
+      log.info("v2: {}",body);
+      log.info("v3: "+body);
     LoginBody loginBody = JsonUtils.parseObject(body, LoginBody.class);
     // ValidatorUtils.validate(loginBody);
 
@@ -46,7 +49,7 @@ public class AuthController {
     // 查询不到 client 或 client 内不包含 grantType
     if (ObjUtil.isNull(client) || StringUtils.contains(client.getGrantType(), grantType)) {
       log.info("客户端id: {} 认证类型：{} 异常!.", clientId, grantType);
-        return R.fail(MessageUtils.message("auth.grant.type.error"));
+      return R.fail(MessageUtils.message("auth.grant.type.error"));
     } else if (!SystemConstants.NORMAL.equals(client.getStatus())) {
       return R.fail(MessageUtils.message("auth.grant.type.blocked"));
     }
