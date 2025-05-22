@@ -1,5 +1,7 @@
 package com.cherry.web.domain.vo;
 
+import com.cherry.system.domain.vo.SysTenantVo;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 /**
@@ -9,8 +11,7 @@ import lombok.Data;
  * @date 2025-05-22
  */
 @Data
-// todo
-// @AutoMapper(target = SysTenantVo.class)
+@AutoMapper(target = SysTenantVo.class)
 public class TenantListVo {
 
   /** 租户编号 */
