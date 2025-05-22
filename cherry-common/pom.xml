@@ -24,6 +24,7 @@
         <module>cherry-common-json</module>
         <module>cherry-common-encrypt</module>
         <module>cherry-common-redis</module>
+        <module>cherry-common-tenant</module>
     </modules>
 
 </project>

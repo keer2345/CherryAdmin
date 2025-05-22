@@ -5,31 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.cherry</groupId>
-        <artifactId>cherry-modules</artifactId>
+        <artifactId>cherry-common</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>cherry-system</artifactId>
+    <artifactId>cherry-common-tenant</artifactId>
+
 
     <description>
-        system系统模块
+        cherry-common-tenant 租户模块
     </description>
 
     <dependencies>
         <dependency>
             <groupId>com.cherry</groupId>
-            <artifactId>cherry-common-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.cherry</groupId>
-            <artifactId>cherry-common-tenant</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.cherry</groupId>
-            <artifactId>cherry-common-encrypt</artifactId>
+            <artifactId>cherry-common-redis</artifactId>
         </dependency>
     </dependencies>
-
 </project>

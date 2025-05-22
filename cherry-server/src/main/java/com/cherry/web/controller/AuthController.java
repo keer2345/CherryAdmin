@@ -8,14 +8,14 @@ import com.cherry.common.core.utils.MessageUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ValidatorUtils;
 import com.cherry.common.json.utils.JsonUtils;
+import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.vo.SysClientVo;
+import com.cherry.web.domain.vo.LoginTenantVo;
 import com.cherry.web.domain.vo.LoginVo;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 认证
@@ -38,9 +38,9 @@ public class AuthController {
   // @ApiEncrypt
   @PostMapping("/login")
   public R<LoginVo> login(@RequestBody String body) {
-      log.info("t1: {}", body);
+    log.info("t1: {}", body);
     LoginBody loginBody = JsonUtils.parseObject(body, LoginBody.class);
-      log.info("t2: {}",loginBody.toString());
+    log.info("t2: {}", loginBody.toString());
     ValidatorUtils.validate(loginBody);
 
     // 授权类型和客户端id
@@ -63,5 +63,23 @@ public class AuthController {
     LoginVo loginVo = null;
 
     return R.ok(loginVo);
+  }
+
+  /**
+   * 登录页面租户下拉框
+   *
+   * @return 租户列表
+   */
+  @GetMapping("/tenant/list")
+  public R<LoginTenantVo> tenantList(HttpServletRequest request) throws Exception {
+
+      // 返回对象
+      LoginTenantVo result = new LoginTenantVo();
+      boolean enable = TenantHelper.isEnable();
+      result.setTenantEnabled(enable);
+      // 如果未开启租户这直接返回
+      if (!enable) {
+          return R.ok(result);
+      }
   }
 }
