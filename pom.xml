@@ -215,6 +215,25 @@
             </dependency>
 
 
+            <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <!-- Sa-Token 整合 jwt -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-jwt</artifactId>
+                <version>${satoken.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.hutool</groupId>
+                        <artifactId>hutool-all</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- Warm-Flow国产工作流引擎, 在线文档：http://warm-flow.cn/ -->
             <dependency>
                 <groupId>org.dromara.warm</groupId>

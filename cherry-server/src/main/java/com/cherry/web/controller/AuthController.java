@@ -1,5 +1,6 @@
 package com.cherry.web.controller;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.cherry.common.core.constant.SystemConstants;
@@ -7,6 +8,7 @@ import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.json.utils.JsonUtils;
+import com.cherry.common.satoken.handler.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.bo.SysTenantBo;
 import com.cherry.system.domain.vo.SysClientVo;
@@ -93,8 +95,14 @@ public class AuthController {
     List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantBo());
     List<TenantListVo> voList = MapstructUtils.convert(tenantList, TenantListVo.class);
 
-    // todo
     // 如果只超管返回所有租户
+    try {
+      if (LoginHelper.isSuperAdmin()) {
+        result.setVoList(voList);
+        return R.ok(result);
+      }
+    } catch (NotLoginException ignored) {
+    }
 
     // 获取域名
     String host;

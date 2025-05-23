@@ -62,6 +62,12 @@
                 <artifactId>cherry-common-tenant</artifactId>
                 <version>${revision}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.cherry</groupId>
+                <artifactId>cherry-common-satoken</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <dependency>
                 <groupId>com.cherry</groupId>
                 <artifactId>cherry-common-mybatis</artifactId>

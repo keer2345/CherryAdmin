@@ -40,6 +40,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-satoken</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.cherry.common.core.factory.YmlPropertySourceFactory;
 import com.cherry.common.core.utils.SpringUtils;
+import com.cherry.common.mybatis.handler.InjectionMetaObjectHandler;
 import com.cherry.common.mybatis.handler.MybatisExceptionHandler;
 import com.cherry.common.mybatis.handler.PlusPostInitTableInfoHandler;
 import org.mybatis.spring.annotation.MapperScan;
@@ -78,10 +79,10 @@ public class MybatisPlusConfig {
   }
 
   /** 元对象字段填充控制器 */
-  // @Bean
-  // public MetaObjectHandler metaObjectHandler() {
-  //     return new InjectionMetaObjectHandler();
-  // }
+  @Bean
+  public MetaObjectHandler metaObjectHandler() {
+    return new InjectionMetaObjectHandler();
+  }
 
   /** 使用网卡信息绑定雪花生成器 防止集群雪花ID重复 */
   @Bean
