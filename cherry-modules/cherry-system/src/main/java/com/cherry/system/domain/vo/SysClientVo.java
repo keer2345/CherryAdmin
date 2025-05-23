@@ -1,6 +1,9 @@
 package com.cherry.system.domain.vo;
 
+import com.cherry.system.domain.SysClient;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.apache.ibatis.annotations.AutomapConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +15,9 @@ import java.util.List;
  * @author keer
  * @date 2025-05-21
  */
+// todo
 @Data
+@AutoMapper(target = SysClient.class)
 public class SysClientVo implements Serializable {
   // todo
 
