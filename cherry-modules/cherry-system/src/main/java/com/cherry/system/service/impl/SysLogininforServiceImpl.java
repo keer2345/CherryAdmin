@@ -7,6 +7,7 @@ import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.ServletUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.core.utils.ip.AddressUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.satoken.handler.LoginHelper;
 import com.cherry.system.domain.SysLogininfor;
@@ -78,10 +79,9 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
     logininfor.setOs(os);
     logininfor.setMsg(logininforEvent.getMessage());
 
-    // todo
-    // String address = AddressUtils.getRealAddressByIP(ip);
-    // s.append(address);
-    // logininfor.setLoginLocation(address);
+    String address = AddressUtils.getRealAddressByIP(ip);
+    s.append(address);
+    logininfor.setLoginLocation(address);
 
     // 打印信息到日志
     log.info("{} {}", s.toString(), logininforEvent.getArgs());
