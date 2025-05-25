@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cherry</groupId>
             <artifactId>cherry-common-mybatis</artifactId>
         </dependency>
 

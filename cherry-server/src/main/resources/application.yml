@@ -35,9 +35,11 @@ captcha:
 # 日志配置
 logging:
   level:
-    org.dromara: @logging.level@
+    # org.dromara: @logging.level@
+    com.cherry: @logging.level@
     org.springframework: warn
-    org.mybatis.spring.mapper: error
+    # org.mybatis.spring.mapper: error
+    org.mybatis.spring.mapper: debug
     org.apache.fury: warn
   config: classpath:logback-plus.xml
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.cherry</groupId>
+        <artifactId>cherry-common</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>cherry-common-log</artifactId>
+    <description>
+        cherry-common-log 日志记录
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-satoken</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-json</artifactId>
+        </dependency>
+    </dependencies>
+</project>

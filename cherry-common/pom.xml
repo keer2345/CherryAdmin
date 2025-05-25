@@ -27,6 +27,7 @@
         <module>cherry-common-tenant</module>
         <module>cherry-common-mybatis</module>
         <module>cherry-common-satoken</module>
+        <module>cherry-common-log</module>
     </modules>
 
 </project>

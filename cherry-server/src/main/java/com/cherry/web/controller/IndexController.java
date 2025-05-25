@@ -2,7 +2,9 @@ package com.cherry.web.controller;
 
 import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.log.annotation.Log;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author keer
  * @date 2025-05-21
  */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class IndexController {

@@ -3,10 +3,9 @@ package com.cherry.web.controller;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
-import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.domain.R;
+import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.common.satoken.handler.LoginHelper;
@@ -22,12 +21,11 @@ import com.cherry.web.domain.vo.TenantListVo;
 import com.cherry.web.service.IAuthStrategy;
 import com.cherry.web.service.SysLoginService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URL;
-import java.util.List;
 
 /**
  * 认证
