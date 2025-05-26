@@ -6,6 +6,7 @@ import com.cherry.common.core.constant.CacheConstants;
 import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.constant.TenantConstants;
+import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.enums.LoginType;
 import com.cherry.common.core.exception.user.UserException;
 import com.cherry.common.core.utils.MessageUtils;
@@ -14,6 +15,7 @@ import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
+import com.cherry.system.domain.vo.SysUserVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,5 +116,21 @@ public class SysLoginService {
     }
     // 登录成功 清空错误次数
     RedisUtils.deleteObject(errorKey);
+  }
+
+  /** 构建登录用户 */
+  public LoginUser buildLoginUser(SysUserVo user) {
+    LoginUser loginUser = new LoginUser();
+    Long userId = user.getUserId();
+
+    loginUser.setTenantId(user.getTenantId());
+    loginUser.setUserId(userId);
+    loginUser.setDeptId(user.getDeptId());
+    loginUser.setUsername(user.getUserName());
+    loginUser.setNickname(user.getNickName());
+    loginUser.setUserType(user.getUserType());
+    // todo
+
+    return loginUser;
   }
 }

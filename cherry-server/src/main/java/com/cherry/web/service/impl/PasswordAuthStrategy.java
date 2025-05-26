@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.constant.SystemConstants;
+import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.domain.model.PasswordLoginBody;
 import com.cherry.common.core.enums.LoginType;
 import com.cherry.common.core.exception.user.CaptchaException;
@@ -66,6 +67,14 @@ public class PasswordAuthStrategy implements IAuthStrategy {
         tenantId,
         username,
         () -> !BCrypt.checkpw(password, user.getPassword()));
+
+    // 此处可根据登录用户的数据不同 自行创建 loginUser
+    LoginUser loginUser = loginService.buildLoginUser(user);
+
+    loginUser.setClientKey(client.getClientKey());
+    loginUser.setDeviceType(client.getDeviceType());
+
+    log.info("v11: {}",loginUser.toString());
 
     return null;
   }
