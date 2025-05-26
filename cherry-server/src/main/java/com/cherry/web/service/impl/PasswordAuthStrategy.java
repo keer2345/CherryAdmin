@@ -17,6 +17,7 @@ import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ValidatorUtils;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.common.redis.utils.RedisUtils;
+import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.config.properties.CaptchaProperties;
 import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.vo.SysClientVo;
@@ -61,20 +62,25 @@ public class PasswordAuthStrategy implements IAuthStrategy {
       validateCaptcha(tenantId, username, code, uuid);
     }
 
-    SysUserVo user = loadUserByUsername(username);
-    loginService.checkLogin(
-        LoginType.PASSWORD,
-        tenantId,
-        username,
-        () -> !BCrypt.checkpw(password, user.getPassword()));
+    LoginUser loginUser =
+        TenantHelper.dynamic(
+            tenantId,
+            () -> {
+              SysUserVo user = loadUserByUsername(username);
+              loginService.checkLogin(
+                  LoginType.PASSWORD,
+                  tenantId,
+                  username,
+                  () -> !BCrypt.checkpw(password, user.getPassword()));
 
-    // 此处可根据登录用户的数据不同 自行创建 loginUser
-    LoginUser loginUser = loginService.buildLoginUser(user);
+              // 此处可根据登录用户的数据不同 自行创建 loginUser
+              return loginService.buildLoginUser(user);
+            });
 
     loginUser.setClientKey(client.getClientKey());
     loginUser.setDeviceType(client.getDeviceType());
 
-    log.info("v11: {}",loginUser.toString());
+    log.info("v11: {}", loginUser.toString());
 
     return null;
   }

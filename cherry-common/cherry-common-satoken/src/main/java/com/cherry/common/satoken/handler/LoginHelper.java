@@ -110,4 +110,17 @@ public class LoginHelper {
       return null;
     }
   }
+
+  /**
+   * 检查当前用户是否已登录
+   *
+   * @return 结果
+   */
+  public static boolean isLogin() {
+    try {
+      return getLoginUser() != null;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 }
