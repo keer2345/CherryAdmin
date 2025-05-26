@@ -19,6 +19,10 @@
     <dependencies>
         <dependency>
             <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cherry</groupId>
             <artifactId>cherry-common-redis</artifactId>
         </dependency>
     </dependencies>

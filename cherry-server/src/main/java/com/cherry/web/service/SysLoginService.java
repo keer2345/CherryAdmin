@@ -1,13 +1,27 @@
 package com.cherry.web.service;
 
+import cn.hutool.core.util.ObjUtil;
+import cn.hutool.crypto.digest.BCrypt;
+import com.cherry.common.core.constant.CacheConstants;
+import com.cherry.common.core.constant.Constants;
+import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.constant.TenantConstants;
+import com.cherry.common.core.enums.LoginType;
+import com.cherry.common.core.exception.user.UserException;
+import com.cherry.common.core.utils.MessageUtils;
 import com.cherry.common.core.utils.ServletUtils;
 import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.log.event.LogininforEvent;
+import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.lang.constant.Constable;
+import java.time.Duration;
+import java.util.function.Supplier;
 
 /**
  * 登录校验方法
@@ -20,6 +34,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysLoginService {
   // todo
+
+  @Value("${user.password.maxRetryCount}")
+  private Integer maxRetryCount;
+
+  @Value("${user.password.lockTime}")
+  private Integer lockTime;
 
   /**
    * 校验租户
@@ -51,5 +71,48 @@ public class SysLoginService {
     logininforEvent.setRequest(ServletUtils.getRequest());
 
     SpringUtils.context().publishEvent(logininforEvent);
+  }
+
+  /** 登录校验 */
+  public void checkLogin(
+      LoginType loginType, String tenantId, String username, Supplier<Boolean> supplier) {
+    String errorKey = GlobalConstants.GLOBAL_REDIS_KEY + CacheConstants.PWD_ERR_CNT_KEY + username;
+    String loginFail = Constants.LOGIN_FAIL;
+
+    // 获取用户登录错误次数，默认为0 (可自定义限制策略 例如: key + username + ip)
+    int errorNumber = ObjUtil.defaultIfNull(RedisUtils.getCacheObject(errorKey), 0);
+    // 锁定时间内登录 则踢出
+    if (errorNumber >= maxRetryCount) {
+      recordLogininfor(
+          tenantId,
+          username,
+          loginFail,
+          MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
+      throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime);
+    }
+    if (supplier.get()) {
+      // 错误次数递增
+      errorNumber++;
+      RedisUtils.setCacheObject(errorKey, errorNumber, Duration.ofMinutes(lockTime));
+      // 达到规定错误次数 则锁定登录
+      if (errorNumber >= maxRetryCount) {
+        recordLogininfor(
+            tenantId,
+            username,
+            loginFail,
+            MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
+        throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime);
+      } else {
+        // 未达到规定错误次数
+        recordLogininfor(
+            tenantId,
+            username,
+            loginFail,
+            MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
+        throw new UserException(loginType.getRetryLimitCount(), errorNumber);
+      }
+    }
+    // 登录成功 清空错误次数
+    RedisUtils.deleteObject(errorKey);
   }
 }

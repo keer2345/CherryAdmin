@@ -79,6 +79,7 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
     logininfor.setOs(os);
     logininfor.setMsg(logininforEvent.getMessage());
 
+    // 根据 IP 获取地址
     String address = AddressUtils.getRealAddressByIP(ip);
     s.append(address);
     logininfor.setLoginLocation(address);
