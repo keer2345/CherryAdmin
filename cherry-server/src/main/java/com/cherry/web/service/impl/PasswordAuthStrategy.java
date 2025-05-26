@@ -80,7 +80,7 @@ public class PasswordAuthStrategy implements IAuthStrategy {
     loginUser.setClientKey(client.getClientKey());
     loginUser.setDeviceType(client.getDeviceType());
 
-    log.info("v11: {}", loginUser.toString());
+    log.info("v11: {}", loginUser);
 
     return null;
   }

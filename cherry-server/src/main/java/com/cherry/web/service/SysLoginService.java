@@ -16,6 +16,7 @@ import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.vo.SysUserVo;
+import com.cherry.system.service.ISysPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,8 @@ public class SysLoginService {
 
   @Value("${user.password.lockTime}")
   private Integer lockTime;
+
+    private final ISysPermissionService permissionService;
 
   /**
    * 校验租户
@@ -130,6 +133,7 @@ public class SysLoginService {
     loginUser.setNickname(user.getNickName());
     loginUser.setUserType(user.getUserType());
     // todo
+      loginUser.setMenuPermission(permissionService.getMenuPermission(userId));
 
     return loginUser;
   }
