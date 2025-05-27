@@ -1,8 +1,10 @@
 package com.cherry.system.service.impl;
 
+import com.cherry.common.core.constant.TenantConstants;
 import com.cherry.common.satoken.handler.LoginHelper;
 import com.cherry.system.service.ISysMenuService;
 import com.cherry.system.service.ISysPermissionService;
+import com.cherry.system.service.ISysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.Set;
 @Service
 public class SysPermissionServiceImpl implements ISysPermissionService {
 
+  private final ISysRoleService roleService;
   private final ISysMenuService menuService;
 
   /**
@@ -29,7 +32,14 @@ public class SysPermissionServiceImpl implements ISysPermissionService {
    */
   @Override
   public Set<String> getRolePermission(Long userId) {
-    return Set.of();
+    Set<String> roles = new HashSet<>();
+    // 管理员拥有所有权限
+    if (LoginHelper.isSuperAdmin(userId)) {
+      roles.add(TenantConstants.SUPER_ADMIN_ROLE_KEY);
+    } else {
+      roles.addAll(roleService.selectRolePermissionByUserId(userId));
+    }
+    return roles;
   }
 
   /**

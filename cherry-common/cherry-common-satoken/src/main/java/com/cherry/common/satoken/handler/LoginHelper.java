@@ -1,8 +1,10 @@
 package com.cherry.common.satoken.handler;
 
 import cn.dev33.satoken.session.SaSession;
+import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.domain.model.LoginUser;
@@ -122,5 +124,25 @@ public class LoginHelper {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  /**
+   * 登录系统 基于 设备类型 针对相同用户体系不同设备
+   *
+   * @param loginUser 登录用户信息
+   * @param model 配置参数
+   */
+  public static void login(LoginUser loginUser, SaLoginModel model) {
+    model = ObjUtil.defaultIfNull(model, new SaLoginModel());
+    StpUtil.login(
+        loginUser.getLoginId(),
+        model
+            .setExtra(TENANT_KEY, loginUser.getTenantId())
+            .setExtra(USER_KEY, loginUser.getUserId())
+            .setExtra(USER_NAME_KEY, loginUser.getUsername())
+            .setExtra(DEPT_KEY, loginUser.getDeptId())
+            .setExtra(DEPT_NAME_KEY, loginUser.getDeptName())
+            .setExtra(DEPT_CATEGORY_KEY, loginUser.getDeptCategory()));
+    StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
   }
 }

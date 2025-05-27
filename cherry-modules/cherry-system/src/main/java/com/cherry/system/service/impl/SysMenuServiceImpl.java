@@ -1,11 +1,13 @@
 package com.cherry.system.service.impl;
 
+import com.cherry.common.core.utils.StringUtils;
 import com.cherry.system.mapper.SysMenuMapper;
 import com.cherry.system.service.ISysMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ import java.util.Set;
 public class SysMenuServiceImpl implements ISysMenuService {
   // todo
 
-    private final SysMenuMapper baseMapper;
+  private final SysMenuMapper baseMapper;
 
   /**
    * 根据用户ID查询权限
@@ -31,8 +33,13 @@ public class SysMenuServiceImpl implements ISysMenuService {
    */
   @Override
   public Set<String> selectMenuPermsByUserId(Long userId) {
-      List<String> perms=baseMapper.selectMenuPermsByUserId(userId);
-      log.info("perms: {}",perms);
-    return Set.of();
+    List<String> perms = baseMapper.selectMenuPermsByUserId(userId);
+    Set<String> permsSet = new HashSet<>();
+    for (String perm : perms) {
+      if (StringUtils.isNotEmpty(perm)) {
+        permsSet.addAll(StringUtils.splitList(perm.trim()));
+      }
+    }
+    return permsSet;
   }
 }

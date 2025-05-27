@@ -1,11 +1,14 @@
 package com.cherry.web.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.cherry.common.core.constant.CacheConstants;
 import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.constant.TenantConstants;
+import com.cherry.common.core.domain.dto.PostDTO;
+import com.cherry.common.core.domain.dto.RoleDTO;
 import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.enums.LoginType;
 import com.cherry.common.core.exception.user.UserException;
@@ -15,8 +18,12 @@ import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
+import com.cherry.system.domain.vo.SysPostVo;
+import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
 import com.cherry.system.service.ISysPermissionService;
+import com.cherry.system.service.ISysPostService;
+import com.cherry.system.service.ISysRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.constant.Constable;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -44,7 +52,9 @@ public class SysLoginService {
   @Value("${user.password.lockTime}")
   private Integer lockTime;
 
-    private final ISysPermissionService permissionService;
+  private final ISysPermissionService permissionService;
+  private final ISysRoleService roleService;
+  private final ISysPostService postService;
 
   /**
    * 校验租户
@@ -132,8 +142,17 @@ public class SysLoginService {
     loginUser.setUsername(user.getUserName());
     loginUser.setNickname(user.getNickName());
     loginUser.setUserType(user.getUserType());
-    // todo
-      loginUser.setMenuPermission(permissionService.getMenuPermission(userId));
+    loginUser.setMenuPermission(permissionService.getMenuPermission(userId));
+    loginUser.setRolePermission(permissionService.getRolePermission(userId));
+
+    if (ObjUtil.isNotNull(user.getDeptId())) {
+      // todo
+    }
+
+    List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);
+    List<SysPostVo> posts = postService.selectPostsByUserId(userId);
+    loginUser.setRoles(BeanUtil.copyToList(roles, RoleDTO.class));
+    loginUser.setPosts(BeanUtil.copyToList(posts, PostDTO.class));
 
     return loginUser;
   }
