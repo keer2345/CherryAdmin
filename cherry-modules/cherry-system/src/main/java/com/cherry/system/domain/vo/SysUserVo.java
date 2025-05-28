@@ -7,6 +7,8 @@ import io.github.linpeilie.annotations.AutoMapper;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -78,7 +80,7 @@ public class SysUserVo implements Serializable {
   private String deptName;
 
   /** 角色对象 */
-  // private List<SysRoleVo> roles;
+  private List<SysRoleVo> roles;
 
   /** 角色组 */
   private Long[] roleIds;
