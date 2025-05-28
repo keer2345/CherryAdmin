@@ -85,7 +85,6 @@ public class AuthController {
      */
   @PostMapping("/logout")
   public R<Void> logout(){
-      log.info("v1 logout");
     loginService.logout();
     return R.ok("退出成功");
   }
