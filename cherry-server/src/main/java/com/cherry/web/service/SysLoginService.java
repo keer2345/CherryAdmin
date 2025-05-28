@@ -1,6 +1,7 @@
 package com.cherry.web.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.cherry.common.core.constant.CacheConstants;
@@ -15,12 +16,15 @@ import com.cherry.common.core.exception.user.UserException;
 import com.cherry.common.core.utils.MessageUtils;
 import com.cherry.common.core.utils.ServletUtils;
 import com.cherry.common.core.utils.SpringUtils;
+import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
+import com.cherry.system.domain.vo.SysDeptVo;
 import com.cherry.system.domain.vo.SysPostVo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
+import com.cherry.system.service.ISysDeptService;
 import com.cherry.system.service.ISysPermissionService;
 import com.cherry.system.service.ISysPostService;
 import com.cherry.system.service.ISysRoleService;
@@ -55,6 +59,7 @@ public class SysLoginService {
   private final ISysPermissionService permissionService;
   private final ISysRoleService roleService;
   private final ISysPostService postService;
+  private final ISysDeptService deptService;
 
   /**
    * 校验租户
@@ -146,7 +151,9 @@ public class SysLoginService {
     loginUser.setRolePermission(permissionService.getRolePermission(userId));
 
     if (ObjUtil.isNotNull(user.getDeptId())) {
-      // todo
+      Opt<SysDeptVo> deptOpt = Opt.of(user.getDeptId()).map(deptService::selectDeptById);
+      loginUser.setDeptName(deptOpt.map(SysDeptVo::getDeptName).orElse(StringUtils.EMPTY));
+      loginUser.setDeptCategory(deptOpt.map(SysDeptVo::getDeptCategory).orElse(StringUtils.EMPTY));
     }
 
     List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);

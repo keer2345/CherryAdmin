@@ -11,6 +11,7 @@ import com.cherry.common.core.utils.MapstructUtils;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -96,6 +97,32 @@ public interface BaseMapperPlus<T, V> extends BaseMapper<T> {
    */
   default <C> C selectVoOne(Wrapper<T> wrapper, Class<C> voClass, boolean throwEx) {
     T obj = this.selectOne(wrapper, throwEx);
+    if (ObjectUtil.isNull(obj)) {
+      return null;
+    }
+    return MapstructUtils.convert(obj, voClass);
+  }
+
+  /**
+   * 根据ID查询单个VO对象
+   *
+   * @param id 主键ID
+   * @return 查询到的单个VO对象
+   */
+  default V selectVoById(Serializable id) {
+    return selectVoById(id, this.currentVoClass());
+  }
+
+  /**
+   * 根据ID查询单个VO对象并将其转换为指定的VO类
+   *
+   * @param id 主键ID
+   * @param voClass 要转换的VO类的Class对象
+   * @param <C> VO类的类型
+   * @return 查询到的单个VO对象，经过转换为指定的VO类后返回
+   */
+  default <C> C selectVoById(Serializable id, Class<C> voClass) {
+    T obj = this.selectById(id);
     if (ObjectUtil.isNull(obj)) {
       return null;
     }
