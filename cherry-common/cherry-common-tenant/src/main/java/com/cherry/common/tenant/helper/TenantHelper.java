@@ -58,16 +58,18 @@ public class TenantHelper {
   }
 
   /** 清除动态租户 */
-  private static void clearDynamic() {
+  public static void clearDynamic() {
     if (!isEnable()) {
       return;
     }
     if (!LoginHelper.isLogin()) {
       TEMP_DYNAMIC_TENANT.remove();
-      String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
-      RedisUtils.deleteObject(cacheKey);
-      SaHolder.getStorage().delete(cacheKey);
+      return;
     }
+    TEMP_DYNAMIC_TENANT.remove();
+    String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
+    RedisUtils.deleteObject(cacheKey);
+    SaHolder.getStorage().delete(cacheKey);
   }
 
   /**

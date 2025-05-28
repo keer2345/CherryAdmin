@@ -1,5 +1,7 @@
 package com.cherry.web.service;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjUtil;
@@ -19,6 +21,7 @@ import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
+import com.cherry.common.satoken.handler.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.vo.SysDeptVo;
 import com.cherry.system.domain.vo.SysPostVo;
@@ -162,5 +165,31 @@ public class SysLoginService {
     loginUser.setPosts(BeanUtil.copyToList(posts, PostDTO.class));
 
     return loginUser;
+  }
+
+  /** 退出登录 */
+  public void logout() {
+    try {
+      LoginUser loginUser = LoginHelper.getLoginUser();
+      if (ObjUtil.isNull(loginUser)) {
+        return;
+      }
+      if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
+        // 超级管理员 登出清除动态租户
+        TenantHelper.clearDynamic();
+      }
+      recordLogininfor(
+          loginUser.getTenantId(),
+          loginUser.getUsername(),
+          Constants.LOGOUT,
+          MessageUtils.message("user.logout.success"));
+    } catch (NotLoginException ignored) {
+
+    } finally {
+      try {
+        StpUtil.logout();
+      } catch (NotLoginException ignored) {
+      }
+    }
   }
 }

@@ -73,9 +73,21 @@ public class AuthController {
     // 登录
     LoginVo loginVo = IAuthStrategy.login(body, client, grantType);
 
+    Long userId = LoginHelper.getUserId();
     // todo
 
     return R.ok(loginVo);
+  }
+
+
+    /**
+     * 退出登录
+     */
+  @PostMapping("/logout")
+  public R<Void> logout(){
+      log.info("v1 logout");
+    loginService.logout();
+    return R.ok("退出成功");
   }
 
   /**
