@@ -28,6 +28,7 @@
         <module>cherry-common-mybatis</module>
         <module>cherry-common-satoken</module>
         <module>cherry-common-log</module>
+        <module>cherry-common-security</module>
     </modules>
 
 </project>

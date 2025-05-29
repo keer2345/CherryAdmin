@@ -80,6 +80,20 @@ sa-token:
   jwt-secret-key: abcdefghijklmnopqrstuvwxyz
 
 
+# security配置
+security:
+  # 排除路径
+  excludes:
+    - /*.html
+#    - /**/*.html
+#    - /**/*.css
+#    - /**/*.js
+#    - /favicon.ico
+#    - /error
+#    - /*/api-docs
+#    - /*/api-docs/**
+#    - /warm-flow-ui/token-name
+
 # api接口加密
 api-decrypt:
   # 是否开启全局接口加密

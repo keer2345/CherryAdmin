@@ -41,6 +41,13 @@
             <artifactId>cherry-common-encrypt</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-security</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 </project>
