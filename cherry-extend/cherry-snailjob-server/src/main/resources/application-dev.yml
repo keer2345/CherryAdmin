@@ -21,7 +21,8 @@ snail-job:
   # 拉取重试数据的每批次的大小
   job-pull-page-size: 1000
   # 服务器端口
-  server-port: 17888
+  # server-port: 17888
+  server-port: 17889
   # 日志保存时间(单位: day)
   log-storage: 7
   rpc-type: grpc

@@ -86,7 +86,7 @@ spring.data:
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 0
+    database: 1
     # redis 密码必须配置
     # password: ruoyi123
     password: 123456
@@ -138,7 +138,8 @@ snail-job:
   token: "SJ_cKqBTPzCsWA3VyuCfFoccmuIEGXjr5KT"
   server:
     host: 127.0.0.1
-    port: 17888
+    # port: 17888
+    port: 17889
   # 命名空间UUID 详见 script/sql/ry_job.sql `sj_namespace`表`unique_id`字段
   namespace: ${spring.profiles.active}
   # 随主应用端口漂移

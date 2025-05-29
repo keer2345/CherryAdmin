@@ -74,6 +74,7 @@ public class AuthController {
     LoginVo loginVo = IAuthStrategy.login(body, client, grantType);
 
     Long userId = LoginHelper.getUserId();
+      log.info("r2 loginVo: {}",loginVo);
     // todo
 
     return R.ok(loginVo);
