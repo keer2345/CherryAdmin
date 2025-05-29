@@ -1,5 +1,6 @@
 package com.cherry.web.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.captcha.AbstractCaptcha;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.core.util.IdUtil;
@@ -28,6 +29,7 @@ import java.time.Duration;
  * @author keer
  * @date 2025-05-22
  */
+@SaIgnore
 @Slf4j
 @Validated
 @RequiredArgsConstructor

@@ -1,5 +1,6 @@
 package com.cherry.web.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
  * @author keer
  * @date 2025-05-21
  */
+@SaIgnore
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -72,9 +74,9 @@ public class AuthController {
 
     // 登录
     LoginVo loginVo = IAuthStrategy.login(body, client, grantType);
+      log.info("r2 loginVo: {}",loginVo);
 
     Long userId = LoginHelper.getUserId();
-      log.info("r2 loginVo: {}",loginVo);
     // todo
 
     return R.ok(loginVo);
