@@ -18,7 +18,8 @@ import java.util.List;
 @Slf4j
 public class SaPermissionImpl implements StpInterface {
 
-  /** 获取菜单权限列表 */
+
+    /** 获取菜单权限列表 */
   @Override
   public List<String> getPermissionList(Object o, String s) {
     LoginUser loginUser = LoginHelper.getLoginUser();

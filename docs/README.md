@@ -15,6 +15,7 @@
 |                | [cherry-common-tenant](ch11.md)   |       |    1%    |
 |                | [cherry-common-mybatis](ch12.md)  |       |    1%    |
 |                | [cherry-common-satoken](ch13.md)  |       |    1%    |
+|                | [cherry-common-security](ch13.md) |       |    1%    |
 |                | [cherry-common-log](ch14.md)      |       |    1%    |
 | cherry-modules | cherry-modules-bom                |       |   10%    |
 |                | cherry-system                     |       |    1%    |

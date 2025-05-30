@@ -30,28 +30,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserController extends BaseController {
   // todo
   private final ISysUserService userService;
-    /**
-     * 获取用户信息
-     *
-     * @return 用户信息
-     */
-    @GetMapping("/getInfo")
-    public R<UserInfoVo> getInfo() {
-       UserInfoVo userInfoVo=new UserInfoVo();
-        LoginUser loginUser= LoginHelper.getLoginUser();
 
-        if(TenantHelper.isEnable()&&LoginHelper.isSuperAdmin()){
-            // 超级管理员 如果重新加载用户信息需清除动态租户
-            TenantHelper.clearDynamic();
-        }
-        SysUserVo user  = userService.selectUserById(loginUser.getUserId());
-        if(ObjUtil.isNull(user)){
-            return R.fail("没有权限访问用户数据!");
-        }
-        userInfoVo.setUser(user);
-        userInfoVo.setPermissions(loginUser.getMenuPermission());
-        userInfoVo.setRoles(loginUser.getRolePermission());
+  /**
+   * 获取用户信息
+   *
+   * @return 用户信息
+   */
+  @GetMapping("/getInfo")
+  public R<UserInfoVo> getInfo() {
+    UserInfoVo userInfoVo = new UserInfoVo();
+    LoginUser loginUser = LoginHelper.getLoginUser();
 
-        return R.ok(userInfoVo);
+    if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
+      // 超级管理员 如果重新加载用户信息需清除动态租户
+      TenantHelper.clearDynamic();
     }
+    SysUserVo user = userService.selectUserById(loginUser.getUserId());
+    if (ObjUtil.isNull(user)) {
+      return R.fail("没有权限访问用户数据!");
+    }
+    userInfoVo.setUser(user);
+    userInfoVo.setPermissions(loginUser.getMenuPermission());
+    userInfoVo.setRoles(loginUser.getRolePermission());
+
+    return R.ok(userInfoVo);
+  }
 }
