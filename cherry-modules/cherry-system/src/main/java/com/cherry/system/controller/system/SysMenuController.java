@@ -38,7 +38,6 @@ public class SysMenuController extends BaseController {
     @GetMapping("/getRouters")
     public R<List<RouterVo>> getRouters() {
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(LoginHelper.getUserId());
-        log.info("r2 menus: {}",menus);
         return R.ok(menuService.buildMenus(menus));
     }
 }

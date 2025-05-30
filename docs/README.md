@@ -17,6 +17,7 @@
 |                | [cherry-common-satoken](ch13.md)  |   90%    | 缺 PlusSaTokenDao |
 |                | [cherry-common-security](ch13.md) |   90%    | 2025053001       |
 |                | [cherry-common-log](ch14.md)      |    1%    |                  |
+|                | [cherry-common-sse](ch15.md)      |   100%   |                  |
 | cherry-modules | cherry-modules-bom                |   10%    |                  |
 |                | cherry-system                     |    1%    |                  |
 

@@ -1,2 +1,3 @@
 com.cherry.common.core.config.ApplicationConfig
 com.cherry.common.core.utils.SpringUtils
+com.cherry.common.core.config.ThreadPoolConfig

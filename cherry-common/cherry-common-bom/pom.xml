@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <description>
-       cherry-common-bom common依赖项
+        cherry-common-bom common依赖项
     </description>
 
     <properties>
@@ -83,6 +83,11 @@
             <dependency>
                 <groupId>com.cherry</groupId>
                 <artifactId>cherry-common-security</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cherry</groupId>
+                <artifactId>cherry-common-sse</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

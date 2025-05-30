@@ -10,6 +10,8 @@ import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
+import com.cherry.common.sse.dto.SseMessageDto;
+import com.cherry.common.sse.utils.SseMessageUtils;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.bo.SysTenantBo;
 import com.cherry.system.domain.vo.SysClientVo;
@@ -23,7 +25,11 @@ import com.cherry.web.service.IAuthStrategy;
 import com.cherry.web.service.SysLoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +51,7 @@ public class AuthController {
   private final SysLoginService loginService;
   private final ISysTenantService tenantService;
   private final ISysClientService clientService;
+  private final ScheduledExecutorService scheduledExecutorService;
 
   /**
    * 登录方法
@@ -77,17 +84,22 @@ public class AuthController {
 
     Long userId = LoginHelper.getUserId();
 
-    // todo
+    scheduledExecutorService.schedule(
+        () -> {
+          SseMessageDto dto = new SseMessageDto();
+          dto.setMessage("欢迎登录RuoYi-Vue-Plus后台管理系统");
+          dto.setUserIds(List.of(userId));
+          SseMessageUtils.publishMessage(dto);
+        },
+        5,
+        TimeUnit.SECONDS);
 
     return R.ok(loginVo);
   }
 
-
-    /**
-     * 退出登录
-     */
+  /** 退出登录 */
   @PostMapping("/logout")
-  public R<Void> logout(){
+  public R<Void> logout() {
     loginService.logout();
     return R.ok("退出成功");
   }

@@ -29,6 +29,7 @@
         <module>cherry-common-satoken</module>
         <module>cherry-common-log</module>
         <module>cherry-common-security</module>
+        <module>cherry-common-sse</module>
     </modules>
 
 </project>
