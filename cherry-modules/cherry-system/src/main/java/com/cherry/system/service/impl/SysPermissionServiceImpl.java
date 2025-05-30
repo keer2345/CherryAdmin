@@ -1,7 +1,7 @@
 package com.cherry.system.service.impl;
 
 import com.cherry.common.core.constant.TenantConstants;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.service.ISysMenuService;
 import com.cherry.system.service.ISysPermissionService;
 import com.cherry.system.service.ISysRoleService;

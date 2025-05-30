@@ -9,7 +9,7 @@ import com.cherry.common.core.utils.ServletUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ip.AddressUtils;
 import com.cherry.common.log.event.LogininforEvent;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysLogininfor;
 import com.cherry.system.domain.bo.SysLogininforBo;
 import com.cherry.system.domain.vo.SysClientVo;

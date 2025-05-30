@@ -9,7 +9,7 @@ import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.core.utils.ObjectUtils;
 import com.cherry.common.mybatis.core.domain.BaseEntity;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 

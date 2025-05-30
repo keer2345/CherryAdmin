@@ -8,7 +8,7 @@ import com.cherry.common.core.exception.SseException;
 import com.cherry.common.core.utils.ServletUtils;
 import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StringUtils;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.security.config.properties.SecurityProperties;
 import com.cherry.common.security.handler.AllUrlHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -87,4 +87,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         // 排除不需要拦截的路径
         .excludePathPatterns(securityProperties.getExcludes());
   }
+
+  // todo
+  // todo 2025053001
 }

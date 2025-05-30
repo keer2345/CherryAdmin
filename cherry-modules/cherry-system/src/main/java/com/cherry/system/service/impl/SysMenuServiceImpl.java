@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.core.utils.StringUtils;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysMenu;
 import com.cherry.system.domain.vo.MetaVo;
 import com.cherry.system.domain.vo.RouterVo;

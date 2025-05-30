@@ -5,11 +5,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjUtil;
-import cn.hutool.crypto.digest.BCrypt;
-import com.cherry.common.core.constant.CacheConstants;
-import com.cherry.common.core.constant.Constants;
-import com.cherry.common.core.constant.GlobalConstants;
-import com.cherry.common.core.constant.TenantConstants;
+import cn.hutool.core.util.ObjectUtil;
+import com.cherry.common.core.constant.*;
 import com.cherry.common.core.domain.dto.PostDTO;
 import com.cherry.common.core.domain.dto.RoleDTO;
 import com.cherry.common.core.domain.model.LoginUser;
@@ -21,23 +18,18 @@ import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.log.event.LogininforEvent;
 import com.cherry.common.redis.utils.RedisUtils;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
+import com.cherry.common.tenant.exception.TenantException;
 import com.cherry.common.tenant.helper.TenantHelper;
-import com.cherry.system.domain.vo.SysDeptVo;
-import com.cherry.system.domain.vo.SysPostVo;
-import com.cherry.system.domain.vo.SysRoleVo;
-import com.cherry.system.domain.vo.SysUserVo;
-import com.cherry.system.service.ISysDeptService;
-import com.cherry.system.service.ISysPermissionService;
-import com.cherry.system.service.ISysPostService;
-import com.cherry.system.service.ISysRoleService;
+import com.cherry.system.domain.vo.*;
+import com.cherry.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.lang.constant.Constable;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -63,6 +55,7 @@ public class SysLoginService {
   private final ISysRoleService roleService;
   private final ISysPostService postService;
   private final ISysDeptService deptService;
+  private final ISysTenantService tenantService;
 
   /**
    * 校验租户
@@ -73,8 +66,23 @@ public class SysLoginService {
     if (!TenantHelper.isEnable() || TenantConstants.DEFAULT_TENANT_ID.equals(tenantId)) {
       return;
     }
+    if (StringUtils.isBlank(tenantId)) {
+      throw new TenantException("tenant.number.not.blank");
+    }
 
-    // todo
+    SysTenantVo tenant = tenantService.queryByTenantId(tenantId);
+
+    if (ObjUtil.isNull(tenant)) {
+      log.info("登录租户：{} 不存在.", tenantId);
+      throw new TenantException("tenant.not.exists");
+    } else if (SystemConstants.DISABLE.equals(tenant.getStatus())) {
+      log.info("登录租户：{} 已被停用.", tenantId);
+      throw new TenantException("tenant.blocked");
+    } else if (ObjectUtil.isNotNull(tenant.getExpireTime())
+        && new Date().after(tenant.getExpireTime())) {
+      log.info("登录租户：{} 已超过有效期.", tenantId);
+      throw new TenantException("tenant.expired");
+    }
   }
 
   /**

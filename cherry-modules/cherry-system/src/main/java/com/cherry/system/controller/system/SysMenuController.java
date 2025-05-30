@@ -1,7 +1,7 @@
 package com.cherry.system.controller.system;
 
 import com.cherry.common.core.domain.R;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.web.core.BaseController;
 import com.cherry.system.domain.SysMenu;
 import com.cherry.system.domain.vo.RouterVo;

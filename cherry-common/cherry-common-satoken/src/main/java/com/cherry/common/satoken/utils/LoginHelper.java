@@ -1,4 +1,4 @@
-package com.cherry.common.satoken.handler;
+package com.cherry.common.satoken.utils;
 
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;

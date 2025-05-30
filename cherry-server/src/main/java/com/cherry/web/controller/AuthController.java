@@ -9,7 +9,7 @@ import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.json.utils.JsonUtils;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.system.domain.bo.SysTenantBo;
 import com.cherry.system.domain.vo.SysClientVo;
@@ -74,9 +74,9 @@ public class AuthController {
 
     // 登录
     LoginVo loginVo = IAuthStrategy.login(body, client, grantType);
-      log.info("r2 loginVo: {}",loginVo);
 
     Long userId = LoginHelper.getUserId();
+
     // todo
 
     return R.ok(loginVo);

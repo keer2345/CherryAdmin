@@ -3,7 +3,7 @@ package com.cherry.system.controller.system;
 import cn.hutool.core.util.ObjUtil;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginUser;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.core.BaseController;
 import com.cherry.system.domain.vo.SysUserVo;

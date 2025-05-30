@@ -17,4 +17,9 @@ public interface ISysTenantService {
      * 查询租户列表
      */
     List<SysTenantVo> queryList(SysTenantBo bo);
+
+    /**
+     * 基于租户ID查询租户
+     */
+    SysTenantVo queryByTenantId(String tenantId);
 }

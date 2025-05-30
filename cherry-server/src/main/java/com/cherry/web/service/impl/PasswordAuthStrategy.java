@@ -19,7 +19,7 @@ import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ValidatorUtils;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.common.redis.utils.RedisUtils;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.config.properties.CaptchaProperties;
 import com.cherry.system.domain.SysUser;

@@ -3,7 +3,7 @@ package com.cherry.common.satoken.core.service;
 import cn.dev33.satoken.stp.StpInterface;
 import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.enums.UserType;
-import com.cherry.common.satoken.handler.LoginHelper;
+import com.cherry.common.satoken.utils.LoginHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
