@@ -1,11 +1,13 @@
 package com.cherry.common.satoken.config;
 
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
+import cn.dev33.satoken.spring.SaBeanInject;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpLogic;
 import com.cherry.common.core.factory.YmlPropertySourceFactory;
 import com.cherry.common.satoken.core.service.SaPermissionImpl;
 import com.cherry.common.satoken.handler.SaTokenExceptionHandler;
+import org.springframework.boot.LazyInitializationExcludeFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -38,4 +40,8 @@ public class SaTokenConfig {
   public SaTokenExceptionHandler saTokenExceptionHandler() {
     return new SaTokenExceptionHandler();
   }
+    // @Bean
+    // LazyInitializationExcludeFilter integrationLazyInitExcludeFilter() {
+    //     return LazyInitializationExcludeFilter.forBeanTypes(SaBeanInject.class);
+    // }
 }

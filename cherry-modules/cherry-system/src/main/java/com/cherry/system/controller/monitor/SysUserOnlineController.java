@@ -6,6 +6,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.cherry.common.core.constant.CacheConstants;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.dto.UserOnlineDTO;
+import com.cherry.common.log.annotation.Log;
 import com.cherry.common.log.enums.BusinessType;
 import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.common.redis.utils.RedisUtils;
@@ -60,9 +61,9 @@ public class SysUserOnlineController extends BaseController {
      *
      * @param tokenId token值
      */
-    // @Log(title = "在线设备", businessType = BusinessType.FORCE)
+    @Log(title = "在线设备", businessType = BusinessType.FORCE)
     @DeleteMapping("/myself/{tokenId}")
-    public R<Void> remove(@PathVariable("tokenId") String tokenId) {
+    public R<Void> remove(@PathVariable("tokenId") String tokenId) throws InterruptedException {
         try {
             // 获取指定账号 id 的 token 集合
             List<String> keys = StpUtil.getTokenValueListByLoginId(StpUtil.getLoginIdAsString());

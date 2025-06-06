@@ -6,7 +6,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cherry.common.core.utils.MapstructUtils;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -127,5 +129,39 @@ public interface BaseMapperPlus<T, V> extends BaseMapper<T> {
       return null;
     }
     return MapstructUtils.convert(obj, voClass);
+  }
+
+  /**
+   * 根据条件分页查询VO对象列表
+   *
+   * @param page 分页信息
+   * @param wrapper 查询条件Wrapper
+   * @return 查询到的VO对象分页列表
+   */
+  default <P extends IPage<V>> P selectVoPage(IPage<T> page, Wrapper<T> wrapper) {
+    return selectVoPage(page, wrapper, this.currentVoClass());
+  }
+
+  /**
+   * 根据条件分页查询实体对象列表，并将其转换为指定的VO对象分页列表
+   *
+   * @param page 分页信息
+   * @param wrapper 查询条件Wrapper
+   * @param voClass 要转换的VO类的Class对象
+   * @param <C> VO类的类型
+   * @param <P> VO对象分页列表的类型
+   * @return 查询到的VO对象分页列表，经过转换为指定的VO类后返回
+   */
+  default <C, P extends IPage<C>> P selectVoPage(
+      IPage<T> page, Wrapper<T> wrapper, Class<C> voClass) {
+    // 根据条件分页查询实体对象列表
+    List<T> list = this.selectList(page, wrapper);
+    // 创建一个新的VO对象分页列表，并设置分页信息
+    IPage<C> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+    if (CollUtil.isEmpty(list)) {
+      return (P) voPage;
+    }
+    voPage.setRecords(MapstructUtils.convert(list, voClass));
+    return (P) voPage;
   }
 }
