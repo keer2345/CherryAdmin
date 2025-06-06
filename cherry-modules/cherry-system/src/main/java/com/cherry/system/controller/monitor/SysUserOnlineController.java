@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.cherry.common.core.constant.CacheConstants;
 import com.cherry.common.core.domain.dto.UserOnlineDTO;
+import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.web.core.BaseController;
 import com.cherry.system.domain.SysUserOnline;
@@ -31,7 +32,7 @@ public class SysUserOnlineController extends BaseController {
 
   /** 获取当前用户登录在线设备 */
   @GetMapping()
-  public List<SysUserOnline> getInfo() {
+  public TableDataInfo<SysUserOnline> getInfo() {
     // 获取指定账号 id 的 token 集合
     List<String> tokenIds = StpUtil.getTokenValueListByLoginId(StpUtil.getLoginIdAsString());
 
@@ -51,7 +52,6 @@ public class SysUserOnlineController extends BaseController {
     List<SysUserOnline> userOnlineList =
         BeanUtil.copyToList(userOnlineDTOList, SysUserOnline.class);
     log.info("user online dto: {}",userOnlineDTOList);
-    // return TableDataInfo.build(userOnlineList);
-    return userOnlineList;
+    return TableDataInfo.build(userOnlineList);
   }
 }
