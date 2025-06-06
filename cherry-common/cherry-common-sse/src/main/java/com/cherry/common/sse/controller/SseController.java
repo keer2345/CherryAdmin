@@ -34,7 +34,6 @@ public class SseController implements DisposableBean {
   /** 建立 SSE 连接 */
   @GetMapping(value = "${sse.path}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter connect() {
-      log.info("s1 sse connect");
     String tokenValue = StpUtil.getTokenValue();
     Long userId = LoginHelper.getUserId();
     return sseEmitterManager.connect(userId, tokenValue);
