@@ -1,18 +1,19 @@
 package com.cherry.system.controller.monitor;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.cherry.common.core.constant.CacheConstants;
+import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.dto.UserOnlineDTO;
+import com.cherry.common.log.enums.BusinessType;
 import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.web.core.BaseController;
 import com.cherry.system.domain.SysUserOnline;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,26 @@ public class SysUserOnlineController extends BaseController {
 
     List<SysUserOnline> userOnlineList =
         BeanUtil.copyToList(userOnlineDTOList, SysUserOnline.class);
-    log.info("user online dto: {}",userOnlineDTOList);
     return TableDataInfo.build(userOnlineList);
   }
+
+    /**
+     * 强退当前在线设备
+     *
+     * @param tokenId token值
+     */
+    // @Log(title = "在线设备", businessType = BusinessType.FORCE)
+    @DeleteMapping("/myself/{tokenId}")
+    public R<Void> remove(@PathVariable("tokenId") String tokenId) {
+        try {
+            // 获取指定账号 id 的 token 集合
+            List<String> keys = StpUtil.getTokenValueListByLoginId(StpUtil.getLoginIdAsString());
+            keys.stream()
+                .filter(key -> key.equals(tokenId))
+                .findFirst()
+                .ifPresent(key -> StpUtil.kickoutByTokenValue(tokenId));
+        } catch (NotLoginException ignored) {
+        }
+        return R.ok();
+    }
 }
