@@ -12,16 +12,16 @@ import com.cherry.common.core.domain.dto.RoleDTO;
 import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.enums.LoginType;
 import com.cherry.common.core.exception.user.UserException;
-import com.cherry.common.core.utils.MessageUtils;
-import com.cherry.common.core.utils.ServletUtils;
-import com.cherry.common.core.utils.SpringUtils;
-import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.core.utils.*;
 import com.cherry.common.log.event.LogininforEvent;
+import com.cherry.common.mybatis.helper.DataPermissionHelper;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.exception.TenantException;
 import com.cherry.common.tenant.helper.TenantHelper;
+import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.vo.*;
+import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +56,7 @@ public class SysLoginService {
   private final ISysPostService postService;
   private final ISysDeptService deptService;
   private final ISysTenantService tenantService;
+    private final SysUserMapper userMapper;
 
   /**
    * 校验租户
@@ -199,5 +200,20 @@ public class SysLoginService {
       } catch (NotLoginException ignored) {
       }
     }
+  }
+
+  /**
+   * 记录登录信息
+   *
+   * @param userId 用户ID
+   */
+  public void recordLoginInfo(Long userId, String ip) {
+
+    SysUser sysUser = new SysUser();
+    sysUser.setUserId(userId);
+    sysUser.setLoginIp(ip);
+    sysUser.setLoginDate(DateUtils.getNowDate());
+    sysUser.setUpdateBy(userId);
+    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
   }
 }

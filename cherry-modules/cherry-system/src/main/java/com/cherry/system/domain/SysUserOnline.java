@@ -1,11 +1,14 @@
 package com.cherry.system.domain;
 
+import lombok.Data;
+
 /**
  * 当前在线会话
  *
  * @author keer
  * @date 2025-06-06
  */
+@Data
 public class SysUserOnline {
 
   /** 会话编号 */

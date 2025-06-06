@@ -76,6 +76,20 @@ public class TenantHelper {
    *
    * @param handle 处理执行方法
    */
+  public static void dynamic(String tenantId, Runnable handle) {
+    setDynamic(tenantId);
+    try {
+      handle.run();
+    } finally {
+      clearDynamic();
+    }
+  }
+
+  /**
+   * 在动态租户中执行
+   *
+   * @param handle 处理执行方法
+   */
   public static <T> T dynamic(String tenantId, Supplier<T> handle) {
     setDynamic(tenantId);
     try {
