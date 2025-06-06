@@ -56,7 +56,7 @@ public class SysLoginService {
   private final ISysPostService postService;
   private final ISysDeptService deptService;
   private final ISysTenantService tenantService;
-    private final SysUserMapper userMapper;
+  private final SysUserMapper userMapper;
 
   /**
    * 校验租户
@@ -173,6 +173,12 @@ public class SysLoginService {
     loginUser.setRoles(BeanUtil.copyToList(roles, RoleDTO.class));
     loginUser.setPosts(BeanUtil.copyToList(posts, PostDTO.class));
 
+    recordLogininfor(
+        loginUser.getTenantId(),
+        loginUser.getUsername(),
+        Constants.LOGIN_SUCCESS,
+        MessageUtils.message("user.login.success"));
+
     return loginUser;
   }
 
@@ -208,7 +214,6 @@ public class SysLoginService {
    * @param userId 用户ID
    */
   public void recordLoginInfo(Long userId, String ip) {
-
     SysUser sysUser = new SysUser();
     sysUser.setUserId(userId);
     sysUser.setLoginIp(ip);
