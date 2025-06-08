@@ -51,7 +51,10 @@
             <groupId>com.cherry</groupId>
             <artifactId>cherry-common-sse</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.cherry</groupId>
+            <artifactId>cherry-common-translation</artifactId>
+        </dependency>
 
     </dependencies>
 

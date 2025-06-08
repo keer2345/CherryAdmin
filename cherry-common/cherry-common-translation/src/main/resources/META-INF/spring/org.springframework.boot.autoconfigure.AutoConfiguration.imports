@@ -1,0 +1,6 @@
+com.cherry.common.translation.config.TranslationConfig
+com.cherry.common.translation.core.impl.DeptNameTranslationImpl
+com.cherry.common.translation.core.impl.DictTypeTranslationImpl
+com.cherry.common.translation.core.impl.OssUrlTranslationImpl
+com.cherry.common.translation.core.impl.UserNameTranslationImpl
+com.cherry.common.translation.core.impl.NicknameTranslationImpl

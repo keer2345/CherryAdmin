@@ -90,6 +90,11 @@
                 <artifactId>cherry-common-sse</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.cherry</groupId>
+                <artifactId>cherry-common-translation</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

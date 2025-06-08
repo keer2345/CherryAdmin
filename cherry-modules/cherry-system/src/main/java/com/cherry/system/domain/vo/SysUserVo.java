@@ -1,5 +1,7 @@
 package com.cherry.system.domain.vo;
 
+import com.cherry.common.translation.annotation.Translation;
+import com.cherry.common.translation.constant.TransConstant;
 import com.cherry.system.domain.SysUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,7 +56,7 @@ public class SysUserVo implements Serializable {
   private String sex;
 
   /** 头像地址 */
-  // @Translation(type = TransConstant.OSS_ID_TO_URL)
+  @Translation(type = TransConstant.OSS_ID_TO_URL)
   private Long avatar;
 
   /** 密码 */
@@ -76,7 +78,7 @@ public class SysUserVo implements Serializable {
   private Date createTime;
 
   /** 部门名 */
-  // @Translation(type = TransConstant.DEPT_ID_TO_NAME, mapper = "deptId")
+  @Translation(type = TransConstant.DEPT_ID_TO_NAME, mapper = "deptId")
   private String deptName;
 
   /** 角色对象 */

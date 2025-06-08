@@ -30,6 +30,7 @@
         <module>cherry-common-log</module>
         <module>cherry-common-security</module>
         <module>cherry-common-sse</module>
+        <module>cherry-common-translation</module>
     </modules>
 
 </project>
