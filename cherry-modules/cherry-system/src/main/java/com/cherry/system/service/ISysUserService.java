@@ -1,5 +1,6 @@
 package com.cherry.system.service;
 
+import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysUserVo;
 
 /**
@@ -34,4 +35,28 @@ public interface ISysUserService {
    * @return 结果
    */
   String selectUserPostGroup(Long userId);
+
+    /**
+     * 校验手机号码是否唯一
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    boolean checkPhoneUnique(SysUserBo user);
+
+    /**
+     * 校验email是否唯一
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    boolean checkEmailUnique(SysUserBo user);
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    int updateUserProfile(SysUserBo user);
 }
