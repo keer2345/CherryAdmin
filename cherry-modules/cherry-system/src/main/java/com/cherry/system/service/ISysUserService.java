@@ -1,5 +1,7 @@
 package com.cherry.system.service;
 
+import com.cherry.common.mybatis.core.page.PageQuery;
+import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysUserVo;
 
@@ -69,4 +71,13 @@ public interface ISysUserService {
      * @return 结果
      */
     int resetUserPwd(Long userId, String password);
+
+    /**
+     * 根据条件分页查询用户列表
+     *
+     * @param user      用户信息
+     * @param pageQuery 发呢也
+     * @return 用户信息
+     */
+    TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
 }

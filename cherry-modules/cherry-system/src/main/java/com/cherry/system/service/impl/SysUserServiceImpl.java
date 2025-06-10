@@ -4,19 +4,28 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cherry.common.core.constant.CacheNames;
+import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.ObjectUtils;
 import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.mybatis.core.page.PageQuery;
+import com.cherry.common.mybatis.core.page.TableDataInfo;
+import com.cherry.system.domain.SysDept;
 import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
+import com.cherry.system.mapper.SysDeptMapper;
 import com.cherry.system.mapper.SysPostMapper;
 import com.cherry.system.mapper.SysRoleMapper;
 import com.cherry.system.mapper.SysUserMapper;
@@ -29,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户 业务层处理
@@ -44,6 +54,7 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
   private final SysUserMapper baseMapper;
   private final SysRoleMapper roleMapper;
   private final SysPostMapper postMapper;
+    private final SysDeptMapper deptMapper;
 
   @Override
   public SysUserVo selectUserById(Long userId) {
@@ -201,5 +212,45 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
         new LambdaUpdateWrapper<SysUser>()
             .set(SysUser::getPassword, password)
             .eq(SysUser::getUserId, userId));
+  }
+
+  @Override
+  public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
+    Page<SysUserVo> page =
+        baseMapper.selectPageUserList(pageQuery.build(), this.buildQueryWrapper(user));
+    return TableDataInfo.build(page);
+  }
+
+  private Wrapper<SysUser> buildQueryWrapper(SysUserBo user) {
+    Map<String, Object> params = user.getParams();
+    QueryWrapper<SysUser> wrapper = Wrappers.query();
+    wrapper
+        .eq("u.del_flag", SystemConstants.NORMAL)
+        .eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
+        .in(
+            StringUtils.isNotBlank(user.getUserIds()),
+            "u.user_id",
+            StringUtils.splitTo(user.getUserIds(), Convert::toLong))
+        .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+        .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
+        .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+        .between(
+            params.get("beginTime") != null && params.get("endTime") != null,
+            "u.create_time",
+            params.get("beginTime"),
+            params.get("endTime"))
+        .and(
+            ObjectUtil.isNotNull(user.getDeptId()),
+            w -> {
+              List<SysDept> deptList = deptMapper.selectListByParentId(user.getDeptId());
+              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+              ids.add(user.getDeptId());
+              w.in("u.dept_id", ids);
+            })
+        .orderByAsc("u.user_id");
+    if (StringUtils.isNotBlank(user.getExcludeUserIds())) {
+      wrapper.notIn("u.user_id", StringUtils.splitTo(user.getExcludeUserIds(), Convert::toLong));
+    }
+    return wrapper;
   }
 }

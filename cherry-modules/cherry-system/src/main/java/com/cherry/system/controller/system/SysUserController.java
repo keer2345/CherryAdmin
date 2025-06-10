@@ -1,11 +1,15 @@
 package com.cherry.system.controller.system;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjUtil;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginUser;
+import com.cherry.common.mybatis.core.page.PageQuery;
+import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.core.BaseController;
+import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysUserVo;
 import com.cherry.system.domain.vo.UserInfoVo;
 import com.cherry.system.service.ISysUserService;
@@ -30,6 +34,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserController extends BaseController {
   // todo
   private final ISysUserService userService;
+
+    /**
+     * 获取用户列表
+     */
+    @SaCheckPermission("system:user:list")
+    @GetMapping("/list")
+    public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
+        return userService.selectPageUserList(user, pageQuery);
+    }
 
   /**
    * 获取用户信息
