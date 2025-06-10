@@ -59,4 +59,14 @@ public interface ISysUserService {
      * @return 结果
      */
     int updateUserProfile(SysUserBo user);
+
+
+    /**
+     * 重置用户密码
+     *
+     * @param userId   用户ID
+     * @param password 密码
+     * @return 结果
+     */
+    int resetUserPwd(Long userId, String password);
 }

@@ -186,4 +186,20 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
             .set(SysUser::getSex, user.getSex())
             .eq(SysUser::getUserId, user.getUserId()));
   }
+
+  /**
+   * 重置用户密码
+   *
+   * @param userId 用户ID
+   * @param password 密码
+   * @return 结果
+   */
+  @Override
+  public int resetUserPwd(Long userId, String password) {
+    return baseMapper.update(
+        null,
+        new LambdaUpdateWrapper<SysUser>()
+            .set(SysUser::getPassword, password)
+            .eq(SysUser::getUserId, userId));
+  }
 }
