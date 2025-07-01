@@ -27,13 +27,14 @@ public class SysUserVo implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
   /** 用户ID */
-  private Long userId;
+//  private Long userId;
+    private String id;
 
   /** 租户ID */
   private String tenantId;
 
   /** 部门ID */
-  private Long deptId;
+  private String deptId;
 
   /** 用户账号 */
   private String userName;
@@ -85,11 +86,11 @@ public class SysUserVo implements Serializable {
   private List<SysRoleVo> roles;
 
   /** 角色组 */
-  private Long[] roleIds;
+  private String[] roleIds;
 
   /** 岗位组 */
-  private Long[] postIds;
+  private String[] postIds;
 
   /** 数据权限 当前角色ID */
-  private Long roleId;
+  private String roleId;
 }

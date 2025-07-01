@@ -24,7 +24,7 @@ public class SysTenantVo implements Serializable {
 
   /** id */
   // @ExcelProperty(value = "id")
-  private Long id;
+  private String id;
 
   /** 租户编号 */
   // @ExcelProperty(value = "租户编号")

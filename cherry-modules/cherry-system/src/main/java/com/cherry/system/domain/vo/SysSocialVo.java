@@ -21,10 +21,10 @@ public class SysSocialVo implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
   /** 主键 */
-  private Long id;
+  private String id;
 
   /** 用户ID */
-  private Long userId;
+  private String userId;
 
   /** 租户ID */
   private String tenantId;

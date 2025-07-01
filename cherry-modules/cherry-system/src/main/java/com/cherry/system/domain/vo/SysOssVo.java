@@ -22,7 +22,8 @@ public class SysOssVo implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
   /** 对象存储主键 */
-  private Long ossId;
+//  private Long ossId;
+   private String id;
 
   /** 文件名 */
   private String fileName;
@@ -43,7 +44,7 @@ public class SysOssVo implements Serializable {
   private Date createTime;
 
   /** 上传人 */
-  private Long createBy;
+  private String createBy;
 
   /** 上传人名称 */
   @Translation(type = TransConstant.USER_ID_TO_NAME, mapper = "createBy")

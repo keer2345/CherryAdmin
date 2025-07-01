@@ -23,11 +23,12 @@ public class SysPostVo implements Serializable {
 
   /** 岗位ID */
   // @ExcelProperty(value = "岗位序号")
-  private Long postId;
+//  private Long postId;
+  private String id;
 
   /** 部门id */
   // @ExcelProperty(value = "部门id")
-  private Long deptId;
+  private String deptId;
 
   /** 岗位编码 */
   // @ExcelProperty(value = "岗位编码")

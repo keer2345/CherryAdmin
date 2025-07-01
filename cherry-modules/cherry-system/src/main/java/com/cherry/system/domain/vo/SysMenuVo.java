@@ -23,13 +23,13 @@ public class SysMenuVo implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
   /** 菜单ID */
-  private Long menuId;
+    private String id;
 
   /** 菜单名称 */
   private String menuName;
 
   /** 父菜单ID */
-  private Long parentId;
+  private String parentId;
 
   /** 显示顺序 */
   private Integer orderNum;
@@ -65,7 +65,7 @@ public class SysMenuVo implements Serializable {
   private String icon;
 
   /** 创建部门 */
-  private Long createDept;
+  private String createDept;
 
   /** 备注 */
   private String remark;

@@ -24,7 +24,8 @@ public class SysRoleVo {
 
   /** 角色ID */
   // @ExcelProperty(value = "角色序号")
-  private Long roleId;
+//  private Long roleId;
+    private String id;
 
   /** 角色名称 */
   // @ExcelProperty(value = "角色名称")
@@ -69,6 +70,6 @@ public class SysRoleVo {
   private boolean flag = false;
 
   public boolean isSuperAdmin() {
-    return SystemConstants.SUPER_ADMIN_ID.equals(this.roleId);
+    return SystemConstants.SUPER_ADMIN_ID.equals(this.id);
   }
 }
