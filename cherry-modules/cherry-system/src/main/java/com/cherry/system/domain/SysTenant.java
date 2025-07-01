@@ -1,9 +1,8 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.cherry.common.mybatis.core.domain.BaseEntity;
+import com.cherry.common.flex.base.BaseDO;
+import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,17 +17,17 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_tenant")
-public class SysTenant extends BaseEntity {
+@Table("sys_tenant")
+public class SysTenant extends TenantEntity {
 
   @Serial private static final long serialVersionUID = 1L;
 
   /** id */
-  @TableId(value = "id")
-  private Long id;
+//  @TableId(value = "id")
+//  private Long id;
 
   /** 租户编号 */
-  private String tenantId;
+//  private String tenantId;
 
   /** 联系人 */
   private String contactUserName;
@@ -66,6 +65,4 @@ public class SysTenant extends BaseEntity {
   /** 租户状态（0正常 1停用） */
   private String status;
 
-  /** 删除标志（0代表存在 1代表删除） */
-  @TableLogic private String delFlag;
 }

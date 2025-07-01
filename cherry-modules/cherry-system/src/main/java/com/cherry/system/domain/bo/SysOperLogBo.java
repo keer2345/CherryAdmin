@@ -1,5 +1,6 @@
 package com.cherry.system.domain.bo;
 
+import com.cherry.common.flex.base.BaseBO;
 import com.cherry.common.log.event.OperLogEvent;
 import com.cherry.system.domain.SysOperLog;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -21,9 +22,9 @@ import java.util.Map;
   @AutoMapper(target = SysOperLog.class, reverseConvertGenerate = false),
   @AutoMapper(target = OperLogEvent.class)
 })
-public class SysOperLogBo {
+public class SysOperLogBo extends BaseBO {
   /** 日志主键 */
-  private Long operId;
+//  private Long operId;
 
   /** 租户编号 */
   private String tenantId;

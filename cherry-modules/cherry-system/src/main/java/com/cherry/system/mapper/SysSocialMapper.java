@@ -1,7 +1,7 @@
 package com.cherry.system.mapper;
 
 import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
-import com.cherry.system.domain.bo.SysSocial;
+import com.cherry.system.domain.SysSocial;
 import com.cherry.system.domain.vo.SysSocialVo;
 
 /**

@@ -1,8 +1,7 @@
-package com.cherry.system.domain.bo;
+package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,17 +15,17 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_social")
+@Table("sys_social")
 public class SysSocial extends TenantEntity {
 
   @Serial private static final long serialVersionUID = 1L;
 
   /** 主键 */
-  @TableId(value = "id")
-  private Long id;
+//  @TableId(value = "id")
+//  private Long id;
 
   /** 用户ID */
-  private Long userId;
+  private String userId;
 
   /** 的唯一ID */
   private String authId;

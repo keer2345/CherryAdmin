@@ -1,6 +1,6 @@
 package com.cherry.system.domain.vo;
 
-import com.cherry.system.domain.bo.SysSocial;
+import com.cherry.system.domain.SysSocial;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 

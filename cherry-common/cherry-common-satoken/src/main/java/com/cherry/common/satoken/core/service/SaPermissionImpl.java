@@ -23,7 +23,6 @@ public class SaPermissionImpl implements StpInterface {
   @Override
   public List<String> getPermissionList(Object o, String s) {
     LoginUser loginUser = LoginHelper.getLoginUser();
-      log.info("r2 loginUser: {}",loginUser);
     UserType userType = UserType.getUserType(loginUser.getUserType());
 
     if (userType == UserType.APP_USER.SYS_USER) {

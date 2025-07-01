@@ -1,7 +1,7 @@
 package com.cherry.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.cherry.system.domain.bo.SysSocial;
+import com.cherry.system.domain.SysSocial;
 import com.cherry.system.domain.vo.SysSocialVo;
 import com.cherry.system.mapper.SysSocialMapper;
 import com.cherry.system.service.ISysSocialService;

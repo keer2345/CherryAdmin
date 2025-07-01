@@ -41,7 +41,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
         if (ObjectUtil.isNull(baseEntity.getCreateBy())) {
           LoginUser loginUser = getLoginUser();
           if (ObjectUtil.isNotNull(loginUser)) {
-            Long userId = loginUser.getUserId();
+            String userId = loginUser.getUserId();
             // 填充创建人、更新人和创建部门信息
             baseEntity.setCreateBy(userId);
             baseEntity.setUpdateBy(userId);
@@ -75,7 +75,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
 
         // 获取当前登录用户的ID，并填充更新人信息
         // Long userId = LoginHelper.getUserId();
-        Long userId = LoginHelper.getUserId();
+        String userId = LoginHelper.getUserId();
         if (ObjectUtil.isNotNull(userId)) {
           baseEntity.setUpdateBy(userId);
         }

@@ -45,7 +45,7 @@ public interface SystemConstants {
   String INNER_LINK = "InnerLink";
 
   /** 超级管理员ID */
-  Long SUPER_ADMIN_ID = 1L;
+  String SUPER_ADMIN_ID = "1";
 
   /** 根部门祖级列表 */
   String ROOT_DEPT_ANCESTORS = "0";

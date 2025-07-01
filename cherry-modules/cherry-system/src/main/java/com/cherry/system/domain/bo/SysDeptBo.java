@@ -1,6 +1,6 @@
 package com.cherry.system.domain.bo;
 
-import com.cherry.common.mybatis.core.domain.BaseEntity;
+import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysDept;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.Email;
@@ -18,13 +18,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysDept.class, reverseConvertGenerate = false)
-public class SysDeptBo extends BaseEntity {
+public class SysDeptBo extends BaseBO {
 
   /** 部门id */
-  private Long deptId;
+//  private Long deptId;
 
   /** 父部门ID */
-  private Long parentId;
+  private String parentId;
 
   /** 部门名称 */
   @NotBlank(message = "部门名称不能为空")
@@ -40,7 +40,7 @@ public class SysDeptBo extends BaseEntity {
   private Integer orderNum;
 
   /** 负责人 */
-  private Long leader;
+  private String leader;
 
   /** 联系电话 */
   @Size(min = 0, max = 11, message = "联系电话长度不能超过{max}个字符")
@@ -55,5 +55,5 @@ public class SysDeptBo extends BaseEntity {
   private String status;
 
   /** 归属部门id（部门树） */
-  private Long belongDeptId;
+  private String belongDeptId;
 }

@@ -1,8 +1,7 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,14 +12,14 @@ import lombok.EqualsAndHashCode;
  * @date 2025-05-27
  */
 @Data
-@TableName("sys_post")
+@Table("sys_post")
 public class SysPost extends TenantEntity {
   /** 岗位序号 */
-  @TableId(value = "post_id")
-  private Long postId;
+//  @TableId(value = "post_id")
+//  private Long postId;
 
   /** 部门id */
-  private Long deptId;
+  private String deptId;
 
   /** 岗位编码 */
   private String postCode;

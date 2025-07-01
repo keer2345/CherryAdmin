@@ -1,5 +1,6 @@
 package com.cherry.system.domain.bo;
 
+import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysLogininfor;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -16,12 +17,12 @@ import java.util.Map;
  */
 @Data
 @AutoMapper(target = SysLogininfor.class, reverseConvertGenerate = false)
-public class SysLogininforBo {
+public class SysLogininforBo extends BaseBO {
   /** 访问ID */
-  private Long infoId;
+//  private Long infoId;
 
   /** 租户编号 */
-  private String tenantId;
+//  private String tenantId;
 
   /** 用户账号 */
   private String userName;

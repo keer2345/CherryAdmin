@@ -1,7 +1,7 @@
 package com.cherry.system.domain.bo;
 
 import com.cherry.common.core.constant.RegexConstants;
-import com.cherry.common.mybatis.core.domain.BaseEntity;
+import com.cherry.common.flex.base.BaseBO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SysUserProfileBo extends BaseEntity {
+public class SysUserProfileBo extends BaseBO {
 
   /** 用户昵称 */
   // @Xss(message = "用户昵称不能包含脚本字符")

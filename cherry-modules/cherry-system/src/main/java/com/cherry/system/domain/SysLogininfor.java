@@ -1,7 +1,7 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 
 import java.io.Serial;
@@ -15,17 +15,16 @@ import java.util.Date;
  * @date 2025-05-24
  */
 @Data
-@TableName("sys_logininfor")
-public class SysLogininfor implements Serializable {
+@Table("sys_logininfor")
+public class SysLogininfor extends TenantEntity {
 
-  @Serial private static final long serialVersionUID = 1L;
 
-  /** ID */
-  @TableId(value = "info_id")
-  private Long infoId;
-
-  /** 租户编号 */
-  private String tenantId;
+//  /** ID */
+//  @TableId(value = "info_id")
+//  private Long infoId;
+//
+//  /** 租户编号 */
+//  private String tenantId;
 
   /** 用户账号 */
   private String userName;

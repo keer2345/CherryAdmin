@@ -1,9 +1,8 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,11 +14,11 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_dict_data")
+@Table("sys_dict_data")
 public class SysDictData extends TenantEntity {
 
   /** 字典编码 */
-  @TableId(value = "dict_code")
+//  @TableId(value = "dict_code")
   private Long dictCode;
 
   /** 字典排序 */

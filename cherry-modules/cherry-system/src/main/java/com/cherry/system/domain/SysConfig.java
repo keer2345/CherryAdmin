@@ -1,8 +1,7 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,11 +13,11 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_config")
+@Table("sys_config")
 public class SysConfig extends TenantEntity {
 
   /** 参数主键 */
-  @TableId(value = "config_id")
+//  @TableId(value = "config_id")
   private Long configId;
 
   /** 参数名称 */

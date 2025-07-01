@@ -1,10 +1,8 @@
 package com.cherry.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.cherry.common.tenant.core.TenantEntity;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,17 +17,14 @@ import java.util.List;
  * @date 2025-05-28
  */
 @Data
-@TableName("sys_dept")
+@Table("sys_dept")
 public class SysDept extends TenantEntity {
 
   @Serial private static final long serialVersionUID = 1L;
 
-  /** 部门ID */
-  @TableId(value = "dept_id")
-  private Long deptId;
 
   /** 父部门ID */
-  private Long parentId;
+  private String parentId;
 
   /** 部门名称 */
   private String deptName;
@@ -41,7 +36,7 @@ public class SysDept extends TenantEntity {
   private Integer orderNum;
 
   /** 负责人 */
-  private Long leader;
+  private String leader;
 
   /** 联系电话 */
   private String phone;
@@ -52,13 +47,12 @@ public class SysDept extends TenantEntity {
   /** 部门状态:0正常,1停用 */
   private String status;
 
-  /** 删除标志（0代表存在 1代表删除） */
-  @TableLogic private String delFlag;
 
   /** 祖级列表 */
   private String ancestors;
 
   /** 子部门 */
-  @TableField(exist = false)
+//  @TableField(exist = false)
+      @Column(ignore = true)
   private List<SysDept> children = new ArrayList<>();
 }

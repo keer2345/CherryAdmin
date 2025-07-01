@@ -1,5 +1,6 @@
 package com.cherry.system.domain;
 
+import com.cherry.common.flex.base.BaseDO;
 import lombok.Data;
 
 /**

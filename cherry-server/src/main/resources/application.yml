@@ -232,3 +232,8 @@ mybatis-encryptor:
   # 公私钥 非对称算法的公私钥 如：SM2，RSA
   publicKey:
   privateKey:
+
+--- # cherry
+cherry:
+  info:
+    base-package: com.cherry

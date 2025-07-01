@@ -30,6 +30,8 @@
         <satoken.version>1.43.0</satoken.version>
         <commons.pool2.version>2.12.1</commons.pool2.version>
         <mybatis-plus.version>3.5.11</mybatis-plus.version>
+        <mybatis-flex.version>1.10.9</mybatis-flex.version>
+        <druid.version>1.2.25</druid.version>
         <p6spy.version>3.9.1</p6spy.version>
         <hutool.version>5.8.35</hutool.version>
         <spring-boot-admin.version>3.4.5</spring-boot-admin.version>
@@ -215,6 +217,17 @@
                 <version>${p6spy.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+                <version>${mybatis-flex.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
 
             <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
             <dependency>
