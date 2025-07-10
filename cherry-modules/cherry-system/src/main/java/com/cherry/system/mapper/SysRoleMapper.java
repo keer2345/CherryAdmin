@@ -1,8 +1,11 @@
 package com.cherry.system.mapper;
 
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysRole;
+import com.cherry.system.domain.SysUserRole;
 import com.cherry.system.domain.vo.SysRoleVo;
+import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.query.QueryWrapper;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -12,7 +15,8 @@ import java.util.List;
  * @author keer
  * @date 2025-05-27
  */
-public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
+@Mapper
+public interface SysRoleMapper extends BaseMapper<SysRole> {
   // todo
 
   /**
@@ -21,5 +25,19 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
    * @param userId 用户ID
    * @return 角色列表
    */
-  List<SysRoleVo> selectRolesByUserId(Long userId);
+  default List<SysRole> selectRolesByUserId(String userId) {
+    QueryWrapper queryWrapper = new QueryWrapper();
+    queryWrapper
+        .create()
+        .select()
+        .from(SysRole.class)
+        .as("a")
+        .leftJoin(SysUserRole.class)
+        .as("b")
+        .on(SysRole::getId, SysUserRole::getRoleId)
+        .where(SysUserRole::getUserId)
+        .eq(userId);
+
+    return this.selectListByQuery(queryWrapper);
+  }
 }

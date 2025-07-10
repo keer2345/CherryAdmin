@@ -1,14 +1,14 @@
 package com.cherry.system.mapper;
 
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysTenant;
-import com.cherry.system.domain.vo.SysTenantVo;
+import com.mybatisflex.core.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 租户Mapper接口
+ *
  * @author keer
  * @date 2025-05-22
  */
-public interface SysTenantMapper extends BaseMapperPlus<SysTenant, SysTenantVo> {
-  // todo
-}
+@Mapper
+public interface SysTenantMapper extends BaseMapper<SysTenant> {}

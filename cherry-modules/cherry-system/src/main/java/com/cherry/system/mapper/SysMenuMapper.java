@@ -1,10 +1,13 @@
 package com.cherry.system.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cherry.common.core.constant.SystemConstants;
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysMenu;
-import com.cherry.system.domain.vo.SysMenuVo;
+import com.cherry.system.domain.SysRole;
+import com.cherry.system.domain.SysRoleMenu;
+import com.cherry.system.domain.SysUserRole;
+import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.query.QueryWrapper;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -14,29 +17,59 @@ import java.util.List;
  * @author keer
  * @date 2025-05-26
  */
-public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
-  // todo
-
-  /**
-   * 根据用户ID查询权限
-   *
-   * @param userId 用户ID
-   * @return 权限列表
-   */
-  List<String> selectMenuPermsByUserId(Long userId);
+@Mapper
+public interface SysMenuMapper extends BaseMapper<SysMenu> {
+    // todo
 
     /**
-     * 根据用户ID查询菜单
+     * 根据用户ID查询权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    default List<SysMenu> selectMenuPermsByUserId(String userId) {
+
+
+        QueryWrapper query =
+            new QueryWrapper()
+                .create()
+                .from(SysMenu.class)
+                .as("a")
+                .leftJoin(SysRoleMenu.class)
+                .as("b")
+                .on(SysMenu::getId, SysRoleMenu::getMenuId)
+                .leftJoin(SysUserRole.class)
+                .as("c")
+                .on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
+                .leftJoin(SysRole.class).as("d").on(SysRole::getId, SysUserRole::getRoleId)
+                .where(SysMenu::getPerms).ne("")
+                .eq(SysUserRole::getUserId, userId)
+                .eq(SysMenu::getStatus, SystemConstants.NORMAL).eq(SysRole::getStatus, SystemConstants.NORMAL);
+
+        return selectListByQuery(query);
+
+//        select distinct m.perms
+//        from sys_menu m
+//        left join sys_role_menu rm on m.menu_id = rm.menu_id and m.status = '0'
+//        left join sys_role r on r.role_id = rm.role_id and r.status = '0'
+//        where r.role_id in (select role_id from sys_user_role where user_id = #{
+//            userId
+//        })
+
+    }
+
+    /**
+     * 查询所有菜单
      *
      * @return 菜单列表
      */
-    default List<SysMenu> selectMenuTreeAll(){
-        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<SysMenu>()
-            .in(SysMenu::getMenuType, SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
+    default List<SysMenu> selectMenuTreeAll() {
+        QueryWrapper query = new QueryWrapper().create().from(SysMenu.class)
+            .where(SysMenu::getMenuType).in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
             .eq(SysMenu::getStatus, SystemConstants.NORMAL)
-            .orderByAsc(SysMenu::getParentId)
-            .orderByAsc(SysMenu::getOrderNum);
-        return this.selectList(lqw);
+            .orderBy(SysMenu::getLevel, true)
+            .orderBy(SysMenu::getOrderNum, true);
+        return this.selectListByQuery(query);
     }
 
     /**
@@ -45,5 +78,18 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuTreeByUserId(Long userId);
+    default List<SysMenu> selectMenuTreeByUserId(String userId) {
+        QueryWrapper query = new QueryWrapper().create().from(SysMenu.class).as("a")
+            .leftJoin(SysRoleMenu.class).as("b").on(SysMenu::getId, SysRoleMenu::getMenuId)
+            .leftJoin(SysUserRole.class).as("c").on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
+            .leftJoin(SysRole.class).as("d").on(SysRole::getId, SysUserRole::getRoleId)
+            .where(SysMenu::getMenuType).in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
+            .eq(SysMenu::getStatus, SystemConstants.NORMAL)
+            .eq(SysRole::getStatus, SystemConstants.NORMAL)
+            .eq(SysUserRole::getUserId, userId)
+            .orderBy(SysMenu::getLevel, true)
+            .orderBy(SysMenu::getOrderNum, true);
+
+        return this.selectListByQuery(query);
+    }
 }

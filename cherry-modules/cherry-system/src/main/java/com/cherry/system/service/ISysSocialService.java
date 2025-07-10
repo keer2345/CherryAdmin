@@ -14,5 +14,5 @@ public interface ISysSocialService {
   // todo
 
   /** 查询社会化关系列表 */
-  List<SysSocialVo> queryListByUserId(Long userId);
+  List<SysSocialVo> queryListByUserId(String userId);
 }

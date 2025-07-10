@@ -1,8 +1,11 @@
 package com.cherry.system.mapper;
 
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysSocial;
-import com.cherry.system.domain.vo.SysSocialVo;
+import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.query.QueryWrapper;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 社会化关系Mapper接口
@@ -10,4 +13,5 @@ import com.cherry.system.domain.vo.SysSocialVo;
  * @author keer
  * @date 2025-06-06
  */
-public interface SysSocialMapper extends BaseMapperPlus<SysSocial, SysSocialVo> {}
+@Mapper
+public interface SysSocialMapper extends BaseMapper<SysSocial> {}

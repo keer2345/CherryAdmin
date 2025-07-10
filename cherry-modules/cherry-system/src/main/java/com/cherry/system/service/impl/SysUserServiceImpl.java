@@ -6,7 +6,6 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,6 +29,8 @@ import com.cherry.system.mapper.SysPostMapper;
 import com.cherry.system.mapper.SysRoleMapper;
 import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.system.service.ISysUserService;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -49,7 +50,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SysUserServiceImpl implements ISysUserService, UserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implements ISysUserService, UserService {
   // todo
   private final SysUserMapper baseMapper;
   private final SysRoleMapper roleMapper;
@@ -242,7 +243,8 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
         .and(
             ObjectUtil.isNotNull(user.getDeptId()),
             w -> {
-              List<SysDept> deptList = deptMapper.selectListByParentId(user.getDeptId());
+              List<SysDept> deptList =
+                 deptMapper.selectListByQuery(new QueryWrapper().eq(SysDept::getParentId,user.getDeptId()));
               List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
               ids.add(user.getDeptId());
               w.in("u.dept_id", ids);

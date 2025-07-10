@@ -1,5 +1,6 @@
 package com.cherry.system.domain.vo;
 
+import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysDept;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;

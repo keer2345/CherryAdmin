@@ -36,6 +36,10 @@ public class SysMenu extends BaseDO {
     private String menuName;
 
     /**
+     * 菜单层级
+     */
+    private Integer level;
+    /**
      * 显示顺序
      */
     private Integer orderNum;

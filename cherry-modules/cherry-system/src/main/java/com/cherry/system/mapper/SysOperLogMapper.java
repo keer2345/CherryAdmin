@@ -1,8 +1,8 @@
 package com.cherry.system.mapper;
 
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysOperLog;
-import com.cherry.system.domain.vo.SysOperLogVo;
+import com.mybatisflex.core.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 操作日志 数据层
@@ -10,4 +10,5 @@ import com.cherry.system.domain.vo.SysOperLogVo;
  * @author keer
  * @date 2025-06-06
  */
-public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog, SysOperLogVo> {}
+@Mapper
+public interface SysOperLogMapper extends BaseMapper<SysOperLog> {}

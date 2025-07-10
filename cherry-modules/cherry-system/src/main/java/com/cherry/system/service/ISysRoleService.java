@@ -21,7 +21,7 @@ public interface ISysRoleService {
    * @param userId 用户ID
    * @return 权限列表
    */
-  Set<String> selectRolePermissionByUserId(Long userId);
+  Set<String> selectRolePermissionByUserId(String userId);
 
   /**
    * 根据用户ID查询角色列表
@@ -29,5 +29,5 @@ public interface ISysRoleService {
    * @param userId 用户ID
    * @return 角色列表
    */
-  List<SysRoleVo> selectRolesByUserId(Long userId);
+  List<SysRoleVo> selectRolesByUserId(String userId);
 }

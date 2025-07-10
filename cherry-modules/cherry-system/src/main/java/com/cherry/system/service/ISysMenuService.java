@@ -22,7 +22,7 @@ public interface ISysMenuService {
    * @param userId 用户ID
    * @return 权限列表
    */
-  Set<String> selectMenuPermsByUserId(Long userId);
+  Set<String> selectMenuPermsByUserId(String userId);
 
     /**
      * 根据用户ID查询菜单树信息
@@ -30,7 +30,7 @@ public interface ISysMenuService {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuTreeByUserId(Long userId);
+    List<SysMenu> selectMenuTreeByUserId(String userId);
 
     /**
      * 构建前端路由所需要的菜单

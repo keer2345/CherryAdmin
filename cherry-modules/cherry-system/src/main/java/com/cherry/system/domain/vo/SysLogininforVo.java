@@ -1,5 +1,7 @@
 package com.cherry.system.domain.vo;
 
+import com.cherry.common.flex.base.BaseBO;
+import com.cherry.common.tenant.core.TenantEntity;
 import com.cherry.system.domain.SysLogininfor;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -22,12 +24,6 @@ public class SysLogininforVo implements Serializable {
 
   @Serial private static final long serialVersionUID = 1L;
 
-  /** 访问ID */
-  // @ExcelProperty(value = "序号")
-  private Long infoId;
-
-  /** 租户编号 */
-  private String tenantId;
 
   /** 用户账号 */
   // @ExcelProperty(value = "用户账号")

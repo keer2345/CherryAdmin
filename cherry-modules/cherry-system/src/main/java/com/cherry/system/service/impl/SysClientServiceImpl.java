@@ -1,10 +1,13 @@
 package com.cherry.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.system.domain.SysClient;
 import com.cherry.system.domain.vo.SysClientVo;
 import com.cherry.system.mapper.SysClientMapper;
 import com.cherry.system.service.ISysClientService;
+import com.cherry.system.service.ISysConfigService;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,16 +19,21 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SysClientServiceImpl implements ISysClientService {
+public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient>
+    implements ISysClientService {
   // todo
 
-  private final SysClientMapper baseMapper;
+  private final SysClientMapper clientMapper;
 
   /** 查询客户端管理 */
   // todo
   @Override
   public SysClientVo queryByClientId(String clientId) {
-    return baseMapper.selectVoOne(
-        new LambdaQueryWrapper<SysClient>().eq(SysClient::getClientId, clientId));
+    return this.getOneAs(
+        new QueryWrapper().eq(SysClient::getClientId, clientId), SysClientVo.class);
+    //    return MapstructUtils.convert(
+    //        clientMapper.selectOneByQuery(new QueryWrapper().eq(SysClient::getClientId,
+    // clientId)),
+    //        SysClientVo.class);
   }
 }

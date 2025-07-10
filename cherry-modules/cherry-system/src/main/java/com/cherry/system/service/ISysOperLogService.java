@@ -1,7 +1,7 @@
 package com.cherry.system.service;
 
-import com.cherry.common.mybatis.core.page.PageQuery;
-import com.cherry.common.mybatis.core.page.TableDataInfo;
+import com.cherry.common.flex.core.page.PageQuery;
+import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.system.domain.bo.SysOperLogBo;
 import com.cherry.system.domain.vo.SysOperLogVo;
 
@@ -38,7 +38,7 @@ public interface ISysOperLogService {
    * @param operIds 需要删除的操作日志ID
    * @return 结果
    */
-  int deleteOperLogByIds(Long[] operIds);
+  int deleteOperLogByIds(String[] operIds);
 
   /**
    * 查询操作日志详细
@@ -46,7 +46,7 @@ public interface ISysOperLogService {
    * @param operId 操作ID
    * @return 操作日志对象
    */
-  SysOperLogVo selectOperLogById(Long operId);
+  SysOperLogVo selectOperLogById(String operId);
 
   /** 清空操作日志 */
   void cleanOperLog();

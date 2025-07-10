@@ -18,5 +18,5 @@ public interface ISysPostService {
      * @param userId 用户ID
      * @return 岗位ID
      */
-    List<SysPostVo> selectPostsByUserId(Long userId);
+    List<SysPostVo> selectPostsByUserId(String userId);
 }

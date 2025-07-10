@@ -1,8 +1,8 @@
 package com.cherry.system.mapper;
 
-import com.cherry.common.mybatis.core.mapper.BaseMapperPlus;
 import com.cherry.system.domain.SysConfig;
-import com.cherry.system.domain.vo.SysConfigVo;
+import com.mybatisflex.core.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 参数配置 数据层
@@ -10,4 +10,5 @@ import com.cherry.system.domain.vo.SysConfigVo;
  * @author keer
  * @date 2025-06-10
  */
-public interface SysConfigMapper extends BaseMapperPlus<SysConfig, SysConfigVo> {}
+@Mapper
+public interface SysConfigMapper extends BaseMapper<SysConfig> {}

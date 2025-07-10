@@ -16,6 +16,7 @@ import com.cherry.system.domain.vo.SysClientVo;
 import com.cherry.system.mapper.SysLogininforMapper;
 import com.cherry.system.service.ISysClientService;
 import com.cherry.system.service.ISysLogininforService;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class SysLogininforServiceImpl implements ISysLogininforService {
+public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, SysLogininfor>
+    implements ISysLogininforService {
   // todo
-  private final SysLogininforMapper baseMapper;
+  private final SysLogininforMapper logininforMapper;
   private final ISysClientService clientService;
 
   /**
@@ -117,6 +119,6 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
   public void insertLogininfor(SysLogininforBo bo) {
     SysLogininfor logininfor = MapstructUtils.convert(bo, SysLogininfor.class);
     logininfor.setLoginTime(new Date());
-    int result = baseMapper.insert(logininfor);
+    int result = logininforMapper.insert(logininfor);
   }
 }

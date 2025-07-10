@@ -17,5 +17,5 @@ public interface ISysOssService {
    * @param ossId 文件在数据库中的唯一标识
    * @return SysOssVo 对象，包含文件信息
    */
-  SysOssVo getById(Long ossId);
+  SysOssVo getOssById(String ossId);
 }

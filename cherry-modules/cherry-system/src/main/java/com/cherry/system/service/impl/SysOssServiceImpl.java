@@ -4,11 +4,14 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.OssService;
+import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.SpringUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.system.domain.SysOss;
 import com.cherry.system.domain.vo.SysOssVo;
 import com.cherry.system.mapper.SysOssMapper;
 import com.cherry.system.service.ISysOssService;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,11 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
-public class SysOssServiceImpl implements ISysOssService, OssService {
+public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss>
+    implements ISysOssService, OssService {
   // todo
 
-  private final SysOssMapper baseMapper;
+  private final SysOssMapper ossMapper;
 
   /**
    * 根据 ossId 从缓存或数据库中获取 SysOssVo 对象
@@ -37,8 +41,9 @@ public class SysOssServiceImpl implements ISysOssService, OssService {
    */
   @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")
   @Override
-  public SysOssVo getById(Long ossId) {
-    return baseMapper.selectVoById(ossId);
+  public SysOssVo getOssById(String ossId) {
+    return MapstructUtils.convert(this.getById(ossId), SysOssVo.class);
+    //    return baseMapper.selectVoById(ossId);
   }
 
   /**
@@ -51,8 +56,8 @@ public class SysOssServiceImpl implements ISysOssService, OssService {
   public String selectUrlByIds(String ossIds) {
     List<String> list = new ArrayList<>();
     SysOssServiceImpl ossService = SpringUtils.getAopProxy(this);
-    for (Long id : StringUtils.splitTo(ossIds, Convert::toLong)) {
-      SysOssVo vo = ossService.getById(id);
+    for (String id : StringUtils.splitList(ossIds)) {
+      SysOssVo vo = ossService.getOssById(id);
       if (ObjectUtil.isNotNull(vo)) {
         try {
           // todo

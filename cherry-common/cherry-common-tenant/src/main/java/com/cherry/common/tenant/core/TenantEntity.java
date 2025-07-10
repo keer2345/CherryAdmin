@@ -13,4 +13,5 @@ import lombok.Data;
 public class TenantEntity extends BaseDO {
   /** 租户编号 */
   private String tenantId;
+
 }

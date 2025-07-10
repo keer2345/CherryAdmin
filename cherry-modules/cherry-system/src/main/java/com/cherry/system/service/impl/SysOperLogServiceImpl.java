@@ -1,28 +1,28 @@
 package com.cherry.system.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ip.AddressUtils;
+import com.cherry.common.flex.core.page.PageQuery;
+import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.log.event.OperLogEvent;
-import com.cherry.common.mybatis.core.page.PageQuery;
-import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.cherry.system.domain.SysOperLog;
 import com.cherry.system.domain.bo.SysOperLogBo;
 import com.cherry.system.domain.vo.SysOperLogVo;
 import com.cherry.system.mapper.SysOperLogMapper;
 import com.cherry.system.service.ISysOperLogService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 /**
  * 操作日志 服务层处理
@@ -32,9 +32,10 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Service
-public class SysOperLogServiceImpl implements ISysOperLogService {
+public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog>
+    implements ISysOperLogService {
 
-  private final SysOperLogMapper baseMapper;
+  private final SysOperLogMapper operLogMapper;
 
   /**
    * 操作日志记录
@@ -53,40 +54,49 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
   @Override
   public TableDataInfo<SysOperLogVo> selectPageOperLogList(
       SysOperLogBo operLog, PageQuery pageQuery) {
-    LambdaQueryWrapper<SysOperLog> lqw = buildQueryWrapper(operLog);
-    if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
-      lqw.orderByDesc(SysOperLog::getOperId);
-    }
-    Page<SysOperLogVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+    QueryWrapper qw = buildQueryWrapper(operLog);
+    pageQuery.buildOrders(qw);
+    //    Page<SysOperLog> page = operLogMapper.paginate(pageQuery.build(), qw);
+    //    return TableDataInfo.build(page, SysOperLogVo.class);
+    Page<SysOperLogVo> page = this.pageAs(pageQuery.build(), qw, SysOperLogVo.class);
     return TableDataInfo.build(page);
   }
 
-  private LambdaQueryWrapper<SysOperLog> buildQueryWrapper(SysOperLogBo operLog) {
-    Map<String, Object> params = operLog.getParams();
-    return new LambdaQueryWrapper<SysOperLog>()
-        .like(
-            StringUtils.isNotBlank(operLog.getOperIp()), SysOperLog::getOperIp, operLog.getOperIp())
-        .like(StringUtils.isNotBlank(operLog.getTitle()), SysOperLog::getTitle, operLog.getTitle())
+  private QueryWrapper buildQueryWrapper(SysOperLogBo bo) {
+    Map<String, Object> params = bo.getParams();
+    return new QueryWrapper()
+        .create()
+        .select()
+        .from(SysOperLog.class)
+        .like(SysOperLog::getOperIp, bo.getOperIp())
+        .like(SysOperLog::getTitle, bo.getTitle())
         .eq(
-            operLog.getBusinessType() != null && operLog.getBusinessType() > 0,
             SysOperLog::getBusinessType,
-            operLog.getBusinessType())
-        .func(
-            f -> {
-              if (ArrayUtil.isNotEmpty(operLog.getBusinessTypes())) {
-                f.in(SysOperLog::getBusinessType, Arrays.asList(operLog.getBusinessTypes()));
-              }
-            })
-        .eq(operLog.getStatus() != null, SysOperLog::getStatus, operLog.getStatus())
-        .like(
-            StringUtils.isNotBlank(operLog.getOperName()),
-            SysOperLog::getOperName,
-            operLog.getOperName())
+            bo.getBusinessType(),
+            bo.getBusinessType() != null && bo.getBusinessType() > 0)
+        .in(
+            SysOperLog::getBusinessType,
+            Arrays.asList(bo.getBusinessTypes()),
+            ArrayUtil.isNotEmpty(bo.getBusinessTypes()))
+        //        .func(
+        //            f -> {
+        //              if (ArrayUtil.isNotEmpty(operLog.getBusinessTypes())) {
+        //                f.in(SysOperLog::getBusinessType,
+        // Arrays.asList(operLog.getBusinessTypes()));
+        //              }
+        //            })
+        .eq(SysOperLog::getStatus, bo.getStatus(), bo.getStatus() != null)
+        .like(SysOperLog::getOperName, bo.getOperName(), StringUtils.isNotBlank(bo.getOperName()))
         .between(
-            params.get("beginTime") != null && params.get("endTime") != null,
             SysOperLog::getOperTime,
             params.get("beginTime"),
-            params.get("endTime"));
+            params.get("endTime"),
+            params.get("beginTime") != null && params.get("endTime") != null);
+    //        .between(
+    //            params.get("beginTime") != null && params.get("endTime") != null,
+    //            SysOperLog::getOperTime,
+    //            params.get("beginTime"),
+    //            params.get("endTime"));
   }
 
   /**
@@ -98,7 +108,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
   public void insertOperlog(SysOperLogBo bo) {
     SysOperLog operLog = MapstructUtils.convert(bo, SysOperLog.class);
     operLog.setOperTime(new Date());
-    baseMapper.insert(operLog);
+    operLogMapper.insert(operLog);
   }
 
   /**
@@ -109,8 +119,9 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
    */
   @Override
   public List<SysOperLogVo> selectOperLogList(SysOperLogBo operLog) {
-    LambdaQueryWrapper<SysOperLog> lqw = buildQueryWrapper(operLog);
-    return baseMapper.selectVoList(lqw.orderByDesc(SysOperLog::getOperId));
+    QueryWrapper qw = buildQueryWrapper(operLog);
+    qw.orderBy(SysOperLog::getId, false);
+    return MapstructUtils.convert(operLogMapper.selectListByQuery(qw), SysOperLogVo.class);
   }
 
   /**
@@ -120,8 +131,8 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
    * @return 结果
    */
   @Override
-  public int deleteOperLogByIds(Long[] operIds) {
-    return baseMapper.deleteByIds(Arrays.asList(operIds));
+  public int deleteOperLogByIds(String[] operIds) {
+    return operLogMapper.deleteBatchByIds(Arrays.asList(operIds));
   }
 
   /**
@@ -131,13 +142,14 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
    * @return 操作日志对象
    */
   @Override
-  public SysOperLogVo selectOperLogById(Long operId) {
-    return baseMapper.selectVoById(operId);
+  public SysOperLogVo selectOperLogById(String operId) {
+    return MapstructUtils.convert(this.getById(operId), SysOperLogVo.class);
   }
 
   /** 清空操作日志 */
   @Override
   public void cleanOperLog() {
-    baseMapper.delete(new LambdaQueryWrapper<>());
+    //    baseMapper.delete(new LambdaQueryWrapper<>());
+    operLogMapper.deleteByQuery(new QueryWrapper());
   }
 }

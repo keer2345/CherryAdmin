@@ -2,6 +2,9 @@ package com.cherry.common.mybatis.core.domain;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.mybatis.core.page.PageQuery;
+import com.cherry.common.mybatis.core.page.TableDataInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -51,4 +54,16 @@ public class BaseEntity implements Serializable {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   @TableField(exist = false)
   private Map<String, Object> params = new HashMap<>();
+
+
+
+    public TableDataInfo<SysOperLogVo> selectPageOperLogList(
+        SysOperLogBo operLog, PageQuery pageQuery) {
+        QueryWrapper qw = buildQueryWrapper(operLog);
+        if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
+            lqw.orderByDesc(SysOperLog::getOperId);
+        }
+        Page<SysOperLogVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        return TableDataInfo.build(page);
+    }
 }
