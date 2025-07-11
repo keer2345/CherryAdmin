@@ -22,42 +22,38 @@ public class BaseDO {
   @Id(keyType = KeyType.Generator, value = "uuid")
   private String id;
 
-  /** 创建时间 */
-  @Column(onInsertValue = "now()")
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-  private Date createTime;
-
-  /** 最后更新时间 */
-//  @Column(onUpdateValue = "now()", onInsertValue = "now()")
-  private Date updateTime;
+  /** 创建者部门ID，目前使用 SysUser 的 deptId 编号 */
+  private String createDept;
 
   /**
    * 创建者，目前使用 SysUser 的 id 编号
    *
    * <p>使用 String 类型的原因是，未来可能会存在非数值的情况，留好拓展性。
    */
-  //  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private String creator;
 
-    /**
-     * 创建者部门ID，目前使用 SysUser 的 deptId 编号
-     */
-    private String createDept;
+  /** 创建时间 */
+  //  @Column(onInsertValue = "now()")
+  //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private LocalDateTime createTime;
 
   /**
    * 更新者，目前使用 SysUser 的 id 编号
    *
    * <p>使用 String 类型的原因是，未来可能会存在非数值的情况，留好拓展性。
    */
-  //  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private String updater;
+
+  /** 最后更新时间 */
+  //  @Column(onUpdateValue = "now()", onInsertValue = "now()")
+  private LocalDateTime updateTime;
 
   /** 删除人ID */
   private String deleteId;
 
   /** 删除时间 */
-//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-  private Date deleteTime;
+  //  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private LocalDateTime deleteTime;
 
   /**
    * 是否删除

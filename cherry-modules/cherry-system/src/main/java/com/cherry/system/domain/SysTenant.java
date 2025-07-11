@@ -1,13 +1,11 @@
 package com.cherry.system.domain;
 
-import com.cherry.common.flex.base.BaseDO;
 import com.cherry.common.tenant.core.TenantEntity;
 import com.mybatisflex.annotation.Table;
+import java.io.Serial;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serial;
-import java.util.Date;
 
 /**
  * 租户对象 sys_tenant
@@ -57,7 +55,7 @@ public class SysTenant extends TenantEntity {
   private Long packageId;
 
   /** 过期时间 */
-  private Date expireTime;
+    private LocalDateTime expireTime;
 
   /** 用户数量（-1不限制） */
   private Long accountCount;

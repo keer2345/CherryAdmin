@@ -2,7 +2,7 @@ package com.cherry.system.domain.vo;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -53,7 +53,7 @@ public class SysUserExportVo implements Serializable {
 
   /** 最后登录时间 */
   // @ExcelProperty(value = "最后登录时间")
-  private Date loginDate;
+  private LocalDateTime loginDate;
 
   /** 部门名称 */
   // @ExcelProperty(value = "部门名称")

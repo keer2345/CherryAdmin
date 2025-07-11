@@ -23,6 +23,7 @@ import com.cherry.system.domain.vo.*;
 import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.system.service.*;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
@@ -78,7 +79,8 @@ public class SysLoginService {
       log.info("登录租户：{} 已被停用.", tenantId);
       throw new TenantException("tenant.blocked");
     } else if (ObjectUtil.isNotNull(tenant.getExpireTime())
-        && new Date().after(tenant.getExpireTime())) {
+        //        && new Date().after(tenant.getExpireTime())
+        && LocalDateTime.now().isAfter(tenant.getExpireTime())) {
       log.info("登录租户：{} 已超过有效期.", tenantId);
       throw new TenantException("tenant.expired");
     }
@@ -215,10 +217,11 @@ public class SysLoginService {
     SysUser sysUser = new SysUser();
     sysUser.setId(userId);
     sysUser.setLoginIp(ip);
-    sysUser.setLoginDate(DateUtils.getNowDate());
+//    sysUser.setLoginDate(DateUtils.getNowDate());
+      sysUser.setLoginDate(LocalDateTime.now());
     sysUser.setUpdater(userId);
-//    todo
-//    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
-      userMapper.update(sysUser);
+    //    todo
+    //    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
+    userMapper.update(sysUser);
   }
 }

@@ -2,11 +2,10 @@ package com.cherry.system.domain.vo;
 
 import com.cherry.system.domain.SysPost;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 岗位信息视图对象 sys_post
@@ -23,7 +22,7 @@ public class SysPostVo implements Serializable {
 
   /** 岗位ID */
   // @ExcelProperty(value = "岗位序号")
-//  private Long postId;
+  //  private Long postId;
   private String id;
 
   /** 部门id */
@@ -57,7 +56,7 @@ public class SysPostVo implements Serializable {
 
   /** 创建时间 */
   // @ExcelProperty(value = "创建时间")
-  private Date createTime;
+  private LocalDateTime createTime;
 
   /** 部门名 */
   // @Translation(type = TransConstant.DEPT_ID_TO_NAME, mapper = "deptId")

@@ -67,7 +67,7 @@ public class OperLogEvent implements Serializable {
   private String errorMsg;
 
   /** 操作时间 */
-  private Date operTime;
+//  private Date operTime;
 
   /** 消耗时间 */
   private Long costTime;

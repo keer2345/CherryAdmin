@@ -21,13 +21,13 @@ import java.util.Map;
 public class BaseBO {
 
     private String id;
-    private Date createTime;
-    private Date updateTime;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     private String creator;
     private String createDept;
     private String updater;
     private String deleteId;
-    private Date deleteTime;
+    private LocalDateTime deleteTime;
     /**
      * false: normal, true: deleted
      */

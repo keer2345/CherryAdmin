@@ -2,11 +2,10 @@ package com.cherry.system.domain.vo;
 
 import com.cherry.system.domain.SysOperLog;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 操作日志记录视图对象 sys_oper_log
@@ -95,7 +94,7 @@ public class SysOperLogVo implements Serializable {
 
   /** 操作时间 */
   // @ExcelProperty(value = "操作时间")
-  private Date operTime;
+  private LocalDateTime operTime;
 
   /** 消耗时间 */
   // @ExcelProperty(value = "消耗时间")

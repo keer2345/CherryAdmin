@@ -1,13 +1,11 @@
 package com.cherry.system.domain.vo;
 
-import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysConfig;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 参数配置视图对象 sys_config
@@ -62,5 +60,5 @@ public class SysConfigVo implements Serializable {
      * 创建时间
      */
     // @ExcelProperty(value = "创建时间")
-    private Date createTime;
+    private LocalDateTime createTime;
 }

@@ -2,11 +2,10 @@ package com.cherry.system.domain.vo;
 
 import com.cherry.system.domain.SysDictData;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 字典数据视图对象 sys_dict_data
@@ -59,5 +58,5 @@ public class SysDictDataVo implements Serializable {
 
   /** 创建时间 */
   // @ExcelProperty(value = "创建时间")
-  private Date createTime;
+  private LocalDateTime createTime;
 }

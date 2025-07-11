@@ -18,7 +18,7 @@ import com.cherry.system.service.ISysClientService;
 import com.cherry.system.service.ISysLogininforService;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -99,6 +99,8 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
     } else if (Constants.LOGIN_FAIL.equals(logininforEvent.getStatus())) {
       logininfor.setStatus(Constants.FAIL);
     }
+    logininfor.setCreateDept(LoginHelper.getDeptId());
+    logininfor.setCreator(LoginHelper.getUserId());
     // 插入数据
     insertLogininfor(logininfor);
   }
@@ -118,7 +120,8 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
   @Override
   public void insertLogininfor(SysLogininforBo bo) {
     SysLogininfor logininfor = MapstructUtils.convert(bo, SysLogininfor.class);
-    logininfor.setLoginTime(new Date());
+//    logininfor.setLoginTime(new Date());
+      logininfor.setLoginTime(LocalDateTime.now());
     int result = logininforMapper.insert(logininfor);
   }
 }

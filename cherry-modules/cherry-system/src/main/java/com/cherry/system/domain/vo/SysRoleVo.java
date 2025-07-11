@@ -6,6 +6,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -64,7 +65,7 @@ public class SysRoleVo {
 
   /** 创建时间 */
   // @ExcelProperty(value = "创建时间")
-  private Date createTime;
+  private LocalDateTime createTime;
 
   /** 用户是否存在此角色标识 默认不存在 */
   private boolean flag = false;

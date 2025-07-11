@@ -1,15 +1,13 @@
 package com.cherry.system.domain.vo;
 
-import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysDept;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import lombok.Data;
 
 /**
  * 部门视图对象 sys_dept
@@ -74,7 +72,7 @@ public class SysDeptVo implements Serializable {
 
   /** 创建时间 */
   // @ExcelProperty(value = "创建时间")
-  private Date createTime;
+  private LocalDateTime createTime;
 
   /** 子部门 */
   private List<SysDept> children = new ArrayList<>();

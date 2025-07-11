@@ -5,11 +5,9 @@ import com.cherry.common.log.event.OperLogEvent;
 import com.cherry.system.domain.SysOperLog;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
-import lombok.Data;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Data;
 
 /**
  * 操作日志记录业务对象 sys_oper_log

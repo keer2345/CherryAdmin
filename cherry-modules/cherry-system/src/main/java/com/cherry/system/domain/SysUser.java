@@ -3,6 +3,7 @@ package com.cherry.system.domain;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.tenant.core.TenantEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.mybatisflex.annotation.Table;
@@ -88,7 +89,7 @@ public class SysUser extends TenantEntity {
     /**
      * 最后登录时间
      */
-    private Date loginDate;
+    private LocalDateTime loginDate;
 
     /**
      * 备注

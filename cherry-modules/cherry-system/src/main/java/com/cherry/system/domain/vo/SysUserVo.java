@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-
 import lombok.Data;
 
 /**
@@ -70,13 +69,13 @@ public class SysUserVo implements Serializable {
   private String loginIp;
 
   /** 最后登录时间 */
-  private Date loginDate;
+  private LocalDateTime loginDate;
 
   /** 备注 */
   private String remark;
 
   /** 创建时间 */
-  private Date createTime;
+  private LocalDateTime createTime;
 
   /** 部门名 */
   @Translation(type = TransConstant.DEPT_ID_TO_NAME, mapper = "deptId")

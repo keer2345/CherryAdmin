@@ -3,11 +3,10 @@ package com.cherry.system.domain.bo;
 import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysLogininfor;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Data;
 
 /**
  * 系统访问记录业务对象 sys_logininfor
@@ -52,7 +51,7 @@ public class SysLogininforBo extends BaseBO {
   private String msg;
 
   /** 访问时间 */
-  private Date loginTime;
+    private LocalDateTime loginTime;
 
   /** 请求参数 */
   private Map<String, Object> params = new HashMap<>();

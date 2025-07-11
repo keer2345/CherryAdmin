@@ -7,10 +7,8 @@ import com.cherry.system.domain.SysTenant;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.util.Date;
 
 /**
  * 租户业务对象 sys_tenant
@@ -107,7 +105,7 @@ public class SysTenantBo extends BaseBO {
     /**
      * 过期时间
      */
-    private Date expireTime;
+    private LocalDateTime expireTime;
 
     /**
      * 用户数量（-1不限制）

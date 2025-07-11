@@ -4,11 +4,10 @@ import com.cherry.common.translation.annotation.Translation;
 import com.cherry.common.translation.constant.TransConstant;
 import com.cherry.system.domain.SysOss;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * OSS对象存储视图对象 sys_oss
@@ -41,7 +40,7 @@ public class SysOssVo implements Serializable {
   private String ext1;
 
   /** 创建时间 */
-  private Date createTime;
+  private LocalDateTime createTime;
 
   /** 上传人 */
   private String createBy;
