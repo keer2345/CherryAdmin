@@ -4,6 +4,8 @@ import com.cherry.common.flex.base.BaseDO;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.mybatisflex.annotation.UpdateListener;
 
+import java.util.Date;
+
 /**
  * MybatisUpdateListener
  *
@@ -19,11 +21,13 @@ public class MybatisUpdateListener<T extends BaseDO> implements UpdateListener {
   @Override
   public void onUpdate(Object entity) {
       String userId = LoginHelper.getUserId();
-    if (userId != null && entity instanceof BaseDO) {
       T t = (T) entity;
+      t.setUpdateTime(new Date());
+    if (userId != null && entity instanceof BaseDO) {
       //      t.setUpdater(SecurityUtil.getUserName());
       t.setUpdater(userId);
-      //      t.setUpdateTime(new Date());
+    }else{
+        t.setUpdater("");
     }
   }
 }

@@ -4,6 +4,8 @@ import com.cherry.common.flex.base.BaseDO;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.mybatisflex.annotation.InsertListener;
 
+import java.util.Date;
+
 /**
  * MybatisInsertListener
  *
@@ -22,14 +24,14 @@ public class MybatisInsertListener<T extends BaseDO> implements InsertListener {
         String userId = LoginHelper.getUserId();
         String deptId = LoginHelper.getDeptId();
         T t = (T) entity;
+        t.setCreateTime(new Date());
+        t.setUpdateTime(new Date());
         if (userId != null && entity instanceof BaseDO) {
-            //      t.setCreator(SecurityUtil.getUserName());
             t.setCreator(userId);
         }else{
             t.setCreator("");
         }
         if (deptId != null && entity instanceof BaseDO) {
-            //      t.setCreator(SecurityUtil.getUserName());
             t.setCreateDept(deptId);
         }else{
             t.setCreateDept("");

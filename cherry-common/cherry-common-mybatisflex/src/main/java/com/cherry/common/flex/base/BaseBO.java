@@ -1,11 +1,13 @@
 package com.cherry.common.flex.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,13 +21,13 @@ import java.util.Map;
 public class BaseBO {
 
     private String id;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Date createTime;
+    private Date updateTime;
     private String creator;
     private String createDept;
     private String updater;
     private String deleteId;
-    private LocalDateTime deleteTime;
+    private Date deleteTime;
     /**
      * false: normal, true: deleted
      */

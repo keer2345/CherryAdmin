@@ -17,6 +17,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +108,8 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
   @Override
   public void insertOperlog(SysOperLogBo bo) {
     SysOperLog operLog = MapstructUtils.convert(bo, SysOperLog.class);
-    operLog.setCreateTime(LocalDateTime.now());
+    //    operLog.setCreateTime(LocalDateTime.now());
+    operLog.setCreateTime(new Date());
     operLogMapper.insert(operLog);
   }
 

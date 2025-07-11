@@ -1,5 +1,6 @@
 package com.cherry.common.flex.handler;
 
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.impl.DefaultLogicDeleteProcessor;
 import com.mybatisflex.core.table.TableInfo;
@@ -49,9 +50,13 @@ public class MyLogicDeleteProcessor extends DefaultLogicDeleteProcessor {
                 .append(", ")
                 .append(dialect.wrap(FIELD_DELETE_ID))
                 .append(EQUALS)
-                //
-                // .append(Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo().getId());
-                .append(prepareValue("dddd"));
+                .append(prepareValue(LoginHelper.getUserId()));
+        }else {
+            sqlBuilder
+                .append(", ")
+                .append(dialect.wrap(FIELD_DELETE_ID))
+                .append(EQUALS)
+                .append(prepareValue(""));
         }
 
         return sqlBuilder.toString();

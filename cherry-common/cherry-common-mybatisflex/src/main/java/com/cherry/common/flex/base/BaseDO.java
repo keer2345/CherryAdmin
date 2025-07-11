@@ -1,11 +1,13 @@
 package com.cherry.common.flex.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 基础实体对象
@@ -22,11 +24,12 @@ public class BaseDO {
 
   /** 创建时间 */
   @Column(onInsertValue = "now()")
-  private LocalDateTime createTime;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private Date createTime;
 
   /** 最后更新时间 */
-  @Column(onUpdateValue = "now()", onInsertValue = "now()")
-  private LocalDateTime updateTime;
+//  @Column(onUpdateValue = "now()", onInsertValue = "now()")
+  private Date updateTime;
 
   /**
    * 创建者，目前使用 SysUser 的 id 编号
@@ -53,7 +56,8 @@ public class BaseDO {
   private String deleteId;
 
   /** 删除时间 */
-  private LocalDateTime deleteTime;
+//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private Date deleteTime;
 
   /**
    * 是否删除
