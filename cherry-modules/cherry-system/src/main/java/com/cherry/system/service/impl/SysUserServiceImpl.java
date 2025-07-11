@@ -1,24 +1,11 @@
 package com.cherry.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cherry.common.core.constant.CacheNames;
-import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.service.UserService;
-import com.cherry.common.core.utils.ObjectUtils;
-import com.cherry.common.core.utils.SpringUtils;
-import com.cherry.common.core.utils.StreamUtils;
-import com.cherry.common.core.utils.StringUtils;
-import com.cherry.common.mybatis.core.page.PageQuery;
-import com.cherry.common.mybatis.core.page.TableDataInfo;
-import com.cherry.system.domain.SysDept;
+import com.cherry.common.core.utils.*;
+import com.cherry.common.flex.core.page.PageQuery;
+import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
@@ -29,17 +16,19 @@ import com.cherry.system.mapper.SysPostMapper;
 import com.cherry.system.mapper.SysRoleMapper;
 import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.system.service.ISysUserService;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 用户 业务层处理
@@ -50,20 +39,23 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implements ISysUserService, UserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
+    implements ISysUserService, UserService {
   // todo
-  private final SysUserMapper baseMapper;
+  private final SysUserMapper userMapper;
   private final SysRoleMapper roleMapper;
   private final SysPostMapper postMapper;
-    private final SysDeptMapper deptMapper;
+  private final SysDeptMapper deptMapper;
 
   @Override
-  public SysUserVo selectUserById(Long userId) {
-    SysUserVo user = baseMapper.selectVoById(userId);
-    if (ObjUtil.isNull(user)) {
-      return user;
+  public SysUserVo selectUserById(String userId) {
+    Optional<SysUser> userOpt = this.getByIdOpt(userId);
+    if (userOpt.isEmpty()) {
+      return null;
     }
-    user.setRoles(roleMapper.selectRolesByUserId(user.getUserId()));
+    SysUserVo user = MapstructUtils.convert(userOpt.get(), SysUserVo.class);
+    user.setRoles(
+        MapstructUtils.convert(roleMapper.selectRolesByUserId(user.getId()), SysRoleVo.class));
     return user;
   }
 
@@ -74,8 +66,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
    * @return 结果
    */
   @Override
-  public String selectUserRoleGroup(Long userId) {
-    List<SysRoleVo> list = roleMapper.selectRolesByUserId(userId);
+  public String selectUserRoleGroup(String userId) {
+    List<SysRoleVo> list =
+        MapstructUtils.convert(roleMapper.selectRolesByUserId(userId), SysRoleVo.class);
     if (CollUtil.isEmpty(list)) {
       return StringUtils.EMPTY;
     }
@@ -89,9 +82,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
    * @return 结果
    */
   @Override
-  public String selectUserPostGroup(Long userId) {
+  public String selectUserPostGroup(String userId) {
 
-    List<SysPostVo> list = postMapper.selectPostsByUserId(userId);
+    List<SysPostVo> list =
+        MapstructUtils.convert(postMapper.selectPostsByUserId(userId), SysPostVo.class);
     if (CollUtil.isEmpty(list)) {
       return StringUtils.EMPTY;
     }
@@ -106,10 +100,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
   @Override
   public boolean checkPhoneUnique(SysUserBo user) {
     boolean exist =
-        baseMapper.exists(
-            new LambdaQueryWrapper<SysUser>()
+        this.exists(
+            new QueryWrapper()
                 .eq(SysUser::getPhonenumber, user.getPhonenumber())
-                .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
+                .ne(SysUser::getId, user.getId()));
     return !exist;
   }
 
@@ -121,10 +115,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
   @Override
   public boolean checkEmailUnique(SysUserBo user) {
     boolean exist =
-        baseMapper.exists(
-            new LambdaQueryWrapper<SysUser>()
+        this.exists(
+            new QueryWrapper()
                 .eq(SysUser::getEmail, user.getEmail())
-                .ne(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId()));
+                .ne(SysUser::getId, user.getId()));
     return !exist;
   }
 
@@ -137,7 +131,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
   @Override
   public String selectNicknameByIds(String userIds) {
     List<String> list = new ArrayList<>();
-    for (Long id : StringUtils.splitTo(userIds, Convert::toLong)) {
+    for (String id : StringUtils.splitList(userIds)) // splitTo(userIds, Convert::toLong))
+    {
       String nickname = SpringUtils.getAopProxy(this).selectNicknameById(id);
       if (StringUtils.isNotBlank(nickname)) {
         list.add(nickname);
@@ -154,12 +149,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
    */
   @Override
   @Cacheable(cacheNames = CacheNames.SYS_NICKNAME, key = "#userId")
-  public String selectNicknameById(Long userId) {
+  public String selectNicknameById(String userId) {
     SysUser sysUser =
-        baseMapper.selectOne(
-            new LambdaQueryWrapper<SysUser>()
-                .select(SysUser::getNickName)
-                .eq(SysUser::getUserId, userId));
+        this.getOne(new QueryWrapper().select(SysUser::getNickName).eq(SysUser::getId, userId));
     return ObjectUtils.notNullGetter(sysUser, SysUser::getNickName);
   }
 
@@ -171,32 +163,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
    */
   @Cacheable(cacheNames = CacheNames.SYS_USER_NAME, key = "#userId")
   @Override
-  public String selectUserNameById(Long userId) {
+  public String selectUserNameById(String userId) {
     SysUser sysUser =
-        baseMapper.selectOne(
-            new LambdaQueryWrapper<SysUser>()
-                .select(SysUser::getUserName)
-                .eq(SysUser::getUserId, userId));
+        this.getOne(new QueryWrapper().select(SysUser::getUserName).eq(SysUser::getId, userId));
     return ObjectUtils.notNullGetter(sysUser, SysUser::getUserName);
   }
 
   /**
    * 修改用户基本信息
    *
-   * @param user 用户信息
+   * @param userBo 用户信息
    * @return 结果
    */
   @CacheEvict(cacheNames = CacheNames.SYS_NICKNAME, key = "#user.userId")
   @Override
-  public int updateUserProfile(SysUserBo user) {
-    return baseMapper.update(
-        null,
-        new LambdaUpdateWrapper<SysUser>()
-            .set(ObjectUtil.isNotNull(user.getNickName()), SysUser::getNickName, user.getNickName())
-            .set(SysUser::getPhonenumber, user.getPhonenumber())
-            .set(SysUser::getEmail, user.getEmail())
-            .set(SysUser::getSex, user.getSex())
-            .eq(SysUser::getUserId, user.getUserId()));
+  public int updateUserProfile(SysUserBo userBo) {
+    SysUser user = UpdateEntity.of(SysUser.class, userBo.getId());
+    user.setNickName(userBo.getNickName());
+    user.setPhonenumber(userBo.getPhonenumber());
+    user.setEmail(userBo.getEmail());
+    user.setSex(userBo.getSex());
+    return userMapper.update(user);
   }
 
   /**
@@ -207,52 +194,51 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
    * @return 结果
    */
   @Override
-  public int resetUserPwd(Long userId, String password) {
-    return baseMapper.update(
-        null,
-        new LambdaUpdateWrapper<SysUser>()
-            .set(SysUser::getPassword, password)
-            .eq(SysUser::getUserId, userId));
+  public int resetUserPwd(String userId, String password) {
+
+    SysUser user = UpdateEntity.of(SysUser.class, userId);
+    user.setPassword(password);
+    return userMapper.update(user);
   }
 
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
-    Page<SysUserVo> page =
-        baseMapper.selectPageUserList(pageQuery.build(), this.buildQueryWrapper(user));
+    QueryWrapper qw = buildQueryWrapper(user);
+    pageQuery.buildOrders(qw);
+    Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
 
-  private Wrapper<SysUser> buildQueryWrapper(SysUserBo user) {
+  private QueryWrapper buildQueryWrapper(SysUserBo user) {
     Map<String, Object> params = user.getParams();
-    QueryWrapper<SysUser> wrapper = Wrappers.query();
-    wrapper
-        .eq("u.del_flag", SystemConstants.NORMAL)
-        .eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
-        .in(
-            StringUtils.isNotBlank(user.getUserIds()),
-            "u.user_id",
-            StringUtils.splitTo(user.getUserIds(), Convert::toLong))
-        .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
-        .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
-        .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+
+    return new QueryWrapper()
+        .create()
+        .select()
+        .from(SysUser.class)
+        .eq(SysUser::getId, user.getId())
+        .in(SysUser::getId, StringUtils.splitList(user.getId()))
+        .like(SysUser::getUserName, user.getUserName())
+        .eq(SysUser::getStatus, user.getStatus())
+        .like(SysUser::getPhonenumber, user.getPhonenumber())
         .between(
-            params.get("beginTime") != null && params.get("endTime") != null,
-            "u.create_time",
+            SysUser::getCreateTime,
             params.get("beginTime"),
-            params.get("endTime"))
-        .and(
-            ObjectUtil.isNotNull(user.getDeptId()),
-            w -> {
-              List<SysDept> deptList =
-                 deptMapper.selectListByQuery(new QueryWrapper().eq(SysDept::getParentId,user.getDeptId()));
-              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
-              ids.add(user.getDeptId());
-              w.in("u.dept_id", ids);
-            })
-        .orderByAsc("u.user_id");
-    if (StringUtils.isNotBlank(user.getExcludeUserIds())) {
-      wrapper.notIn("u.user_id", StringUtils.splitTo(user.getExcludeUserIds(), Convert::toLong));
-    }
-    return wrapper;
+            params.get("endTime"),
+            params.get("beginTime") != null && params.get("endTime") != null)
+        .notIn(SysUser::getId, StringUtils.splitList(user.getExcludeUserIds()))
+        .orderBy(SysUser::getCreateTime, true);
+
+    //        .and(
+    //            ObjectUtil.isNotNull(user.getDeptId()),
+    //            w -> {
+    //              List<SysDept> deptList =
+    //                  deptMapper.selectListByQuery(
+    //                      new QueryWrapper().eq(SysDept::getParentId, user.getDeptId()));
+    //              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+    //              ids.add(user.getDeptId());
+    //              w.in("u.dept_id", ids);
+    //            })
+
   }
 }

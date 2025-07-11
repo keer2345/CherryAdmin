@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 public class SysDeptBo extends BaseBO {
 
   /** 部门id */
-//  private Long deptId;
+  //  private Long deptId;
 
   /** 父部门ID */
   private String parentId;
@@ -34,6 +34,9 @@ public class SysDeptBo extends BaseBO {
   /** 部门类别编码 */
   @Size(min = 0, max = 100, message = "部门类别编码长度不能超过{max}个字符")
   private String deptCategory;
+
+  /** 部门层级 */
+  private Integer top;
 
   /** 显示顺序 */
   @NotNull(message = "显示顺序不能为空")

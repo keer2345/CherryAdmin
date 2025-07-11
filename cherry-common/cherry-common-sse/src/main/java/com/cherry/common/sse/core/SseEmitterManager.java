@@ -1,16 +1,14 @@
 package com.cherry.common.sse.core;
 
-import cn.dev33.satoken.servlet.error.SaServletErrorCode;
 import cn.hutool.core.map.MapUtil;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.sse.dto.SseMessageDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
  * 管理 Server-Sent Events (SSE) 连接
@@ -23,7 +21,7 @@ public class SseEmitterManager {
   /** 订阅的频道 */
   private static final String SSE_TOPIC = "global:sse";
 
-  private static final Map<Long, Map<String, SseEmitter>> USER_TOKEN_EMITTERS =
+  private static final Map<String, Map<String, SseEmitter>> USER_TOKEN_EMITTERS =
       new ConcurrentHashMap<>();
 
   /**
@@ -33,7 +31,7 @@ public class SseEmitterManager {
    * @param token 用户的唯一令牌，用于识别具体的连接
    * @return 返回一个 SseEmitter 实例，客户端可以通过该实例接收 SSE 事件
    */
-  public SseEmitter connect(Long userId, String token) {
+  public SseEmitter connect(String userId, String token) {
     // 从 USER_TOKEN_EMITTERS 中获取或创建当前用户的 SseEmitter 映射表（ConcurrentHashMap）
     // 每个用户可以有多个 SSE 连接，通过 token 进行区分
     Map<String, SseEmitter> emitters =
@@ -66,7 +64,7 @@ public class SseEmitterManager {
    * @param userId 用户的唯一标识符，用于区分不同用户的连接
    * @param token 用户的唯一令牌，用于识别具体的连接
    */
-  public void disconnect(Long userId, String token) {
+  public void disconnect(String userId, String token) {
     if (userId == null || token == null) {
       return;
     }
@@ -99,7 +97,7 @@ public class SseEmitterManager {
    * @param userId 要发送消息的用户id
    * @param message 要发送的消息内容
    */
-  public void sendMessage(Long userId, String message) {
+  public void sendMessage(String userId, String message) {
     Map<String, SseEmitter> emitters = USER_TOKEN_EMITTERS.get(userId);
     if (MapUtil.isNotEmpty(emitters)) {
       for (Map.Entry<String, SseEmitter> entry : emitters.entrySet()) {
@@ -120,7 +118,7 @@ public class SseEmitterManager {
    * @param message 要发送的消息内容
    */
   public void sendMessage(String message) {
-    for (Long userId : USER_TOKEN_EMITTERS.keySet()) {
+    for (String userId : USER_TOKEN_EMITTERS.keySet()) {
       sendMessage(userId, message);
     }
   }

@@ -15,8 +15,8 @@ import com.cherry.system.service.ISysOperLogService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +88,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
         .eq(SysOperLog::getStatus, bo.getStatus(), bo.getStatus() != null)
         .like(SysOperLog::getOperName, bo.getOperName(), StringUtils.isNotBlank(bo.getOperName()))
         .between(
-            SysOperLog::getOperTime,
+            SysOperLog::getCreateTime,
             params.get("beginTime"),
             params.get("endTime"),
             params.get("beginTime") != null && params.get("endTime") != null);
@@ -107,7 +107,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
   @Override
   public void insertOperlog(SysOperLogBo bo) {
     SysOperLog operLog = MapstructUtils.convert(bo, SysOperLog.class);
-    operLog.setOperTime(new Date());
+    operLog.setCreateTime(LocalDateTime.now());
     operLogMapper.insert(operLog);
   }
 

@@ -11,30 +11,30 @@ spring.boot.admin.client:
   username: @monitor.username@
   password: @monitor.password@
 
---- # 数据源配置
-spring:
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    # 动态数据源文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/content
-    dynamic:
-      # 性能分析插件(有性能损耗 不建议生产环境使用)
-      p6spy: true
-      # 设置默认的数据源或者数据源组,默认值即为 master
-      primary: master
-      # 严格模式 匹配不到数据源则报错
-      strict: true
-      datasource:
-        # 主库数据源
-        master:
-          type: ${spring.datasource.type}
-          driverClassName: com.mysql.cj.jdbc.Driver
-          # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
-          # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
-
-          # url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
-          url: jdbc:mysql://120.78.231.219:3309/cherry_admin?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
-          username: cherry
-          password: 912229
+# --- # 数据源配置
+# spring:
+#   datasource:
+#     type: com.zaxxer.hikari.HikariDataSource
+#     # 动态数据源文档 https://www.kancloud.cn/tracy5546/dynamic-datasource/content
+#     dynamic:
+#       # 性能分析插件(有性能损耗 不建议生产环境使用)
+#       p6spy: true
+#       # 设置默认的数据源或者数据源组,默认值即为 master
+#       primary: master
+#       # 严格模式 匹配不到数据源则报错
+#       strict: true
+#       datasource:
+#         # 主库数据源
+#         master:
+#           type: ${spring.datasource.type}
+#           driverClassName: com.mysql.cj.jdbc.Driver
+#           # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
+#           # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
+#
+#           # url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+#           url: jdbc:mysql://120.78.231.219:3309/cherry_admin?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+#           username: cherry
+#           password: 912229
       #        # 从库数据源
       #        slave:
       #          lazy: true
@@ -61,35 +61,65 @@ spring:
       #          url: jdbc:sqlserver://localhost:1433;DatabaseName=tempdb;SelectMethod=cursor;encrypt=false;rewriteBatchedStatements=true
       #          username: SA
       #          password: root
-      hikari:
-        # 最大连接池数量
-        maxPoolSize: 20
-        # 最小空闲线程数量
-        minIdle: 10
-        # 配置获取连接等待超时的时间
-        connectionTimeout: 30000
-        # 校验超时时间
-        validationTimeout: 5000
-        # 空闲连接存活最大时间，默认10分钟
-        idleTimeout: 600000
-        # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认30分钟
-        maxLifetime: 1800000
-        # 多久检查一次连接的活性
-        keepaliveTime: 30000
+#      hikari:
+#        # 最大连接池数量
+#        maxPoolSize: 20
+#        # 最小空闲线程数量
+#        minIdle: 10
+#        # 配置获取连接等待超时的时间
+#        connectionTimeout: 30000
+#        # 校验超时时间
+#        validationTimeout: 5000
+#        # 空闲连接存活最大时间，默认10分钟
+#        idleTimeout: 600000
+#        # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认30分钟
+#        maxLifetime: 1800000
+#        # 多久检查一次连接的活性
+#        keepaliveTime: 30000
+
+
+--- #################### 数据库相关配置 ####################
+mybatis-flex:
+  datasource:
+    ds1:
+      url: jdbc:postgresql://120.78.231.219:5432/cherry01?currentSchema=public&sslmode=disable
+      username: cherry01
+      password: 123456
+    ds2:
+      url: jdbc:postgresql://120.78.231.219:5432/cherry02?currentSchema=public&sslmode=disable
+      username: cherry02
+      password: 123456
+  # https://gitee:com/mybatis-flex/mybatis-flex/issues/I7UX96:
+  # 搜索指定包别名
+  type-aliases-package: ${cherry.info.base-package}.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    # 自动驼峰命名规则（camel case）映射
+    map-underscore-to-camel-case: true
+    # MyBatis 自动映射策略
+    # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
+    auto-mapping-behavior: full
+    # MyBatis 自动映射时未知列或未知属性处理策
+    # NONE：不做处理 WARNING：打印相关警告 FAILING：抛出异常和详细信息
+    auto-mapping-unknown-column-behavior: none
+    # 原理的mybatis配置
+    cache-enabled: true
+    default-executor-type: simple
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring.data:
   redis:
     # 地址
-    # host: localhost
-    host: 120.78.231.219
+    host: 127.0.0.1
+    # host: 120.78.231.219
+    # redis 密码必须配置
+    # password: 123456
     # 端口，默认为6379
     port: 6379
     # 数据库索引
     database: 1
-    # redis 密码必须配置
-    # password: ruoyi123
-    password: 123456
     # 连接超时时间
     timeout: 10s
     # 是否开启ssl

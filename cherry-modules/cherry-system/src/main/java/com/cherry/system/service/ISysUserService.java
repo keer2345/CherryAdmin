@@ -1,7 +1,7 @@
 package com.cherry.system.service;
 
-import com.cherry.common.mybatis.core.page.PageQuery;
-import com.cherry.common.mybatis.core.page.TableDataInfo;
+import com.cherry.common.flex.core.page.PageQuery;
+import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysUserVo;
 
@@ -20,7 +20,7 @@ public interface ISysUserService {
    * @param userId 用户ID
    * @return 用户对象信息
    */
-  SysUserVo selectUserById(Long userId);
+  SysUserVo selectUserById(String userId);
 
   /**
    * 根据用户ID查询用户所属角色组
@@ -28,7 +28,7 @@ public interface ISysUserService {
    * @param userId 用户ID
    * @return 结果
    */
-  String selectUserRoleGroup(Long userId);
+  String selectUserRoleGroup(String userId);
 
   /**
    * 根据用户ID查询用户所属岗位组
@@ -36,7 +36,7 @@ public interface ISysUserService {
    * @param userId 用户ID
    * @return 结果
    */
-  String selectUserPostGroup(Long userId);
+  String selectUserPostGroup(String userId);
 
     /**
      * 校验手机号码是否唯一
@@ -70,7 +70,7 @@ public interface ISysUserService {
      * @param password 密码
      * @return 结果
      */
-    int resetUserPwd(Long userId, String password);
+    int resetUserPwd(String userId, String password);
 
     /**
      * 根据条件分页查询用户列表

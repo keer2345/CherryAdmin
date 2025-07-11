@@ -22,6 +22,7 @@ public class BaseBO {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private String creator;
+    private String createDept;
     private String updater;
     private String deleteId;
     private LocalDateTime deleteTime;

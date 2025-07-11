@@ -57,13 +57,13 @@ public class BaseEntity implements Serializable {
 
 
 
-    public TableDataInfo<SysOperLogVo> selectPageOperLogList(
-        SysOperLogBo operLog, PageQuery pageQuery) {
-        QueryWrapper qw = buildQueryWrapper(operLog);
-        if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
-            lqw.orderByDesc(SysOperLog::getOperId);
-        }
-        Page<SysOperLogVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
-    }
+//    public TableDataInfo<SysOperLogVo> selectPageOperLogList(
+//        SysOperLogBo operLog, PageQuery pageQuery) {
+//        QueryWrapper qw = buildQueryWrapper(operLog);
+//        if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
+//            lqw.orderByDesc(SysOperLog::getOperId);
+//        }
+//        Page<SysOperLogVo> page = baseMapper.selectVoPage(pageQuery.build(), lqw);
+//        return TableDataInfo.build(page);
+//    }
 }

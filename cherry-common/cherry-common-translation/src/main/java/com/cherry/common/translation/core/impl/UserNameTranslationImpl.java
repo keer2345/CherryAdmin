@@ -19,7 +19,7 @@ public class UserNameTranslationImpl implements TranslationInterface<String> {
 
     @Override
     public String translation(Object key, String other) {
-        if (key instanceof Long id) {
+        if (key instanceof String id) {
             return userService.selectUserNameById(id);
         }
         return null;

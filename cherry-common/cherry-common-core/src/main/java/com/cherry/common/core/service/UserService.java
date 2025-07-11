@@ -21,7 +21,7 @@ public interface UserService {
    * @param userId 用户ID
    * @return 用户名称
    */
-  String selectNicknameById(Long userId);
+  String selectNicknameById(String userId);
 
   /**
    * 通过用户ID查询用户账户
@@ -29,5 +29,5 @@ public interface UserService {
    * @param userId 用户ID
    * @return 用户账户
    */
-  String selectUserNameById(Long userId);
+  String selectUserNameById(String userId);
 }

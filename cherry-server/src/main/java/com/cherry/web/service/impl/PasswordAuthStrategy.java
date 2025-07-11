@@ -4,7 +4,6 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.constant.SystemConstants;
@@ -29,6 +28,7 @@ import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.web.domain.vo.LoginVo;
 import com.cherry.web.service.IAuthStrategy;
 import com.cherry.web.service.SysLoginService;
+import com.mybatisflex.core.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -126,8 +126,8 @@ public class PasswordAuthStrategy implements IAuthStrategy {
 
   private SysUserVo loadUserByUsername(String username) {
     SysUserVo user =
-        userMapper.selectVoOne(
-            new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, username));
+        userMapper.selectOneByQueryAs(
+            new QueryWrapper().eq(SysUser::getUserName, username), SysUserVo.class);
     if (ObjUtil.isNull(user)) {
       log.info("登录用户：{} 不存在.", username);
       throw new UserException("user.not.exists", username);

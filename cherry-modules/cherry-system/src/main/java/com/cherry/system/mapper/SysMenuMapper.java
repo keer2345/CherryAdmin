@@ -67,7 +67,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
         QueryWrapper query = new QueryWrapper().create().from(SysMenu.class)
             .where(SysMenu::getMenuType).in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
             .eq(SysMenu::getStatus, SystemConstants.NORMAL)
-            .orderBy(SysMenu::getLevel, true)
+            .orderBy(SysMenu::getTop, true)
             .orderBy(SysMenu::getOrderNum, true);
         return this.selectListByQuery(query);
     }
@@ -87,7 +87,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
             .eq(SysMenu::getStatus, SystemConstants.NORMAL)
             .eq(SysRole::getStatus, SystemConstants.NORMAL)
             .eq(SysUserRole::getUserId, userId)
-            .orderBy(SysMenu::getLevel, true)
+            .orderBy(SysMenu::getTop, true)
             .orderBy(SysMenu::getOrderNum, true);
 
         return this.selectListByQuery(query);

@@ -26,7 +26,7 @@ public class SysDeptVo implements Serializable {
 
   /** 部门id */
   // @ExcelProperty(value = "部门id")
-//  private Long deptId;
+  //  private Long deptId;
   private String id;
 
   /** 父部门id */
@@ -45,6 +45,9 @@ public class SysDeptVo implements Serializable {
   /** 部门类别编码 */
   // @ExcelProperty(value = "部门类别编码")
   private String deptCategory;
+
+  /** 部门层级 */
+  private Integer top;
 
   /** 显示顺序 */
   private Integer orderNum;

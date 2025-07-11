@@ -8,6 +8,7 @@ package com.cherry.system.mapper;
 import com.cherry.system.domain.SysUser;
 // import com.cherry.system.domain.vo.SysUserVo;
 import com.mybatisflex.core.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 // import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +18,7 @@ import com.mybatisflex.core.BaseMapper;
  * @author keer
  * @date 2025-05-26
  */
+@Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
   // todo
 

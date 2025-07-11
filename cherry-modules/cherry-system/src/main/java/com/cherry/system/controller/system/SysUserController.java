@@ -5,8 +5,8 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjUtil;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginUser;
-import com.cherry.common.mybatis.core.page.PageQuery;
-import com.cherry.common.mybatis.core.page.TableDataInfo;
+import com.cherry.common.flex.core.page.PageQuery;
+import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.core.BaseController;
@@ -39,16 +39,14 @@ import java.util.List;
 public class SysUserController extends BaseController {
   // todo
   private final ISysUserService userService;
-    private final ISysDeptService deptService;
+  private final ISysDeptService deptService;
 
-    /**
-     * 获取用户列表
-     */
-    @SaCheckPermission("system:user:list")
-    @GetMapping("/list")
-    public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
-        return userService.selectPageUserList(user, pageQuery);
-    }
+  /** 获取用户列表 */
+  @SaCheckPermission("system:user:list")
+  @GetMapping("/list")
+  public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
+    return userService.selectPageUserList(user, pageQuery);
+  }
 
   /**
    * 获取用户信息
@@ -75,12 +73,10 @@ public class SysUserController extends BaseController {
     return R.ok(userInfoVo);
   }
 
-    /**
-     * 获取部门树列表
-     */
-    @SaCheckPermission("system:user:list")
-    @GetMapping("/deptTree")
-    public R<List<Tree<Long>>> deptTree(SysDeptBo dept) {
-        return R.ok(deptService.selectDeptTreeList(dept));
-    }
+  /** 获取部门树列表 */
+  @SaCheckPermission("system:user:list")
+  @GetMapping("/deptTree")
+  public R<List<Tree<String>>> deptTree(SysDeptBo dept) {
+    return R.ok(deptService.selectDeptTreeList(dept));
+  }
 }

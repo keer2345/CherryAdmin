@@ -97,8 +97,8 @@ public class LoginHelper {
     /**
      * 获取部门ID
      */
-    public static Long getDeptId() {
-        return Convert.toLong(getExtra(DEPT_KEY));
+    public static String getDeptId() {
+        return Convert.toStr(getExtra(DEPT_KEY));
     }
 
     /**

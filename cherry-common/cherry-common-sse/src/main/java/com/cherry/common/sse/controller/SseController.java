@@ -35,7 +35,7 @@ public class SseController implements DisposableBean {
   @GetMapping(value = "${sse.path}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter connect() {
     String tokenValue = StpUtil.getTokenValue();
-    Long userId = LoginHelper.getUserId();
+    String userId = LoginHelper.getUserId();
     return sseEmitterManager.connect(userId, tokenValue);
   }
 
@@ -44,7 +44,7 @@ public class SseController implements DisposableBean {
   @GetMapping(value = "${sse.path}/close")
   public R<Void> close() {
     String tokenValue = StpUtil.getTokenValue();
-    Long userId = LoginHelper.getUserId();
+    String userId = LoginHelper.getUserId();
     sseEmitterManager.disconnect(userId, tokenValue);
     return R.ok();
   }
@@ -56,7 +56,7 @@ public class SseController implements DisposableBean {
    * @param msg 要发送的消息内容
    */
   @GetMapping(value = "${sse.path}/send")
-  public R<Void> send(Long userId, String msg) {
+  public R<Void> send(String userId, String msg) {
     SseMessageDto dto = new SseMessageDto();
     dto.setUserIds(List.of(userId));
     dto.setMessage(msg);

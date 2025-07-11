@@ -22,7 +22,6 @@ public class SysDept extends TenantEntity {
 
   @Serial private static final long serialVersionUID = 1L;
 
-
   /** 父部门ID */
   private String parentId;
 
@@ -31,6 +30,9 @@ public class SysDept extends TenantEntity {
 
   /** 部门类别编码 */
   private String deptCategory;
+
+  /** 部门层级 */
+  private Integer top;
 
   /** 显示顺序 */
   private Integer orderNum;
@@ -47,12 +49,11 @@ public class SysDept extends TenantEntity {
   /** 部门状态:0正常,1停用 */
   private String status;
 
-
   /** 祖级列表 */
   private String ancestors;
 
   /** 子部门 */
-//  @TableField(exist = false)
-      @Column(ignore = true)
+  //  @TableField(exist = false)
+  @Column(ignore = true)
   private List<SysDept> children = new ArrayList<>();
 }

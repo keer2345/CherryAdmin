@@ -1,15 +1,12 @@
 package com.cherry.system.domain.vo;
 
-import com.cherry.common.flex.base.BaseBO;
 import com.cherry.system.domain.SysMenu;
 import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import lombok.Data;
 
 /**
  * 菜单权限视图对象 sys_menu
@@ -31,7 +28,7 @@ public class SysMenuVo implements Serializable {
 
   /** 父菜单ID */
   private String parentId;
-
+private String top;
   /** 显示顺序 */
   private Integer orderNum;
 

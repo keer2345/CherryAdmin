@@ -1,4 +1,4 @@
-package com.aizuda.snailjob.server.starter.filter;
+package com.cherry.snailjob.server.starter.filter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

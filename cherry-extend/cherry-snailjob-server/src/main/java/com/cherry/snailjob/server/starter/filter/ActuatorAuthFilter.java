@@ -1,4 +1,4 @@
-package com.aizuda.snailjob.server.starter.filter;
+package com.cherry.snailjob.server.starter.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

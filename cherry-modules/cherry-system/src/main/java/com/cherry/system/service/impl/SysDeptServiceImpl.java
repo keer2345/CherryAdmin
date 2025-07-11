@@ -3,7 +3,6 @@ package com.cherry.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.service.DeptService;
@@ -15,12 +14,11 @@ import com.cherry.system.mapper.SysDeptMapper;
 import com.cherry.system.service.ISysDeptService;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * 部门管理 服务实现
@@ -101,7 +99,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     qw.eq(SysDept::getStatus, bo.getStatus());
     qw.orderBy(SysDept::getAncestors);
     //        qw.orderBy(SysDept::getParentId);
+      qw.orderBy(SysDept::getTop);
     qw.orderBy(SysDept::getOrderNum);
+    qw.orderBy(SysDept::getCreateTime);
     //        qw.orderBy(SysDept::getId);
     if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
       // 部门树搜索

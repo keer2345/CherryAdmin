@@ -233,7 +233,8 @@ mybatis-encryptor:
   publicKey:
   privateKey:
 
---- # cherry
+--- # cherry configuration
 cherry:
   info:
+    version: 1.0.0
     base-package: com.cherry

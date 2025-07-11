@@ -69,8 +69,6 @@ public class SysOperLog extends TenantEntity implements Serializable {
   /** 错误消息 */
   private String errorMsg;
 
-  /** 操作时间 */
-  private Date operTime;
 
   /** 消耗时间 */
   private Long costTime;

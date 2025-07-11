@@ -36,6 +36,11 @@ public class BaseDO {
   //  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private String creator;
 
+    /**
+     * 创建者部门ID，目前使用 SysUser 的 deptId 编号
+     */
+    private String createDept;
+
   /**
    * 更新者，目前使用 SysUser 的 id 编号
    *

@@ -38,7 +38,7 @@ public class SysMenu extends BaseDO {
     /**
      * 菜单层级
      */
-    private Integer level;
+    private Integer top;
     /**
      * 显示顺序
      */

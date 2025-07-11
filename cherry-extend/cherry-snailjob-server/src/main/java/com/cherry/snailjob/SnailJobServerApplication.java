@@ -1,4 +1,4 @@
-package com.cherry.snailjojb;
+package com.cherry.snailjob;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

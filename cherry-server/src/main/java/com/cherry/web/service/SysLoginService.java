@@ -14,7 +14,6 @@ import com.cherry.common.core.enums.LoginType;
 import com.cherry.common.core.exception.user.UserException;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.log.event.LogininforEvent;
-import com.cherry.common.mybatis.helper.DataPermissionHelper;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.exception.TenantException;
@@ -23,15 +22,14 @@ import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.vo.*;
 import com.cherry.system.mapper.SysUserMapper;
 import com.cherry.system.service.*;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * 登录校验方法
@@ -151,7 +149,7 @@ public class SysLoginService {
   /** 构建登录用户 */
   public LoginUser buildLoginUser(SysUserVo user) {
     LoginUser loginUser = new LoginUser();
-    Long userId = user.getUserId();
+    String userId = user.getId();
 
     loginUser.setTenantId(user.getTenantId());
     loginUser.setUserId(userId);
@@ -213,12 +211,14 @@ public class SysLoginService {
    *
    * @param userId 用户ID
    */
-  public void recordLoginInfo(Long userId, String ip) {
+  public void recordLoginInfo(String userId, String ip) {
     SysUser sysUser = new SysUser();
-    sysUser.setUserId(userId);
+    sysUser.setId(userId);
     sysUser.setLoginIp(ip);
     sysUser.setLoginDate(DateUtils.getNowDate());
-    sysUser.setUpdateBy(userId);
-    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
+    sysUser.setUpdater(userId);
+//    todo
+//    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
+      userMapper.update(sysUser);
   }
 }
