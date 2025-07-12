@@ -1,5 +1,9 @@
 package com.cherry.common.flex.handler;
 
+import cn.hutool.core.util.ObjUtil;
+import cn.hutool.http.HttpStatus;
+import com.cherry.common.core.domain.model.LoginUser;
+import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.flex.base.BaseDO;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.mybatisflex.annotation.UpdateListener;
@@ -22,20 +26,37 @@ public class MybatisUpdateListener<T extends BaseDO> implements UpdateListener {
 
   // todo
   @Override
-  public void onUpdate(Object entity) {
-      log.info(">>>>>> 开始修改0 {}",LoginHelper.getLoginUser());
-      String userId = LoginHelper.getUserId();
-      T t = (T) entity;
-//      t.setUpdateTime(new Date());
-      t.setUpdateTime(LocalDateTime.now());
-      log.info(">>>>>> 开始修改1 {}, {}, {}",LoginHelper.getUserId(),LoginHelper.getUsername(),LoginHelper.getDeptId());
-    if (userId != null && entity instanceof BaseDO) {
-      //      t.setUpdater(SecurityUtil.getUserName());
-      t.setUpdater(userId);
-        log.info(">>>>>> 开始修改2 {}, {}, {}",LoginHelper.getUserId(),LoginHelper.getUsername(),LoginHelper.getDeptId());
-    }else{
-        t.setUpdater("");
-        log.info(">>>>>> 开始修改3 {}, {}, {}",LoginHelper.getUserId(),LoginHelper.getUsername(),LoginHelper.getDeptId());
+  public void onUpdate(Object o) {
+
+    try {
+      if (ObjUtil.isNotNull(o) && o instanceof BaseDO entity) {
+        entity.setUpdateTime(LocalDateTime.now());
+        LoginUser loginUser = getLoginUser();
+        log.info(">>>>>> 开始修改0 {}", loginUser);
+
+        log.info(
+            ">>>>>> 开始修改1 {}, {}, {}",
+            LoginHelper.getUserId(),
+            LoginHelper.getUsername(),
+            LoginHelper.getDeptId());
+        if (ObjUtil.isNotNull(loginUser)) {
+          entity.setUpdater(loginUser.getUserId());
+        }
+      }
+    } catch (Exception e) {
+      throw new ServiceException(
+          "Update监听自动注入异常 => " + e.getMessage(), HttpStatus.HTTP_UNAUTHORIZED);
     }
+  }
+
+  private LoginUser getLoginUser() {
+    LoginUser loginUser;
+    try {
+      loginUser = LoginHelper.getLoginUser();
+    } catch (Exception e) {
+      log.warn("Update自动注入警告 =》 用户未登录");
+      return null;
+    }
+    return loginUser;
   }
 }

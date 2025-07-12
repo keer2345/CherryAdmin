@@ -6,21 +6,21 @@ DROP TABLE IF EXISTS sys_client;
 create table sys_client
 (
     id             varchar(32) NOT NULL,
-    client_id      varchar(64)          default ''::varchar,
-    client_key     varchar(32)          default ''::varchar,
-    client_secret  varchar(255)         default ''::varchar,
-    grant_type     varchar(255)         default ''::varchar,
-    device_type    varchar(32)          default ''::varchar,
-    active_timeout int4                 default 1800,
-    timeout        int4                 default 604800,
-    status         char(1)              default '0'::bpchar,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    client_id      varchar(64)  default ''::varchar,
+    client_key     varchar(32)  default ''::varchar,
+    client_secret  varchar(255) default ''::varchar,
+    grant_type     varchar(255) default ''::varchar,
+    device_type    varchar(32)  default ''::varchar,
+    active_timeout int4         default 1800,
+    timeout        int4         default 604800,
+    status         char(1)      default '0'::bpchar,
+    creator        varchar(32),
+    create_dept    varchar(32),
+    create_time    timestamp,
+    updater        varchar(32),
+    update_time    timestamp,
+    delete_id      VARCHAR(32),
+    delete_time    TIMESTAMP,
     deleted        BOOLEAN NULL DEFAULT FALSE,
 
     constraint sys_client_pk primary key (id)
@@ -37,8 +37,8 @@ comment on column sys_client.active_timeout         is 'token活跃超时时间'
 comment on column sys_client.timeout                is 'token固定超时';
 comment on column sys_client.status                 is '状态（0正常 1停用）';
 
-insert into sys_client values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password,social', 'pc', 1800, 604800, 0,1,   103, now(), 1, now());
-insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'android', 1800, 604800,  0,1,  103, now(), 1, now());
+insert into sys_client values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password,social', 'pc', 1800, 604800, 0,1,   103, now());
+insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'android', 1800, 604800,  0,1,  103, now());
 
 
 -- ----------------------------
@@ -48,19 +48,19 @@ DROP TABLE IF EXISTS sys_config;
 create table sys_config
 (
     id           varchar(32) NOT NULL,
-    tenant_id    varchar(32)          default '000000'::varchar,
-    config_name  varchar(100)         default ''::varchar,
-    config_key   varchar(100)         default ''::varchar,
-    config_value varchar(500)         default ''::varchar,
-    config_type  char                 default 'N'::bpchar,
-    remark       varchar(500)         default null::varchar,
-    creator      varchar(32) NOT NULL DEFAULT '',
-    create_dept  varchar(32) NOT NULL DEFAULT '',
-    create_time  timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater      varchar(32) NULL     DEFAULT '',
-    update_time  timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id    VARCHAR(32) NULL DEFAULT NULL,
-    delete_time  TIMESTAMP NULL DEFAULT NULL,
+    tenant_id    varchar(32)  default '000000'::varchar,
+    config_name  varchar(100) default ''::varchar,
+    config_key   varchar(100) default ''::varchar,
+    config_value varchar(500) default ''::varchar,
+    config_type  char         default 'N'::bpchar,
+    remark       varchar(500) default null::varchar,
+    creator      varchar(32) ,
+    create_dept  varchar(32),
+    create_time  timestamp,
+    updater      varchar(32) ,
+    update_time  timestamp,
+    delete_id    VARCHAR(32),
+    delete_time  TIMESTAMP,
     deleted      BOOLEAN NULL DEFAULT FALSE,
     constraint sys_config_pk primary key (id)
 );
@@ -92,28 +92,28 @@ values (11, '000000', 'OSS预览列表资源开关', 'sys.oss.previewListResourc
         103, now());
 
 
-DROP TABLE IF EXISTS sys_dept ;
+DROP TABLE IF EXISTS sys_dept;
 create table sys_dept
 (
     id            varchar(32) NOT NULL,
-    tenant_id     varchar(32)          default '000000'::varchar,
+    tenant_id     varchar(32)  default '000000'::varchar,
     parent_id     varchar(32) NOT NULL,
-    ancestors     varchar(500)         default ''::varchar,
-    dept_name     varchar(30)          default ''::varchar,
-    dept_category varchar(100)         default null::varchar,
-    top           int4                 default 0,
-    order_num     int4                 default 0,
-    leader        int8                 default null,
-    phone         varchar(11)          default null::varchar,
-    email         varchar(50)          default null::varchar,
-    status        char                 default '0'::bpchar,
-    creator       varchar(32) NOT NULL DEFAULT '',
-    create_dept   varchar(32) NOT NULL DEFAULT '',
-    create_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater       varchar(32) NULL     DEFAULT '',
-    update_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id     VARCHAR(32) NULL DEFAULT NULL,
-    delete_time   TIMESTAMP NULL DEFAULT NULL,
+    ancestors     varchar(500) default ''::varchar,
+    dept_name     varchar(30)  default ''::varchar,
+    dept_category varchar(100) default null::varchar,
+    top           int4         default 0,
+    order_num     int4         default 0,
+    leader        int8         default null,
+    phone         varchar(11)  default null::varchar,
+    email         varchar(50)  default null::varchar,
+    status        char         default '0'::bpchar,
+    creator       varchar(32),
+    create_dept   varchar(32),
+    create_time   timestamp,
+    updater       varchar(32),
+    update_time   timestamp,
+    delete_id     VARCHAR(32),
+    delete_time   TIMESTAMP,
     deleted       BOOLEAN NULL DEFAULT FALSE,
     constraint "sys_dept_pk" primary key (id)
 );
@@ -167,10 +167,10 @@ values (109, '000000', 102, '0,100,102', '财务部门', null, 2, 2, null, '1588
 -- ----------------------------
 -- 字典数据表
 -- ----------------------------
-DROP TABLE IF EXISTS sys_dict_data ;
+DROP TABLE IF EXISTS sys_dict_data;
 create table sys_dict_data
 (
-    id            varchar(32) NOT NULL,
+    id          varchar(32) NOT NULL,
     tenant_id   varchar(32)  default '000000'::varchar,
     dict_sort   int4         default 0,
     dict_label  varchar(100) default ''::varchar,
@@ -180,14 +180,14 @@ create table sys_dict_data
     list_class  varchar(100) default null::varchar,
     is_default  char         default 'N'::bpchar,
     remark      varchar(500) default null::varchar,
-    create_dept   varchar(32) NOT NULL DEFAULT '',
-    creator       varchar(32) NOT NULL DEFAULT '',
-    create_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater       varchar(32) NULL     DEFAULT '',
-    update_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id     VARCHAR(32) NULL DEFAULT NULL,
-    delete_time   TIMESTAMP NULL DEFAULT NULL,
-    deleted       BOOLEAN NULL DEFAULT FALSE,
+    create_dept varchar(32),
+    creator     varchar(32),
+    create_time timestamp,
+    updater     varchar(32),
+    update_time timestamp,
+    delete_id   VARCHAR(32),
+    delete_time TIMESTAMP,
+    deleted     BOOLEAN NULL DEFAULT FALSE,
     constraint sys_dict_data_pk primary key (id)
 );
 
@@ -241,21 +241,21 @@ insert into sys_dict_data values(38, '000000', 0,  '小程序', 'xcx',         '
 -- ----------------------------
 -- 字典类型表
 -- ----------------------------
-DROP TABLE IF EXISTS sys_dict_type ;
+DROP TABLE IF EXISTS sys_dict_type;
 create table sys_dict_type
 (
     id          varchar(32) NOT NULL,
-    tenant_id   varchar(32)          default '000000'::varchar,
-    dict_name   varchar(100)         default ''::varchar,
-    dict_type   varchar(100)         default ''::varchar,
-    remark      varchar(500)         default null::varchar,
-    create_dept varchar(32) NOT NULL DEFAULT '',
-    creator     varchar(32) NOT NULL DEFAULT '',
-    create_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater     varchar(32) NULL     DEFAULT '',
-    update_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id   VARCHAR(32) NULL DEFAULT NULL,
-    delete_time TIMESTAMP NULL DEFAULT NULL,
+    tenant_id   varchar(32)  default '000000'::varchar,
+    dict_name   varchar(100) default ''::varchar,
+    dict_type   varchar(100) default ''::varchar,
+    remark      varchar(500) default null::varchar,
+    create_dept varchar(32),
+    creator     varchar(32),
+    create_time timestamp,
+    updater     varchar(32),
+    update_time timestamp,
+    delete_id   VARCHAR(32),
+    delete_time TIMESTAMP,
     deleted     BOOLEAN NULL DEFAULT FALSE,
     constraint sys_dict_type_pk primary key (id)
 );
@@ -283,11 +283,11 @@ insert into sys_dict_type values(12, '000000', '设备类型', 'sys_device_type'
 -- ----------------------------
 -- 系统访问记录
 -- ----------------------------
-DROP TABLE IF EXISTS sys_logininfor ;
+DROP TABLE IF EXISTS sys_logininfor;
 create table sys_logininfor
 (
-    id          varchar(32) NOT NULL,
-    tenant_id   varchar(32)          default '000000'::varchar,
+    id             varchar(32) NOT NULL,
+    tenant_id      varchar(32)  default '000000'::varchar,
     user_name      varchar(50)  default ''::varchar,
     client_key     varchar(32)  default ''::varchar,
     device_type    varchar(32)  default ''::varchar,
@@ -298,16 +298,16 @@ create table sys_logininfor
     status         char         default '0'::bpchar,
     msg            varchar(255) default ''::varchar,
     login_time     timestamp,
-    create_dept varchar(32) NOT NULL DEFAULT '',
-    creator     varchar(32) NOT NULL DEFAULT '',
-    create_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater     varchar(32) NULL     DEFAULT '',
-    update_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id   VARCHAR(32) NULL DEFAULT NULL,
-    delete_time TIMESTAMP NULL DEFAULT NULL,
-    deleted     BOOLEAN NULL DEFAULT FALSE,
+    create_dept    varchar(32),
+    creator        varchar(32),
+    create_time    timestamp,
+    updater        varchar(32),
+    update_time    timestamp,
+    delete_id      VARCHAR(32),
+    delete_time    TIMESTAMP,
+    deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint sys_logininfor_pk primary key (id)
-    );
+);
 
 create index idx_sys_logininfor_s ON sys_logininfor (status);
 create index idx_sys_logininfor_lt ON sys_logininfor (login_time);
@@ -332,13 +332,13 @@ comment on column sys_logininfor.login_time     is '访问时间';
 -- ----------------------------
 -- 菜单权限表
 -- ----------------------------
-DROP TABLE IF EXISTS sys_menu ;
+DROP TABLE IF EXISTS sys_menu;
 create table sys_menu
 (
     id          varchar(32) NOT NULL,
     menu_name   varchar(50) not null,
-    parent_id          varchar(32) NOT NULL,
-    top   int4         default 0,
+    parent_id   varchar(32) NOT NULL,
+    top         int4         default 0,
     order_num   int4         default 0,
     path        varchar(200) default ''::varchar,
     component   varchar(255) default null::varchar,
@@ -350,14 +350,14 @@ create table sys_menu
     status      char         default '0'::bpchar,
     perms       varchar(100) default null::varchar,
     icon        varchar(100) default '#'::varchar,
-    create_dept varchar(32) NOT NULL DEFAULT '',
-    creator     varchar(32) NOT NULL DEFAULT '',
-    create_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_dept varchar(32),
+    creator     varchar(32),
+    create_time timestamp,
     remark      varchar(500) default ''::varchar,
-    updater     varchar(32) NULL     DEFAULT '',
-    update_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id   VARCHAR(32) NULL DEFAULT NULL,
-    delete_time TIMESTAMP NULL DEFAULT NULL,
+    updater     varchar(32),
+    update_time timestamp,
+    delete_id   VARCHAR(32),
+    delete_time TIMESTAMP,
     deleted     BOOLEAN NULL DEFAULT FALSE,
     constraint "sys_menu_pk" primary key (id)
 );
@@ -549,13 +549,13 @@ create table sys_oper_log
     status         int4          default 0,
     error_msg      varchar(4000) default ''::varchar,
     cost_time      int8          default 0,
-    create_dept varchar(32) NOT NULL DEFAULT '',
-    creator     varchar(32) NOT NULL DEFAULT '',
-    create_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater     varchar(32) NULL     DEFAULT '',
-    update_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id   VARCHAR(32) NULL DEFAULT NULL,
-    delete_time TIMESTAMP NULL DEFAULT NULL,
+    create_dept varchar(32) ,
+    creator     varchar(32) ,
+    create_time timestamp   ,
+    updater     varchar(32) ,
+    update_time timestamp   ,
+    delete_id   VARCHAR(32) ,
+    delete_time TIMESTAMP ,
     deleted     BOOLEAN NULL DEFAULT FALSE,
     constraint sys_oper_log_pk primary key (id)
 );
@@ -600,13 +600,13 @@ create table sys_oss
     url           varchar(500) default ''::varchar not null,
     ext1          varchar(500) default ''::varchar,
     service       varchar(20)  default 'minio'::varchar,
-    create_dept varchar(32) NOT NULL DEFAULT '',
-    creator     varchar(32) NOT NULL DEFAULT '',
-    create_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater     varchar(32) NULL     DEFAULT '',
-    update_time timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id   VARCHAR(32) NULL DEFAULT NULL,
-    delete_time TIMESTAMP NULL DEFAULT NULL,
+    create_dept varchar(32) ,
+    creator     varchar(32) ,
+    create_time timestamp   ,
+    updater     varchar(32) ,
+    update_time timestamp   ,
+    delete_id   VARCHAR(32) ,
+    delete_time TIMESTAMP ,
     deleted     BOOLEAN NULL DEFAULT FALSE,
     constraint sys_oss_pk primary key (id)
 );
@@ -638,13 +638,13 @@ create table sys_post
     post_sort     int4        not null,
     status        char        not null,
     remark        varchar(500)         default null::varchar,
-    create_dept   varchar(32) NOT NULL DEFAULT '',
-    creator       varchar(32) NOT NULL DEFAULT '',
-    create_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater       varchar(32) NULL     DEFAULT '',
-    update_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id     VARCHAR(32) NULL DEFAULT NULL,
-    delete_time   TIMESTAMP NULL DEFAULT NULL,
+    create_dept   varchar(32) ,
+    creator       varchar(32) ,
+    create_time   timestamp   ,
+    updater       varchar(32) ,
+    update_time   timestamp   ,
+    delete_id     VARCHAR(32) ,
+    delete_time   TIMESTAMP ,
     deleted       BOOLEAN NULL DEFAULT FALSE,
     constraint "sys_post_pk" primary key (id)
 );
@@ -685,13 +685,13 @@ create table sys_role
     dept_check_strictly bool         default true,
     status              char         not null,
     remark              varchar(500) default null::varchar,
-    create_dept   varchar(32) NOT NULL DEFAULT '',
-    creator       varchar(32) NOT NULL DEFAULT '',
-    create_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater       varchar(32) NULL     DEFAULT '',
-    update_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id     VARCHAR(32) NULL DEFAULT NULL,
-    delete_time   TIMESTAMP NULL DEFAULT NULL,
+    create_dept   varchar(32) ,
+    creator       varchar(32) ,
+    create_time   timestamp   ,
+    updater       varchar(32) ,
+    update_time   timestamp   ,
+    delete_id     VARCHAR(32) ,
+    delete_time   TIMESTAMP ,
     deleted       BOOLEAN NULL DEFAULT FALSE,
     constraint "sys_role_pk" primary key (id)
 );
@@ -725,13 +725,13 @@ create table sys_role_menu
     id            varchar(32) NOT NULL,
     role_id varchar(32) NOT NULL,
     menu_id varchar(32) NOT NULL,
-    create_dept   varchar(32) NOT NULL DEFAULT '',
-    creator       varchar(32) NOT NULL DEFAULT '',
-    create_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater       varchar(32) NULL     DEFAULT '',
-    update_time   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id     VARCHAR(32) NULL DEFAULT NULL,
-    delete_time   TIMESTAMP NULL DEFAULT NULL,
+    create_dept   varchar(32) ,
+    creator       varchar(32) ,
+    create_time   timestamp   ,
+    updater       varchar(32) ,
+    update_time   timestamp   ,
+    delete_id     VARCHAR(32) ,
+    delete_time   TIMESTAMP ,
     deleted       BOOLEAN NULL DEFAULT FALSE,
     constraint sys_role_menu_pk primary key (role_id, menu_id)
 );
@@ -883,13 +883,13 @@ create table sys_social
     code               varchar(255)     default null::varchar,
     oauth_token        varchar(255)     default null::varchar,
     oauth_token_secret varchar(255)     default null::varchar,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32) ,
+    create_time    timestamp  ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
     deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint "pk_sys_social" primary key (id)
 );
@@ -940,13 +940,13 @@ create table sys_tenant
     expire_time       timestamp,
     account_count     int4          default -1,
     status            char          default '0'::bpchar,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32) ,
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
     deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint "pk_sys_tenant" primary key (id)
 );
@@ -996,13 +996,13 @@ create table sys_user
     login_ip    varchar(128) default ''::varchar,
     login_date  timestamp,
     remark      varchar(500) default null::varchar,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32),
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
     deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint "sys_user_pk" primary key (id)
 );
@@ -1040,13 +1040,13 @@ create table sys_user_post
     id             varchar(32) NOT NULL,
     user_id varchar(32) NOT NULL,
     post_id varchar(32) NOT NULL,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32) ,
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
     deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint sys_user_post_pk primary key (user_id, post_id)
 );
@@ -1069,13 +1069,13 @@ create table sys_user_role
     id             varchar(32) NOT NULL,
     user_id varchar(32) NOT NULL,
     role_id varchar(32) NOT NULL,
-    creator        varchar(32) NOT NULL DEFAULT '',
-    create_dept     varchar(32) NOT NULL DEFAULT '',
-    create_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updater        varchar(32) NULL     DEFAULT '',
-    update_time    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    delete_id      VARCHAR(32) NULL DEFAULT NULL,
-    delete_time    TIMESTAMP NULL DEFAULT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32),
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
     deleted        BOOLEAN NULL DEFAULT FALSE,
     constraint sys_user_role_pk primary key (user_id, role_id)
 );
