@@ -34,12 +34,8 @@ public class MybatisUpdateListener<T extends BaseDO> implements UpdateListener {
         LoginUser loginUser = getLoginUser();
         log.info(">>>>>> 开始修改0 {}", loginUser);
 
-        log.info(
-            ">>>>>> 开始修改1 {}, {}, {}",
-            LoginHelper.getUserId(),
-            LoginHelper.getUsername(),
-            LoginHelper.getDeptId());
         if (ObjUtil.isNotNull(loginUser)) {
+            log.info("u3 {}",loginUser.getUserId());
           entity.setUpdater(loginUser.getUserId());
         }
       }

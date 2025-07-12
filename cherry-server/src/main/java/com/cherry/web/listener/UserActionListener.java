@@ -46,7 +46,7 @@ public class UserActionListener implements SaTokenListener {
       String loginType, Object loginId, String tokenValue, SaLoginParameter loginParameter) {
     UserAgent userAgent = UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
     String ip = ServletUtils.getClientIP();
-    LoginUser user = LoginHelper.getLoginUser();
+//    LoginUser user = LoginHelper.getLoginUser();
     UserOnlineDTO dto = new UserOnlineDTO();
     dto.setIpaddr(ip);
     dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
@@ -54,15 +54,16 @@ public class UserActionListener implements SaTokenListener {
     dto.setOs(userAgent.getOs().getName());
     dto.setLoginTime(System.currentTimeMillis());
     dto.setTokenId(tokenValue);
-    //    String username =  (String) loginParameter.getExtra(LoginHelper.USER_NAME_KEY);
-    //    String tenantId = (String) loginParameter.getExtra(LoginHelper.TENANT_KEY);
-    dto.setUserName(user.getUsername());
+        String username =  (String) loginParameter.getExtra(LoginHelper.USER_NAME_KEY);
+        String tenantId = (String) loginParameter.getExtra(LoginHelper.TENANT_KEY);
+//    dto.setUserName(user.getUsername());
+      dto.setUserName(username);
     dto.setClientKey((String) loginParameter.getExtra(LoginHelper.CLIENT_KEY));
     dto.setDeviceType(loginParameter.getDevice());
 
     TenantHelper.dynamic(
-        //        tenantId,
-        user.getTenantId(),
+                tenantId,
+//        user.getTenantId(),
         () -> {
           if (tokenConfig.getTimeout() == -1) {
             RedisUtils.setCacheObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
@@ -75,16 +76,16 @@ public class UserActionListener implements SaTokenListener {
         });
     // 记录登录日志
     LogininforEvent logininforEvent = new LogininforEvent();
-    //    logininforEvent.setTenantId(tenantId);
-    //    logininforEvent.setUsername(username);
-    logininforEvent.setTenantId(user.getTenantId());
-    logininforEvent.setUsername(user.getUsername());
+        logininforEvent.setTenantId(tenantId);
+        logininforEvent.setUsername(username);
+//    logininforEvent.setTenantId(user.getTenantId());
+//    logininforEvent.setUsername(user.getUsername());
     logininforEvent.setStatus(Constants.LOGIN_SUCCESS);
     logininforEvent.setMessage(MessageUtils.message("user.login.success"));
     logininforEvent.setRequest(ServletUtils.getRequest());
     // 更新登录信息
-    //    loginService.recordLoginInfo((String) loginParameter.getExtra(LoginHelper.USER_KEY), ip);
-    loginService.recordLoginInfo(user.getUserId(), ip);
+        loginService.recordLoginInfo((String) loginParameter.getExtra(LoginHelper.USER_KEY), ip);
+//    loginService.recordLoginInfo(user.getUserId(), ip);
     log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
   }
 
