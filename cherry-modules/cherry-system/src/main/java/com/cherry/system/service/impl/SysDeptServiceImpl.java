@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
-import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.service.DeptService;
 import com.cherry.common.core.utils.*;
 import com.cherry.system.domain.SysDept;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     implements ISysDeptService, DeptService {
   // todo
@@ -97,12 +98,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     qw.like(SysDept::getDeptName, bo.getDeptName());
     qw.like(SysDept::getDeptCategory, bo.getDeptCategory());
     qw.eq(SysDept::getStatus, bo.getStatus());
-    qw.orderBy(SysDept::getAncestors);
-    //        qw.orderBy(SysDept::getParentId);
-      qw.orderBy(SysDept::getTop);
-    qw.orderBy(SysDept::getOrderNum);
-    qw.orderBy(SysDept::getCreateTime);
-    //        qw.orderBy(SysDept::getId);
+
     if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
       // 部门树搜索
       qw.and(
@@ -115,6 +111,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
             x.in(SysDept::getId, deptIds);
           });
     }
+
+    qw.orderBy(SysDept::getAncestors);
+    qw.orderBy(SysDept::getTop);
+    qw.orderBy(SysDept::getOrderNum);
+    qw.orderBy(SysDept::getCreateTime);
     return qw;
   }
 
@@ -129,27 +130,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     if (CollUtil.isEmpty(depts)) {
       return CollUtil.newArrayList();
     }
-    // 获取当前列表中每一个节点的parentId，然后在列表中查找是否有id与其parentId对应，若无对应，则表明此时节点列表中，该节点在当前列表中属于顶级节点
-    List<Tree<String>> treeList = CollUtil.newArrayList();
-
-    for (SysDeptVo d : depts) {
-      String parentId = d.getParentId();
-      SysDeptVo sysDeptVo = StreamUtils.findFirst(depts, it -> it.getId() == parentId);
-      if (ObjectUtil.isNull(sysDeptVo)) {
-        List<Tree<String>> trees =
-            TreeBuildUtils.build(
-                depts,
-                parentId,
-                (dept, tree) ->
-                    tree.setId(dept.getId())
-                        .setParentId(dept.getParentId())
-                        .setName(dept.getDeptName())
-                        .setWeight(dept.getOrderNum())
-                        .putExtra("disabled", SystemConstants.DISABLE.equals(dept.getStatus())));
-        Tree<String> tree = StreamUtils.findFirst(trees, it -> it.getId() == d.getId());
-        treeList.add(tree);
-      }
-    }
-    return treeList;
+    return TreeBuildUtils.buildMultiRoot(
+        depts,
+        SysDeptVo::getId,
+        SysDeptVo::getParentId,
+        (node, treeNode) ->
+            treeNode
+                .setId(node.getId())
+                .setParentId(node.getParentId())
+                .setName(node.getDeptName())
+                .setWeight(node.getOrderNum())
+                .putExtra("disabled", SystemConstants.DISABLE.equals((node.getStatus()))));
   }
 }

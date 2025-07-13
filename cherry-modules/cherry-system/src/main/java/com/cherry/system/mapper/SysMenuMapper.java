@@ -19,77 +19,95 @@ import java.util.List;
  */
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
-    // todo
+  // todo
 
-    /**
-     * 根据用户ID查询权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    default List<SysMenu> selectMenuPermsByUserId(String userId) {
+  /**
+   * 根据用户ID查询权限
+   *
+   * @param userId 用户ID
+   * @return 权限列表
+   */
+  default List<SysMenu> selectMenuPermsByUserId(String userId) {
 
+    QueryWrapper query =
+        new QueryWrapper()
+            .create()
+            .from(SysMenu.class)
+            .as("a")
+            .leftJoin(SysRoleMenu.class)
+            .as("b")
+            .on(SysMenu::getId, SysRoleMenu::getMenuId)
+            .leftJoin(SysUserRole.class)
+            .as("c")
+            .on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
+            .leftJoin(SysRole.class)
+            .as("d")
+            .on(SysRole::getId, SysUserRole::getRoleId)
+            .where(SysMenu::getPerms)
+            .ne("")
+            .eq(SysUserRole::getUserId, userId)
+            .eq(SysMenu::getStatus, SystemConstants.NORMAL)
+            .eq(SysRole::getStatus, SystemConstants.NORMAL);
 
-        QueryWrapper query =
-            new QueryWrapper()
-                .create()
-                .from(SysMenu.class)
-                .as("a")
-                .leftJoin(SysRoleMenu.class)
-                .as("b")
-                .on(SysMenu::getId, SysRoleMenu::getMenuId)
-                .leftJoin(SysUserRole.class)
-                .as("c")
-                .on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
-                .leftJoin(SysRole.class).as("d").on(SysRole::getId, SysUserRole::getRoleId)
-                .where(SysMenu::getPerms).ne("")
-                .eq(SysUserRole::getUserId, userId)
-                .eq(SysMenu::getStatus, SystemConstants.NORMAL).eq(SysRole::getStatus, SystemConstants.NORMAL);
+    return selectListByQuery(query);
 
-        return selectListByQuery(query);
+    //        select distinct m.perms
+    //        from sys_menu m
+    //        left join sys_role_menu rm on m.menu_id = rm.menu_id and m.status = '0'
+    //        left join sys_role r on r.role_id = rm.role_id and r.status = '0'
+    //        where r.role_id in (select role_id from sys_user_role where user_id = #{
+    //            userId
+    //        })
 
-//        select distinct m.perms
-//        from sys_menu m
-//        left join sys_role_menu rm on m.menu_id = rm.menu_id and m.status = '0'
-//        left join sys_role r on r.role_id = rm.role_id and r.status = '0'
-//        where r.role_id in (select role_id from sys_user_role where user_id = #{
-//            userId
-//        })
+  }
 
-    }
-
-    /**
-     * 查询所有菜单
-     *
-     * @return 菜单列表
-     */
-    default List<SysMenu> selectMenuTreeAll() {
-        QueryWrapper query = new QueryWrapper().create().from(SysMenu.class)
-            .where(SysMenu::getMenuType).in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
+  /**
+   * 查询所有菜单
+   *
+   * @return 菜单列表
+   */
+  default List<SysMenu> selectMenuTreeAll() {
+    QueryWrapper query =
+        new QueryWrapper()
+            .create()
+            .from(SysMenu.class)
+            .where(SysMenu::getMenuType)
+            .in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
             .eq(SysMenu::getStatus, SystemConstants.NORMAL)
             .orderBy(SysMenu::getTop, true)
             .orderBy(SysMenu::getOrderNum, true);
-        return this.selectListByQuery(query);
-    }
+    return this.selectListByQuery(query);
+  }
 
-    /**
-     * 根据用户ID查询菜单
-     *
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    default List<SysMenu> selectMenuTreeByUserId(String userId) {
-        QueryWrapper query = new QueryWrapper().create().from(SysMenu.class).as("a")
-            .leftJoin(SysRoleMenu.class).as("b").on(SysMenu::getId, SysRoleMenu::getMenuId)
-            .leftJoin(SysUserRole.class).as("c").on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
-            .leftJoin(SysRole.class).as("d").on(SysRole::getId, SysUserRole::getRoleId)
-            .where(SysMenu::getMenuType).in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
+  /**
+   * 根据用户ID查询菜单
+   *
+   * @param userId 用户ID
+   * @return 菜单列表
+   */
+  default List<SysMenu> selectMenuTreeByUserId(String userId) {
+    QueryWrapper query =
+        new QueryWrapper()
+            .create()
+            .from(SysMenu.class)
+            .as("a")
+            .leftJoin(SysRoleMenu.class)
+            .as("b")
+            .on(SysMenu::getId, SysRoleMenu::getMenuId)
+            .leftJoin(SysUserRole.class)
+            .as("c")
+            .on(SysUserRole::getRoleId, SysRoleMenu::getRoleId)
+            .leftJoin(SysRole.class)
+            .as("d")
+            .on(SysRole::getId, SysUserRole::getRoleId)
+            .where(SysMenu::getMenuType)
+            .in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
             .eq(SysMenu::getStatus, SystemConstants.NORMAL)
             .eq(SysRole::getStatus, SystemConstants.NORMAL)
             .eq(SysUserRole::getUserId, userId)
             .orderBy(SysMenu::getTop, true)
             .orderBy(SysMenu::getOrderNum, true);
 
-        return this.selectListByQuery(query);
-    }
+    return this.selectListByQuery(query);
+  }
 }
