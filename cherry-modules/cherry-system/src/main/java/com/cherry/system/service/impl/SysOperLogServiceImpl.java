@@ -15,11 +15,11 @@ import com.cherry.system.service.ISysOperLogService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,11 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog>
     implements ISysOperLogService {
 
   private final SysOperLogMapper operLogMapper;
-
   /**
    * 操作日志记录
    *
@@ -97,6 +97,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     //            SysOperLog::getOperTime,
     //            params.get("beginTime"),
     //            params.get("endTime"));
+
   }
 
   /**
@@ -107,8 +108,8 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
   @Override
   public void insertOperlog(SysOperLogBo bo) {
     SysOperLog operLog = MapstructUtils.convert(bo, SysOperLog.class);
-        operLog.setCreateTime(LocalDateTime.now());
-//    operLog.setCreateTime(new Date());
+    //        operLog.setCreateTime(LocalDateTime.now());
+    //    operLog.setCreateTime(new Date());
     operLogMapper.insert(operLog);
   }
 

@@ -7,11 +7,9 @@ import com.cherry.common.core.utils.StringUtils;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.SqlUtil;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import lombok.Data;
 
 /**
  * 分页查询实体类
@@ -48,6 +46,10 @@ public class PageQuery implements Serializable {
     Integer pageNum = ObjUtil.defaultIfNull(getPageNum(), DEFAULT_PAGE_NUM);
     Integer pageSize = ObjUtil.defaultIfNull(getPageSize(), DEFAULT_PAGE_SIZE);
 
+    if (pageNum <= 0) {
+      pageNum = DEFAULT_PAGE_NUM;
+    }
+
     Page<T> page = new Page<T>(pageNum, pageSize);
     return page;
   }
@@ -63,7 +65,7 @@ public class PageQuery implements Serializable {
    */
   public QueryWrapper buildOrders(QueryWrapper queryWrapper) {
     if (StrUtil.isBlank(orderByColumn) || StrUtil.isBlank(isAsc)) {
-      return queryWrapper;
+      return queryWrapper.orderBy("create_time", false);
     }
     SqlUtil.keepOrderBySqlSafely(orderByColumn);
     String orderBy = StrUtil.toUnderlineCase(orderByColumn);
@@ -75,6 +77,7 @@ public class PageQuery implements Serializable {
 
     String[] orderByArr = orderBy.split(StringUtils.SEPARATOR);
     String[] isAscArr = isAsc.split(StringUtils.SEPARATOR);
+
     if (isAscArr.length != 1 && isAscArr.length != orderByArr.length) {
       throw new ServiceException("排序参数有误");
     }

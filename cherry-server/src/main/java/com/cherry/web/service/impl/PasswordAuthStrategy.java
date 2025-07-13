@@ -3,6 +3,7 @@ package com.cherry.web.service.impl;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import cn.hutool.core.util.ObjUtil;
 import com.cherry.common.core.constant.Constants;
 import com.cherry.common.core.constant.GlobalConstants;
@@ -64,36 +65,26 @@ public class PasswordAuthStrategy implements IAuthStrategy {
     if (captchaEnabled) {
       validateCaptcha(tenantId, username, code, uuid);
     }
-    /*
-        LoginUser loginUser =
-            TenantHelper.dynamic(
-                tenantId,
-                () -> {
-                  SysUserVo user = loadUserByUsername(username);
-                  loginService.checkLogin(
-                      LoginType.PASSWORD,
-                      tenantId,
-                      username,
-                      () -> !BCrypt.checkpw(password, user.getPassword()));
+    LoginUser loginUser =
+        TenantHelper.dynamic(
+            tenantId,
+            () -> {
+              SysUserVo user = loadUserByUsername(username);
+              loginService.checkLogin(
+                  LoginType.PASSWORD,
+                  tenantId,
+                  username,
+                  () -> !BCrypt.checkpw(password, user.getPassword()));
 
-                  // 此处可根据登录用户的数据不同 自行创建 loginUser
-                  //   todo
-                  return loginService.buildLoginUser(user);
-                });
-    */
-    SysUserVo user = loadUserByUsername(tenantId, username);
-    loginService.checkLogin(
-        LoginType.PASSWORD,
-        tenantId,
-        username,
-        () -> !BCrypt.checkpw(password, user.getPassword()));
-    // 此处可根据登录用户的数据不同 自行创建 loginUser
-    LoginUser loginUser = loginService.buildLoginUser(user);
+              // 此处可根据登录用户的数据不同 自行创建 loginUser
+              //   todo
+              return loginService.buildLoginUser(user);
+            });
 
     loginUser.setClientKey(client.getClientKey());
     loginUser.setDeviceType(client.getDeviceType());
 
-    SaLoginModel model = new SaLoginModel();
+    SaLoginParameter model = new SaLoginParameter();
     model.setDevice(client.getDeviceType());
     // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
     // 例如: 后台用户30分钟过期 app用户1天过期
@@ -133,21 +124,17 @@ public class PasswordAuthStrategy implements IAuthStrategy {
     }
   }
 
-  private SysUserVo loadUserByUsername(String tenantId, String username) {
-    return TenantHelper.dynamic(
-        tenantId,
-        () -> {
-          SysUserVo user =
-              userMapper.selectOneByQueryAs(
-                  new QueryWrapper().eq(SysUser::getUserName, username), SysUserVo.class);
-          if (ObjUtil.isNull(user)) {
-            log.info("登录用户：{} 不存在.", username);
-            throw new UserException("user.not.exists", username);
-          } else if (SystemConstants.DISABLE.equals(user.getStatus())) {
-            log.info("登录用户：{} 已被停用.", username);
-            throw new UserException("user.blocked", username);
-          }
-          return user;
-        });
+  private SysUserVo loadUserByUsername(String username) {
+    SysUserVo user =
+        userMapper.selectOneByQueryAs(
+            new QueryWrapper().eq(SysUser::getUserName, username), SysUserVo.class);
+    if (ObjUtil.isNull(user)) {
+      log.info("登录用户：{} 不存在.", username);
+      throw new UserException("user.not.exists", username);
+    } else if (SystemConstants.DISABLE.equals(user.getStatus())) {
+      log.info("登录用户：{} 已被停用.", username);
+      throw new UserException("user.blocked", username);
+    }
+    return user;
   }
 }

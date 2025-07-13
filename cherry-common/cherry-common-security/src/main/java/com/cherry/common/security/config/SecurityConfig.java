@@ -1,6 +1,7 @@
 package com.cherry.common.security.config;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.filter.SaTokenContextFilterForJakartaServlet;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
@@ -16,8 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.DispatcherType;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.EnumSet;
 
 /**
  * 权限安全配置
@@ -84,10 +91,37 @@ public class SecurityConfig implements WebMvcConfigurer {
                           });
                 }))
         .addPathPatterns("/**")
+        .excludePathPatterns("/error")
         // 排除不需要拦截的路径
         .excludePathPatterns(securityProperties.getExcludes());
   }
 
   // todo
   // todo 2025053001
+
+    // todo
+  /**
+   * https://github.com/QingQiuGeek/blog-backend/blob/e1df553/src/main/java/com/serein/interceptor/SaTokenConfigure.java
+   *
+   * <p>解决SaTokenContext 上下文尚未初始化的问题
+   *
+   * <p>参考: https://gitee.com/dromara/sa-token/issues/IC4XFE
+   *
+   * @return
+   */
+  /*
+  @Bean
+  public FilterRegistrationBean saTokenContextFilterForJakartaServlet() {
+    FilterRegistrationBean bean =
+        new FilterRegistrationBean<>(new SaTokenContextFilterForJakartaServlet());
+    // 配置 Filter 拦截的 URL 模式
+    bean.addUrlPatterns("/*");
+    // 设置 Filter 的执行顺序,数值越小越先执行
+    bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    bean.setAsyncSupported(true);
+    bean.setDispatcherTypes(EnumSet.of(DispatcherType.ASYNC, DispatcherType.REQUEST));
+    return bean;
+  }
+
+   */
 }

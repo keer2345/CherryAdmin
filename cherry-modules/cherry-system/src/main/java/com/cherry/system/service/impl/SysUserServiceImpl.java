@@ -45,7 +45,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   private final SysUserMapper userMapper;
   private final SysRoleMapper roleMapper;
   private final SysPostMapper postMapper;
-  private final SysDeptMapper deptMapper;
 
   @Override
   public SysUserVo selectUserById(String userId) {

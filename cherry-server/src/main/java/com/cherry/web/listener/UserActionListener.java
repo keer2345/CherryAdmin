@@ -60,6 +60,7 @@ public class UserActionListener implements SaTokenListener {
       dto.setUserName(username);
     dto.setClientKey((String) loginParameter.getExtra(LoginHelper.CLIENT_KEY));
     dto.setDeviceType(loginParameter.getDevice());
+    dto.setDeptName((String) loginParameter.getExtra(LoginHelper.DEPT_NAME_KEY));
 
     TenantHelper.dynamic(
                 tenantId,
