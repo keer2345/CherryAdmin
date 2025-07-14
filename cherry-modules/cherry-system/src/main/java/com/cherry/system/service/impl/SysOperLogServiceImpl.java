@@ -4,7 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ip.AddressUtils;
-import com.cherry.common.core.utils.sql.SearchUtils;
+import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.log.event.OperLogEvent;

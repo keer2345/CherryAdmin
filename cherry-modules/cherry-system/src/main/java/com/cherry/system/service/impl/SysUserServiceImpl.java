@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
-import com.cherry.common.core.utils.sql.SearchUtils;
+import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.system.domain.SysUser;
@@ -204,9 +204,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
     QueryWrapper qw = buildQueryWrapper(user);
-    log.info("sql1: {}", qw.toSQL());
     pageQuery.buildOrders(qw);
-    log.info("sql2: {}", qw.toSQL());
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -214,8 +212,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   private QueryWrapper buildQueryWrapper(SysUserBo user) {
     Map<String, Object> params = user.getParams();
 
-    return new QueryWrapper()
-        .create()
+    QueryWrapper qw = new QueryWrapper();
+    qw.create()
         .select()
         .from(SysUser.class)
         .eq(SysUser::getId, user.getId())
@@ -223,14 +221,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         .like(SysUser::getUserName, user.getUserName())
         .eq(SysUser::getStatus, user.getStatus())
         .like(SysUser::getPhonenumber, user.getPhonenumber())
-        .between(
-            SysUser::getCreateTime,
-            SearchUtils.strToDayStart(params.get("beginTime")),
-            SearchUtils.strToDayEnd(params.get("endTime")),
-            params.get("beginTime") != null && params.get("endTime") != null)
+        //        .between(
+        //            SysUser::getCreateTime,
+        //            SearchUtils.strToDayStart(params.get("beginTime")),
+        //            SearchUtils.strToDayEnd(params.get("endTime")),
+        //            params.get("beginTime") != null && params.get("endTime") != null)
         .notIn(
             SysUser::getId,
             StringUtils.splitList(user.getExcludeUserIds()),
             StrUtil.isNotBlank(user.getId()));
+    SearchUtils.buildTimeBetween(qw, "create_time", params.get("beginTime"), params.get("endTime"));
+    return qw;
   }
 }
