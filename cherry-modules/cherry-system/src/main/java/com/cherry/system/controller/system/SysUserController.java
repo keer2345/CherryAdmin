@@ -45,6 +45,8 @@ public class SysUserController extends BaseController {
   @SaCheckPermission("system:user:list")
   @GetMapping("/list")
   public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
+    log.info("Sysuserbo: {}", user);
+    log.info("Pagequery: {}", pageQuery);
     return userService.selectPageUserList(user, pageQuery);
   }
 

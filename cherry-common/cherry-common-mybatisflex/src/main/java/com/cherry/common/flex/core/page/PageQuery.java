@@ -65,7 +65,7 @@ public class PageQuery implements Serializable {
    */
   public QueryWrapper buildOrders(QueryWrapper queryWrapper) {
     if (StrUtil.isBlank(orderByColumn) || StrUtil.isBlank(isAsc)) {
-      return queryWrapper.orderBy("create_time", false);
+      return queryWrapper.orderBy("create_time", true);
     }
     SqlUtil.keepOrderBySqlSafely(orderByColumn);
     String orderBy = StrUtil.toUnderlineCase(orderByColumn);
@@ -91,6 +91,9 @@ public class PageQuery implements Serializable {
       }
       Boolean asc = StrUtil.equals(isAscStr, "asc");
       queryWrapper.orderBy(orderByArr[i], asc);
+    }
+    if (!StrUtil.contains(orderBy, "create_time")) {
+      queryWrapper.orderBy("create_time", false);
     }
 
     return queryWrapper;

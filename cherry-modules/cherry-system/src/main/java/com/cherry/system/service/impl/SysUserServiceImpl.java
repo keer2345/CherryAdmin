@@ -1,6 +1,7 @@
 package com.cherry.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
@@ -203,7 +204,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
     QueryWrapper qw = buildQueryWrapper(user);
+    log.info("sql1: {}", qw.toSQL());
     pageQuery.buildOrders(qw);
+    log.info("sql2: {}", qw.toSQL());
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -216,7 +219,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         .select()
         .from(SysUser.class)
         .eq(SysUser::getId, user.getId())
-        .in(SysUser::getId, StringUtils.splitList(user.getId()))
+        .in(SysUser::getId, StringUtils.splitList(user.getId()), StrUtil.isNotBlank(user.getId()))
         .like(SysUser::getUserName, user.getUserName())
         .eq(SysUser::getStatus, user.getStatus())
         .like(SysUser::getPhonenumber, user.getPhonenumber())
@@ -225,19 +228,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             params.get("beginTime"),
             params.get("endTime"),
             params.get("beginTime") != null && params.get("endTime") != null)
-        .notIn(SysUser::getId, StringUtils.splitList(user.getExcludeUserIds()))
-        .orderBy(SysUser::getCreateTime, true);
-
-    //        .and(
-    //            ObjectUtil.isNotNull(user.getDeptId()),
-    //            w -> {
-    //              List<SysDept> deptList =
-    //                  deptMapper.selectListByQuery(
-    //                      new QueryWrapper().eq(SysDept::getParentId, user.getDeptId()));
-    //              List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
-    //              ids.add(user.getDeptId());
-    //              w.in("u.dept_id", ids);
-    //            })
-
+        .notIn(
+            SysUser::getId,
+            StringUtils.splitList(user.getExcludeUserIds()),
+            StrUtil.isNotBlank(user.getId()));
   }
 }
