@@ -51,13 +51,6 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     return selectListByQuery(query);
 
-    //        select distinct m.perms
-    //        from sys_menu m
-    //        left join sys_role_menu rm on m.menu_id = rm.menu_id and m.status = '0'
-    //        left join sys_role r on r.role_id = rm.role_id and r.status = '0'
-    //        where r.role_id in (select role_id from sys_user_role where user_id = #{
-    //            userId
-    //        })
 
   }
 

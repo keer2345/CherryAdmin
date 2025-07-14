@@ -1,6 +1,7 @@
 package com.cherry.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.cherry.system.domain.SysDept;
 import com.cherry.system.domain.bo.SysDeptBo;
 import com.cherry.system.domain.vo.SysDeptVo;
 
@@ -39,4 +40,11 @@ public interface ISysDeptService {
      */
     List<Tree<String>> buildDeptTreeSelect(List<SysDeptVo> depts);
 
+    /**
+     * 根据父部门ID查询其所有子部门的列表
+     *
+     * @param parentId 父部门ID
+     * @return 包含子部门的列表
+     */
+    List<SysDept> selectListByParentId(String parentId) ;
 }

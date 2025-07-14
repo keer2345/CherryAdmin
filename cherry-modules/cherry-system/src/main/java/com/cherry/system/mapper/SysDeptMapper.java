@@ -1,11 +1,10 @@
 package com.cherry.system.mapper;
 
+import static com.mybatisflex.core.query.QueryMethods.*;
+
 import com.cherry.system.domain.SysDept;
 import com.mybatisflex.core.BaseMapper;
-import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * 部门管理 数据层

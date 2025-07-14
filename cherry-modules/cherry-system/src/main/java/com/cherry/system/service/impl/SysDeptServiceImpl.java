@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.service.DeptService;
 import com.cherry.common.core.utils.*;
+import com.cherry.common.flex.helper.DataBaseHelper;
 import com.cherry.system.domain.SysDept;
 import com.cherry.system.domain.bo.SysDeptBo;
 import com.cherry.system.domain.vo.SysDeptVo;
@@ -43,7 +44,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     Optional<SysDept> sysDeptOpt = this.getByIdOpt(deptId);
     deptMapper.selectOneById(deptId);
     if (sysDeptOpt.isEmpty()) {
-      //    if (ObjUtil.isNull(sysDept)) {
       return null;
     }
     SysDeptVo dept = MapstructUtils.convert(sysDeptOpt.get(), SysDeptVo.class);
@@ -51,11 +51,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     SysDeptVo parentDept =
         this.getOneAs(new QueryWrapper().eq(SysDept::getId, dept.getParentId()), SysDeptVo.class);
     dept.setParentName(parentDept.getDeptName());
-    //        deptMapper.selectVoOne(
-    //            new LambdaQueryWrapper<SysDept>()
-    //                .select(SysDept::getDeptName)
-    //                .eq(SysDept::getDeptId, dept.getParentId()));
-    //        dept.setParentName(ObjectUtils.notNullGetter(parentDept, SysDeptVo::getDeptName));
     return dept;
   }
 
@@ -105,8 +100,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
       qw.and(
           x -> {
             String parentId = bo.getBelongDeptId();
-            List<SysDept> deptList =
-                this.list(new QueryWrapper().eq(SysDept::getParentId, parentId));
+            List<SysDept> deptList = this.selectListByParentId(parentId);
             List<String> deptIds = StreamUtils.toList(deptList, SysDept::getId);
             deptIds.add(parentId);
             x.in(SysDept::getId, deptIds);
@@ -142,5 +136,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
                 .setName(node.getDeptName())
                 .setWeight(node.getOrderNum())
                 .putExtra("disabled", SystemConstants.DISABLE.equals((node.getStatus()))));
+  }
+
+  /**
+   * 根据父部门ID查询其所有子部门的列表
+   *
+   * @param parentId 父部门ID
+   * @return 包含子部门的列表
+   */
+  @Override
+  public List<SysDept> selectListByParentId(String parentId) {
+    return this.list(
+        new QueryWrapper()
+            .select(SysDept::getId)
+            .where(DataBaseHelper.findInSet(parentId, "ancestors")));
   }
 }
