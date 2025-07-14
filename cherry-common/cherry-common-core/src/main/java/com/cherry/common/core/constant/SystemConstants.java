@@ -49,4 +49,7 @@ public interface SystemConstants {
 
   /** 根部门祖级列表 */
   String ROOT_DEPT_ANCESTORS = "0";
+
+    /** 默认部门 ID */
+    String DEFAULT_DEPT_ID = "100";
 }

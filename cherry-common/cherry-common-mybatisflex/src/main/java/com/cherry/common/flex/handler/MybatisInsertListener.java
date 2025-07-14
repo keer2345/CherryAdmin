@@ -1,5 +1,6 @@
 package com.cherry.common.flex.handler;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.HttpStatus;
 import com.cherry.common.core.domain.model.LoginUser;

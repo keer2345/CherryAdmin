@@ -217,8 +217,8 @@ public class SysLoginService {
     SysUser sysUser = new SysUser();
     sysUser.setId(userId);
     sysUser.setLoginIp(ip);
-//    sysUser.setLoginDate(DateUtils.getNowDate());
-      sysUser.setLoginDate(LocalDateTime.now());
+    //    sysUser.setLoginDate(DateUtils.getNowDate());
+    sysUser.setLoginDate(LocalDateTime.now());
     sysUser.setUpdater(userId);
     //    todo
     //    DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
