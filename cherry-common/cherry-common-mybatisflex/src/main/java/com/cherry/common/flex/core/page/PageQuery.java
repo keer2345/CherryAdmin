@@ -93,7 +93,7 @@ public class PageQuery implements Serializable {
       queryWrapper.orderBy(orderByArr[i], asc);
     }
     if (!StrUtil.contains(orderBy, "create_time")) {
-      queryWrapper.orderBy("create_time", false);
+      queryWrapper.orderBy("create_time", true);
     }
 
     return queryWrapper;

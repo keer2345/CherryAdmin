@@ -34,7 +34,7 @@ public class BaseDO {
 
   /** 创建时间 */
   //  @Column(onInsertValue = "now()")
-  //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//      @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private LocalDateTime createTime;
 
   /**
@@ -45,7 +45,7 @@ public class BaseDO {
   private String updater;
 
   /** 最后更新时间 */
-  //  @Column(onUpdateValue = "now()", onInsertValue = "now()")
+//    @Column(onUpdateValue = "now()", onInsertValue = "now()")
   private LocalDateTime updateTime;
 
   /** 删除人ID */

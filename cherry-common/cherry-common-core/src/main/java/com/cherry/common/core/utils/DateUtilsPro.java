@@ -1,7 +1,6 @@
 package com.cherry.common.core.utils;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -141,4 +140,21 @@ public class DateUtilsPro {
   public static boolean isYesterday(LocalDateTime date) {
     return LocalDateTimeUtil.isSameDay(date, LocalDateTime.now().minusDays(1));
   }
+
+  /** Date 转换成 LocalDate */
+  public static LocalDate dateToLocaldate(Date date) {
+    Instant instant = date.toInstant();
+    ZoneId zoneId = ZoneId.systemDefault();
+
+    // atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
+    return instant.atZone(zoneId).toLocalDate();
+  }
+
+  /** LocalDate 转换成 Date */
+  public static Date LocaldateToDate(LocalDate localDate) {
+    ZoneId zoneId = ZoneId.systemDefault();
+    ZonedDateTime zdt = localDate.atStartOfDay(zoneId);
+    return Date.from(zdt.toInstant());
+  }
+
 }

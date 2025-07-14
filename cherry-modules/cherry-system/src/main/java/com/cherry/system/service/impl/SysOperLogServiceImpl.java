@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.core.utils.ip.AddressUtils;
+import com.cherry.common.core.utils.sql.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.log.event.OperLogEvent;
@@ -37,6 +38,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     implements ISysOperLogService {
 
   private final SysOperLogMapper operLogMapper;
+
   /**
    * 操作日志记录
    *
@@ -89,15 +91,9 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
         .like(SysOperLog::getOperName, bo.getOperName(), StringUtils.isNotBlank(bo.getOperName()))
         .between(
             SysOperLog::getCreateTime,
-            params.get("beginTime"),
-            params.get("endTime"),
+            SearchUtils.strToDayStart(params.get("beginTime")),
+            SearchUtils.strToDayStart(params.get("endTime")),
             params.get("beginTime") != null && params.get("endTime") != null);
-    //        .between(
-    //            params.get("beginTime") != null && params.get("endTime") != null,
-    //            SysOperLog::getOperTime,
-    //            params.get("beginTime"),
-    //            params.get("endTime"));
-
   }
 
   /**

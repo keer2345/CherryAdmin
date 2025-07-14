@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
+import com.cherry.common.core.utils.sql.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.system.domain.SysUser;
@@ -12,7 +13,6 @@ import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
-import com.cherry.system.mapper.SysDeptMapper;
 import com.cherry.system.mapper.SysPostMapper;
 import com.cherry.system.mapper.SysRoleMapper;
 import com.cherry.system.mapper.SysUserMapper;
@@ -225,8 +225,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         .like(SysUser::getPhonenumber, user.getPhonenumber())
         .between(
             SysUser::getCreateTime,
-            params.get("beginTime"),
-            params.get("endTime"),
+            SearchUtils.strToDayStart(params.get("beginTime")),
+            SearchUtils.strToDayEnd(params.get("endTime")),
             params.get("beginTime") != null && params.get("endTime") != null)
         .notIn(
             SysUser::getId,
