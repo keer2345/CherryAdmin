@@ -4,13 +4,17 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
+import com.cherry.common.core.constant.TenantConstants;
 import com.cherry.common.core.domain.model.LoginUser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 /**
  * 登录鉴权助手
@@ -65,6 +69,32 @@ public class LoginHelper {
      */
     public static boolean isSuperAdmin(String userId) {
         return SystemConstants.SUPER_ADMIN_ID.equals(userId);
+    }
+
+    /**
+     * 是否为租户管理员
+     *
+     * @param rolePermission 角色权限标识组
+     * @return 结果
+     */
+    public static boolean isTenantAdmin(Set<String> rolePermission) {
+        if (CollUtil.isEmpty(rolePermission)) {
+            return false;
+        }
+        return rolePermission.contains(TenantConstants.TENANT_ADMIN_ROLE_KEY);
+    }
+
+    /**
+     * 是否为租户管理员
+     *
+     * @return 结果
+     */
+    public static boolean isTenantAdmin() {
+        LoginUser loginUser = getLoginUser();
+        if (loginUser == null) {
+            return false;
+        }
+        return Convert.toBool(isTenantAdmin(loginUser.getRolePermission()));
     }
 
     /**

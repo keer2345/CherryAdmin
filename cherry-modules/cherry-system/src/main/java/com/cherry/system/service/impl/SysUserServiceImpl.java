@@ -221,11 +221,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         .like(SysUser::getUserName, user.getUserName())
         .eq(SysUser::getStatus, user.getStatus())
         .like(SysUser::getPhonenumber, user.getPhonenumber())
-        //        .between(
-        //            SysUser::getCreateTime,
-        //            SearchUtils.strToDayStart(params.get("beginTime")),
-        //            SearchUtils.strToDayEnd(params.get("endTime")),
-        //            params.get("beginTime") != null && params.get("endTime") != null)
         .notIn(
             SysUser::getId,
             StringUtils.splitList(user.getExcludeUserIds()),

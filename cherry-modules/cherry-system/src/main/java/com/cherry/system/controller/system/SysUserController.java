@@ -101,17 +101,17 @@ public class SysUserController extends BaseController {
   public R<SysUserInfoVo> getInfo(@PathVariable(value = "userId", required = false) String userId) {
     SysUserInfoVo userInfoVo = new SysUserInfoVo();
     if (ObjectUtil.isNotNull(userId)) {
-      //            userService.checkUserDataScope(userId);
-      //            SysUserVo sysUser = userService.selectUserById(userId);
-      //            userInfoVo.setUser(sysUser);
-      //            userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
-      //            Long deptId = sysUser.getDeptId();
-      //            if (ObjectUtil.isNotNull(deptId)) {
-      //                SysPostBo postBo = new SysPostBo();
-      //                postBo.setDeptId(deptId);
-      //                userInfoVo.setPosts(postService.selectPostList(postBo));
-      //                userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
-      //            }
+//                  userService.checkUserDataScope(userId);
+//                  SysUserVo sysUser = userService.selectUserById(userId);
+//                  userInfoVo.setUser(sysUser);
+//                  userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
+//                  Long deptId = sysUser.getDeptId();
+//                  if (ObjectUtil.isNotNull(deptId)) {
+//                      SysPostBo postBo = new SysPostBo();
+//                      postBo.setDeptId(deptId);
+//                      userInfoVo.setPosts(postService.selectPostList(postBo));
+//                      userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
+//                  }
     }
 
     SysRoleBo roleBo = new SysRoleBo();

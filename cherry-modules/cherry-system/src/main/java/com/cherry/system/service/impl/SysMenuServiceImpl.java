@@ -1,5 +1,7 @@
 package com.cherry.system.service.impl;
 
+import static com.cherry.common.core.utils.CollectionUtils.convertSet;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.SystemConstants;
@@ -7,22 +9,15 @@ import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysMenu;
-import com.cherry.system.domain.SysRole;
-import com.cherry.system.domain.SysRoleMenu;
-import com.cherry.system.domain.SysUserRole;
 import com.cherry.system.domain.vo.MetaVo;
 import com.cherry.system.domain.vo.RouterVo;
 import com.cherry.system.mapper.SysMenuMapper;
 import com.cherry.system.service.ISysMenuService;
-import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-
-import static com.cherry.common.core.utils.CollectionUtils.convertSet;
 
 /**
  * 菜单 业务层处理

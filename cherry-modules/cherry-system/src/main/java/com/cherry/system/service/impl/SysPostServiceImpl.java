@@ -86,6 +86,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost>
             x.in(SysPost::getDeptId, deptIds);
           });
     }
+    qw.orderBy(SysPost::getPostSort, true);
     return qw;
   }
 }
