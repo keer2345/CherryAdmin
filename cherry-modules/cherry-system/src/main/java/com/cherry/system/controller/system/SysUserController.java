@@ -56,7 +56,10 @@ public class SysUserController extends BaseController {
   public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
     log.info("Sysuserbo: {}", user);
     log.info("Pagequery: {}", pageQuery);
-    return userService.selectPageUserList(user, pageQuery);
+    log.info("查询用户 begin");
+      TableDataInfo<SysUserVo> list   =userService.selectPageUserList(user, pageQuery);
+      log.info("查询用户 end");
+      return list;
   }
 
   /**

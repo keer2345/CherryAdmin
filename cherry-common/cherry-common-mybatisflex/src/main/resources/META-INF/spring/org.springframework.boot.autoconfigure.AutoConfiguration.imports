@@ -1,1 +1,2 @@
 com.cherry.common.flex.config.CherryMybatisAutoConfiguration
+com.cherry.common.flex.permission.PlusDataPermissionHandler
