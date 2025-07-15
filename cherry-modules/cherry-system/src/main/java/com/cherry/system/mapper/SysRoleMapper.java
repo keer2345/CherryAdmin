@@ -26,19 +26,17 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
    * @return 角色列表
    */
   default List<SysRole> selectRolesByUserId(String userId) {
-    QueryWrapper queryWrapper = new QueryWrapper();
-    queryWrapper
-        //        .create()
-        //        .select()
-        .from(SysRole.class)
-        //            .where(SysRole::getId).eq("3");
-        .as("a")
-        .leftJoin(SysUserRole.class)
-        .as("b")
-        .on(SysRole::getId, SysUserRole::getRoleId)
-        //            .eq(SysUserRole::getUserId,userId);
-        .where(SysUserRole::getUserId)
-        .eq(userId);
+    QueryWrapper queryWrapper =
+        QueryWrapper.create()
+            .select()
+            .from(SysRole.class)
+            //            .where(SysRole::getId).eq("3");
+            .as("a")
+            .leftJoin(SysUserRole.class)
+            .as("b")
+            .on(SysRole::getId, SysUserRole::getRoleId)
+            .where(SysUserRole::getUserId)
+            .eq(userId);
     return this.selectListByQuery(queryWrapper);
   }
 }

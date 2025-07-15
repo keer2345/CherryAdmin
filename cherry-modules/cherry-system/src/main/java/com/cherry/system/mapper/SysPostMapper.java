@@ -26,18 +26,18 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
    * @return 结果
    */
   default List<SysPost> selectPostsByUserId(String userId) {
-    QueryWrapper queryWrapper = new QueryWrapper();
-    queryWrapper
-//        .create()
-//        .select()
-        .from(SysPost.class)
-        .as("a")
-        .leftJoin(SysUserPost.class)
-        .on(SysPost::getId, SysUserPost::getPostId)
-        .leftJoin(SysUser.class)
-        .on(SysUser::getId, SysUserPost::getUserId)
-        .where(SysUser::getId)
-        .eq(userId);
+    QueryWrapper queryWrapper =
+        QueryWrapper.create()
+            .select()
+            .from(SysPost.class)
+            .as("a")
+            .leftJoin(SysUserPost.class)
+            .on(SysPost::getId, SysUserPost::getPostId)
+            .leftJoin(SysUser.class)
+            .on(SysUser::getId, SysUserPost::getUserId)
+            .where(SysUser::getId)
+            .eq(userId);
+    System.out.println("sqlsql:"+queryWrapper.toSQL());
     return this.selectListByQuery(queryWrapper);
   }
 }

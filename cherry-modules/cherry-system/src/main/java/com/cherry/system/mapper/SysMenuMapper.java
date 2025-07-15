@@ -30,8 +30,8 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
   default List<SysMenu> selectMenuPermsByUserId(String userId) {
 
     QueryWrapper query =
-        new QueryWrapper()
-//            .create()
+        QueryWrapper.create()
+            .select()
             .from(SysMenu.class)
             .as("a")
             .leftJoin(SysRoleMenu.class)
@@ -50,8 +50,6 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
             .eq(SysRole::getStatus, SystemConstants.NORMAL);
 
     return selectListByQuery(query);
-
-
   }
 
   /**
@@ -61,8 +59,8 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
    */
   default List<SysMenu> selectMenuTreeAll() {
     QueryWrapper query =
-        new QueryWrapper()
-//            .create()
+        QueryWrapper.create()
+            .select()
             .from(SysMenu.class)
             .where(SysMenu::getMenuType)
             .in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
@@ -80,8 +78,8 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
    */
   default List<SysMenu> selectMenuTreeByUserId(String userId) {
     QueryWrapper query =
-        new QueryWrapper()
-//            .create()
+        QueryWrapper.create()
+            .select()
             .from(SysMenu.class)
             .as("a")
             .leftJoin(SysRoleMenu.class)

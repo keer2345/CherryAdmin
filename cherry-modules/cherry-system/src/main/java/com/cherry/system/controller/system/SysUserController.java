@@ -54,12 +54,8 @@ public class SysUserController extends BaseController {
   @SaCheckPermission("system:user:list")
   @GetMapping("/list")
   public TableDataInfo<SysUserVo> list(SysUserBo user, PageQuery pageQuery) {
-    log.info("Sysuserbo: {}", user);
-    log.info("Pagequery: {}", pageQuery);
-    log.info("查询用户 begin");
-      TableDataInfo<SysUserVo> list   =userService.selectPageUserList(user, pageQuery);
-      log.info("查询用户 end");
-      return list;
+    TableDataInfo<SysUserVo> list = userService.selectPageUserList(user, pageQuery);
+    return list;
   }
 
   /**
@@ -104,17 +100,17 @@ public class SysUserController extends BaseController {
   public R<SysUserInfoVo> getInfo(@PathVariable(value = "userId", required = false) String userId) {
     SysUserInfoVo userInfoVo = new SysUserInfoVo();
     if (ObjectUtil.isNotNull(userId)) {
-//                  userService.checkUserDataScope(userId);
-//                  SysUserVo sysUser = userService.selectUserById(userId);
-//                  userInfoVo.setUser(sysUser);
-//                  userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
-//                  Long deptId = sysUser.getDeptId();
-//                  if (ObjectUtil.isNotNull(deptId)) {
-//                      SysPostBo postBo = new SysPostBo();
-//                      postBo.setDeptId(deptId);
-//                      userInfoVo.setPosts(postService.selectPostList(postBo));
-//                      userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
-//                  }
+      //                  userService.checkUserDataScope(userId);
+      //                  SysUserVo sysUser = userService.selectUserById(userId);
+      //                  userInfoVo.setUser(sysUser);
+      //                  userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
+      //                  Long deptId = sysUser.getDeptId();
+      //                  if (ObjectUtil.isNotNull(deptId)) {
+      //                      SysPostBo postBo = new SysPostBo();
+      //                      postBo.setDeptId(deptId);
+      //                      userInfoVo.setPosts(postService.selectPostList(postBo));
+      //                      userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
+      //                  }
     }
 
     SysRoleBo roleBo = new SysRoleBo();
