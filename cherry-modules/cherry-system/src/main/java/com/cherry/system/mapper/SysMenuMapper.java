@@ -31,7 +31,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     QueryWrapper query =
         new QueryWrapper()
-            .create()
+//            .create()
             .from(SysMenu.class)
             .as("a")
             .leftJoin(SysRoleMenu.class)
@@ -62,7 +62,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
   default List<SysMenu> selectMenuTreeAll() {
     QueryWrapper query =
         new QueryWrapper()
-            .create()
+//            .create()
             .from(SysMenu.class)
             .where(SysMenu::getMenuType)
             .in(SystemConstants.TYPE_DIR, SystemConstants.TYPE_MENU)
@@ -81,7 +81,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
   default List<SysMenu> selectMenuTreeByUserId(String userId) {
     QueryWrapper query =
         new QueryWrapper()
-            .create()
+//            .create()
             .from(SysMenu.class)
             .as("a")
             .leftJoin(SysRoleMenu.class)

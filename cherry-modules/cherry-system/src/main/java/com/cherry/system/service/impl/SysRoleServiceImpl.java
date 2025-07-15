@@ -17,6 +17,7 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.Provider;
@@ -35,6 +36,7 @@ import static com.cherry.common.core.utils.CollectionUtils.convertSet;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     implements ISysRoleService {
   // todo
@@ -106,6 +108,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
    */
   @Override
   public List<SysRoleVo> selectRolesByUserId(String userId) {
-    return MapstructUtils.convert(roleMapper.selectRolesByUserId(userId), SysRoleVo.class);
+    List<SysRoleVo> list =
+        MapstructUtils.convert(roleMapper.selectRolesByUserId(userId), SysRoleVo.class);
+    return list;
   }
 }

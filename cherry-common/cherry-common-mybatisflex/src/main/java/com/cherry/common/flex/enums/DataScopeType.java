@@ -33,7 +33,8 @@ public enum DataScopeType {
   DEPT_AND_CHILD("4", " #{#deptName} IN ( #{@sdss.getDeptAndChild( #user.deptId )} )", " 1 = 0 "),
 
   /** 仅本人数据权限 */
-  SELF("5", " #{#userName} = #{#user.userId} ", " 1 = 0 ");
+//  SELF("5", " #{#userName} = #{#user.userId} ", " 1 = 0 ");
+    SELF("5", " #{#userName} = #{#user.id} ", " 1 = 0 ");
 
   private final String code;
 

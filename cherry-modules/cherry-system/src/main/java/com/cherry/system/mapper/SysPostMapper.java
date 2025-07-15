@@ -28,8 +28,8 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
   default List<SysPost> selectPostsByUserId(String userId) {
     QueryWrapper queryWrapper = new QueryWrapper();
     queryWrapper
-        .create()
-        .select()
+//        .create()
+//        .select()
         .from(SysPost.class)
         .as("a")
         .leftJoin(SysUserPost.class)

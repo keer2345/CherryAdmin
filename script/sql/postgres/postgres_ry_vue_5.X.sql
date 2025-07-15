@@ -1091,3 +1091,26 @@ insert into sys_user_role values ('1','1', '1','1','103',now());
 insert into sys_user_role values ('2','3', '3','1','103',now());
 insert into sys_user_role values ('3','4', '4','1','103',now());
 
+
+-- ----------------------------
+-- 角色和部门关联表  角色1-N部门
+-- ----------------------------
+create table if not exists sys_role_dept
+(
+    id             varchar(32) NOT NULL,
+    role_id varchar(32) NOT NULL,
+    dept_id varchar(32) NOT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32),
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
+    deleted        BOOLEAN NULL DEFAULT FALSE,
+    constraint sys_role_dept_pk primary key (role_id, dept_id)
+    );
+
+comment on table sys_role_dept              is '角色和部门关联表';
+comment on column sys_role_dept.role_id     is '角色ID';
+comment on column sys_role_dept.dept_id     is '部门ID';

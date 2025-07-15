@@ -28,16 +28,17 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
   default List<SysRole> selectRolesByUserId(String userId) {
     QueryWrapper queryWrapper = new QueryWrapper();
     queryWrapper
-        .create()
-        .select()
+        //        .create()
+        //        .select()
         .from(SysRole.class)
+        //            .where(SysRole::getId).eq("3");
         .as("a")
         .leftJoin(SysUserRole.class)
         .as("b")
         .on(SysRole::getId, SysUserRole::getRoleId)
+        //            .eq(SysUserRole::getUserId,userId);
         .where(SysUserRole::getUserId)
         .eq(userId);
-
     return this.selectListByQuery(queryWrapper);
   }
 }

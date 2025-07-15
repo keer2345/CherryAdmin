@@ -3,9 +3,9 @@ package com.cherry.common.flex.utils;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.utils.DateUtilsPro;
+import com.cherry.common.flex.permission.DataColumn;
+import com.cherry.common.flex.permission.DataPermission;
 import com.mybatisflex.core.query.QueryWrapper;
-
-import javax.management.Query;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
@@ -53,5 +53,19 @@ public class SearchUtils {
     if (beginTime != null && endTime != null) {
       return queryWrapper.between(columnName, strToDayStart(beginTime), strToDayEnd(endTime));
     } else return queryWrapper;
+  }
+
+  /**
+   * 数据权限
+   *
+   * @param queryWrapper
+   */
+  //  public static void getQueryDataScope(QueryWrapper queryWrapper, DataColumn... columns) {
+  public static void getQueryDataScope(QueryWrapper queryWrapper) {
+    DataColumn[] columns = {
+      DataColumn.of("deptName", "sys_user.dept_id"), DataColumn.of("userName", "sys_user.user_id")
+    };
+    DataPermission dataPermission = DataPermission.of(columns);
+    dataPermission.handler(queryWrapper);
   }
 }

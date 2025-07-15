@@ -3,6 +3,7 @@ package com.cherry.common.flex.permission;
 import com.mybatisflex.core.query.QueryColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 数据权限
@@ -14,6 +15,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@Slf4j
 public class DataColumn {
 
   /** 占位符关键字 */
@@ -27,10 +29,12 @@ public class DataColumn {
   }
 
   public static DataColumn of(String key, String value) {
+      log.info("dp 0:{},{}", key, value);
     return new DataColumn(new String[] {key}, new String[] {value});
   }
 
   public static DataColumn of(String key, QueryColumn value) {
+      log.info("dp 1:{},{},{}", key, value,value.getTable().getName());
     return new DataColumn(
         new String[] {key},
         new String[] {"`" + value.getTable().getName() + "`.`" + value.getName() + "`"});

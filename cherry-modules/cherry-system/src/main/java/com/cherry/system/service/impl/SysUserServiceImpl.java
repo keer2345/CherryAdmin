@@ -6,6 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
+import com.cherry.common.flex.permission.DataColumn;
+import com.cherry.common.flex.permission.DataPermission;
 import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
@@ -205,16 +207,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
     QueryWrapper qw = buildQueryWrapper(user, pageQuery);
+//    DataColumn[] columns = {DataColumn.of("deptName", "sys_user.dept_id"), DataColumn.of("userName", "sys_user.user_id")};
+//    getQueryPerm(
+//        qw, columns);
+      SearchUtils.getQueryDataScope(qw);
+    log.info("query user sql: {}", qw.toSQL());
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
+  }
+
+  private void getQueryPerm(QueryWrapper queryWrapper, DataColumn... columns) {
+    DataPermission dataPermission = DataPermission.of(columns);
+    dataPermission.handler(queryWrapper);
   }
 
   private QueryWrapper buildQueryWrapper(SysUserBo user, PageQuery pageQuery) {
     Map<String, Object> params = user.getParams();
 
     QueryWrapper qw = new QueryWrapper();
-    qw.create()
-        .select()
+    qw.select()
         .from(SysUser.class)
         .eq(SysUser::getId, user.getId())
         .in(SysUser::getId, StringUtils.splitList(user.getId()), StrUtil.isNotBlank(user.getId()))

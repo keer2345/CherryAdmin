@@ -4,6 +4,7 @@ import com.cherry.common.core.utils.SpringUtils;
 import com.mybatisflex.core.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 数据权限组
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@Slf4j
 public class DataPermission {
 
   private static final PlusDataPermissionHandler DATA_PERMISSION_HANDLER =
