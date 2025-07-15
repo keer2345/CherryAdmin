@@ -1,6 +1,7 @@
 package com.cherry.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.service.UserService;
@@ -203,13 +204,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
-    QueryWrapper qw = buildQueryWrapper(user);
-    pageQuery.buildOrders(qw);
+    QueryWrapper qw = buildQueryWrapper(user, pageQuery);
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
 
-  private QueryWrapper buildQueryWrapper(SysUserBo user) {
+  private QueryWrapper buildQueryWrapper(SysUserBo user, PageQuery pageQuery) {
     Map<String, Object> params = user.getParams();
 
     QueryWrapper qw = new QueryWrapper();
@@ -225,7 +225,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             SysUser::getId,
             StringUtils.splitList(user.getExcludeUserIds()),
             StrUtil.isNotBlank(user.getId()));
+
     SearchUtils.buildTimeBetween(qw, "create_time", params.get("beginTime"), params.get("endTime"));
+
+    if (ObjUtil.isNotNull(pageQuery)) {
+      pageQuery.buildOrders(qw);
+    }
+
     return qw;
   }
 }
