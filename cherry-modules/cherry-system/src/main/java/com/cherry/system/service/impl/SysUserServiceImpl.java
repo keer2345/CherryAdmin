@@ -1,9 +1,12 @@
 package com.cherry.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.CacheNames;
+import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.flex.permission.DataColumn;
@@ -11,6 +14,7 @@ import com.cherry.common.flex.permission.DataPermission;
 import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
@@ -52,7 +56,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
   @Override
   public SysUserVo selectUserById(String userId) {
-    Optional<SysUser> userOpt = this.getByIdOpt(userId);
+      QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
+      SearchUtils.getQueryDataScope(queryWrapper);
+//      Optional<SysUser> userOpt = this.getByIdOpt(userId);
+    Optional<SysUser> userOpt = this.getOneOpt(queryWrapper);
     if (userOpt.isEmpty()) {
       return null;
     }
@@ -207,13 +214,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
     QueryWrapper qw = buildQueryWrapper(user, pageQuery);
-//    DataColumn[] columns = {DataColumn.of("deptName", "sys_user.dept_id"), DataColumn.of("userName", "sys_user.user_id")};
-//    getQueryPerm(
-//        qw, columns);
-      SearchUtils.getQueryDataScope(qw);
+    //    DataColumn[] columns = {DataColumn.of("deptName", "sys_user.dept_id"),
+    // DataColumn.of("userName", "sys_user.user_id")};
+    //    getQueryPerm(
+    //        qw, columns);
+    SearchUtils.getQueryDataScope(qw);
     log.info("query user sql: {}", qw.toSQL());
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
+  }
+
+  /**
+   * 校验用户是否有数据权限
+   *
+   * @param userId 用户id
+   */
+  @Override
+  public void checkUserDataScope(String userId) {
+    if (ObjectUtil.isNull(userId) || LoginHelper.isSuperAdmin()) {
+      return;
+    }
+    QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
+    SearchUtils.getQueryDataScope(queryWrapper);
+    if (NumberUtil.equals(this.count(queryWrapper), 0)) {
+      throw new ServiceException("没有权限访问用户数据！");
+    }
+    ;
   }
 
   private void getQueryPerm(QueryWrapper queryWrapper, DataColumn... columns) {

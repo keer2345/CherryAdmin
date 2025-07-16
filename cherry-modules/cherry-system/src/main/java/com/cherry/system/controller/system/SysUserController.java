@@ -1,6 +1,7 @@
 package com.cherry.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -13,14 +14,14 @@ import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.core.BaseController;
+import com.cherry.system.domain.SysPost;
 import com.cherry.system.domain.bo.SysDeptBo;
+import com.cherry.system.domain.bo.SysPostBo;
 import com.cherry.system.domain.bo.SysRoleBo;
 import com.cherry.system.domain.bo.SysUserBo;
-import com.cherry.system.domain.vo.SysRoleVo;
-import com.cherry.system.domain.vo.SysUserInfoVo;
-import com.cherry.system.domain.vo.SysUserVo;
-import com.cherry.system.domain.vo.UserInfoVo;
+import com.cherry.system.domain.vo.*;
 import com.cherry.system.service.ISysDeptService;
+import com.cherry.system.service.ISysPostService;
 import com.cherry.system.service.ISysRoleService;
 import com.cherry.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static com.cherry.common.core.utils.CollectionUtils.convertList;
+import static com.cherry.common.core.utils.CollectionUtils.convertSet;
 
 /**
  * 用户信息
@@ -49,6 +53,7 @@ public class SysUserController extends BaseController {
   private final ISysUserService userService;
   private final ISysDeptService deptService;
   private final ISysRoleService roleService;
+  private final ISysPostService postService;
 
   /** 获取用户列表 */
   @SaCheckPermission("system:user:list")
@@ -100,17 +105,19 @@ public class SysUserController extends BaseController {
   public R<SysUserInfoVo> getInfo(@PathVariable(value = "userId", required = false) String userId) {
     SysUserInfoVo userInfoVo = new SysUserInfoVo();
     if (ObjectUtil.isNotNull(userId)) {
-      //                  userService.checkUserDataScope(userId);
-      //                  SysUserVo sysUser = userService.selectUserById(userId);
-      //                  userInfoVo.setUser(sysUser);
-      //                  userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
-      //                  Long deptId = sysUser.getDeptId();
-      //                  if (ObjectUtil.isNotNull(deptId)) {
-      //                      SysPostBo postBo = new SysPostBo();
-      //                      postBo.setDeptId(deptId);
-      //                      userInfoVo.setPosts(postService.selectPostList(postBo));
-      //                      userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
-      //                  }
+      userService.checkUserDataScope(userId);
+      SysUserVo sysUser = userService.selectUserById(userId);
+      userInfoVo.setUser(sysUser);
+      //                        userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
+      userInfoVo.setRoleIds(convertList(sysUser.getRoles(), SysRoleVo::getId));
+      String deptId = sysUser.getDeptId();
+      if (ObjectUtil.isNotNull(deptId)) {
+        SysPostBo postBo = new SysPostBo();
+        postBo.setDeptId(deptId);
+        userInfoVo.setPosts(postService.selectPostList(postBo));
+        userInfoVo.setPostIds(
+            convertList(postService.selectPostsByUserId(userId), SysPostVo::getId));
+      }
     }
 
     SysRoleBo roleBo = new SysRoleBo();

@@ -80,4 +80,11 @@ public interface ISysUserService {
      * @return 用户信息
      */
     TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
+
+    /**
+     * 校验用户是否有数据权限
+     *
+     * @param userId 用户id
+     */
+    void checkUserDataScope(String userId);
 }

@@ -62,9 +62,7 @@ public class SearchUtils {
    */
   //  public static void getQueryDataScope(QueryWrapper queryWrapper, DataColumn... columns) {
   public static void getQueryDataScope(QueryWrapper queryWrapper) {
-    DataColumn[] columns = {
-      DataColumn.of("deptName", "sys_user.dept_id"), DataColumn.of("userName", "sys_user.user_id")
-    };
+    DataColumn[] columns = {DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id")};
     DataPermission dataPermission = DataPermission.of(columns);
     dataPermission.handler(queryWrapper);
   }

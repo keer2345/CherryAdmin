@@ -35,4 +35,5 @@ public interface ISysPostService {
      * @return 岗位列表信息
      */
     List<SysPostVo> selectPostByIds(List<String> postIds);
+
 }

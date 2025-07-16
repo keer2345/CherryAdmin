@@ -37,7 +37,6 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
             .on(SysUser::getId, SysUserPost::getUserId)
             .where(SysUser::getId)
             .eq(userId);
-    System.out.println("sqlsql:"+queryWrapper.toSQL());
     return this.selectListByQuery(queryWrapper);
   }
 }

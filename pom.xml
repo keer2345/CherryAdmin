@@ -27,7 +27,7 @@
         <therapi-javadoc.version>0.15.0</therapi-javadoc.version>
         <easyexcel.version>4.0.3</easyexcel.version>
         <velocity.version>2.3</velocity.version>
-        <satoken.version>1.43.0</satoken.version>
+        <satoken.version>1.44.0</satoken.version>
         <commons.pool2.version>2.12.1</commons.pool2.version>
         <mybatis-plus.version>3.5.11</mybatis-plus.version>
         <mybatis-flex.version>1.10.9</mybatis-flex.version>
