@@ -82,10 +82,19 @@ public class PlusDataPermissionHandler {
     return buildDataFilter(dataPermission.getValue(), isSelect);
   }
 
-  /** 构造数据过滤sql */
+
+    /**
+     * 构建数据过滤条件的 SQL 语句
+     *
+     * @param dataPermission 数据权限注解
+     * @param isSelect       标志当前操作是否为查询操作，查询操作和更新或删除操作在处理过滤条件时会有不同的处理方式
+     * @return 构建的数据过滤条件的 SQL 语句
+     * @throws ServiceException 如果角色的数据范围异常或者 key 与 value 的长度不匹配，则抛出 ServiceException 异常
+     */
   private String buildDataFilter(DataColumn[] dataColumns, boolean isSelect) {
     // 更新或删除需满足所有条件
     String joinStr = isSelect ? " OR " : " AND ";
+    log.info("join  str : {}", joinStr);
     LoginUser user = DataPermissionHelper.getVariable("user");
     StandardEvaluationContext context = new StandardEvaluationContext();
     context.setBeanResolver(beanResolver);
@@ -125,19 +134,25 @@ public class PlusDataPermissionHandler {
             parser
                 .parseExpression(type.getSqlTemplate(), parserContext)
                 .getValue(context, String.class);
+          log.info("join  sql 1 : {}", sql);
         conditions.add(joinStr + sql);
+          log.info("join  sql 2 : {}",joinStr + sql);
+
         isSuccess = true;
       }
       // 未处理成功则填充兜底方案
       if (!isSuccess && StringUtils.isNotBlank(type.getElseSql())) {
+          log.info("join  sql 3 ");
         conditions.add(joinStr + type.getElseSql());
       }
     }
 
     if (CollUtil.isNotEmpty(conditions)) {
+        log.info("join  sql 4 ");
       String sql = StreamUtils.join(conditions, Function.identity(), "");
       return sql.substring(joinStr.length());
     }
+      log.info("join  sql 5 ");
     return "";
   }
 }

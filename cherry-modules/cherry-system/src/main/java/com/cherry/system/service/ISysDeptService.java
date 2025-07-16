@@ -16,6 +16,13 @@ import java.util.List;
 public interface ISysDeptService {
   // todo
 
+    /**
+     * 校验部门是否有数据权限
+     *
+     * @param deptId 部门id
+     */
+    void checkDeptDataScope(String deptId);
+
   /**
    * 根据部门ID查询信息
    *

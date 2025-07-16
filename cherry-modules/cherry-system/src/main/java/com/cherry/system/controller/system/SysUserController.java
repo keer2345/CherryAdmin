@@ -1,7 +1,8 @@
 package com.cherry.system.controller.system;
 
+import static com.cherry.common.core.utils.CollectionUtils.convertList;
+
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -9,12 +10,14 @@ import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.utils.StreamUtils;
+import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
+import com.cherry.common.log.annotation.Log;
+import com.cherry.common.log.enums.BusinessType;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.tenant.helper.TenantHelper;
 import com.cherry.common.web.core.BaseController;
-import com.cherry.system.domain.SysPost;
 import com.cherry.system.domain.bo.SysDeptBo;
 import com.cherry.system.domain.bo.SysPostBo;
 import com.cherry.system.domain.bo.SysRoleBo;
@@ -24,18 +27,11 @@ import com.cherry.system.service.ISysDeptService;
 import com.cherry.system.service.ISysPostService;
 import com.cherry.system.service.ISysRoleService;
 import com.cherry.system.service.ISysUserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static com.cherry.common.core.utils.CollectionUtils.convertList;
-import static com.cherry.common.core.utils.CollectionUtils.convertSet;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户信息
@@ -128,5 +124,25 @@ public class SysUserController extends BaseController {
             ? roles
             : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
     return R.ok(userInfoVo);
+  }
+
+  /** 修改用户 */
+  @SaCheckPermission("system:user:edit")
+  @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+  @PutMapping
+  public R<Void> edit(@Validated @RequestBody SysUserBo user) {
+    log.info("update user: {}", user);
+    userService.checkUserAllowed(user.getId());
+    userService.checkUserDataScope(user.getId());
+    deptService.checkDeptDataScope(user.getDeptId());
+    if (!userService.checkUserNameUnique(user)) {
+      return R.fail("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
+    } else if (StringUtils.isNotEmpty(user.getPhonenumber())
+        && !userService.checkPhoneUnique(user)) {
+      return R.fail("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+    } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
+      return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+    }
+    return toAjax(userService.updateUser(user));
   }
 }

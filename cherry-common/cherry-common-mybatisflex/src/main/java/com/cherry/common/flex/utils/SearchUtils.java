@@ -60,10 +60,14 @@ public class SearchUtils {
    *
    * @param queryWrapper
    */
-  //  public static void getQueryDataScope(QueryWrapper queryWrapper, DataColumn... columns) {
-  public static void getQueryDataScope(QueryWrapper queryWrapper) {
-    DataColumn[] columns = {DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id")};
+  public static void getQueryDataScope(QueryWrapper queryWrapper, DataColumn... columns) {
     DataPermission dataPermission = DataPermission.of(columns);
     dataPermission.handler(queryWrapper);
   }
+  //  public static void getQueryDataScope(QueryWrapper queryWrapper) {
+  //      DataColumn[] columns = {DataColumn.of("deptName", "dept_id"), DataColumn.of("userName",
+  // "id")};
+  //      DataPermission dataPermission = DataPermission.of(columns);
+  //      dataPermission.handler(queryWrapper);
+  //  }
 }

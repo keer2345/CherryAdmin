@@ -63,7 +63,6 @@ public class DataBaseHelper {
       // charindex(',100,' , ',0,100,101,') <> 0
       return "charindex(',%s,' , ','+%s+',') <> 0".formatted(var, var2);
     } else if (dataBasyType == DataBaseType.POSTGRE_SQL) {
-      log.info("is postgresql vovo");
       // (select position(',100,' in ',0,100,101,')) <> 0
       return "(select position(',%s,' in ','||%s||',')) <> 0".formatted(var, var2);
     } else if (dataBasyType == DataBaseType.ORACLE) {

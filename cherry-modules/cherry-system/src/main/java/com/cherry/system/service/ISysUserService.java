@@ -38,53 +38,75 @@ public interface ISysUserService {
    */
   String selectUserPostGroup(String userId);
 
-    /**
-     * 校验手机号码是否唯一
-     *
-     * @param user 用户信息
-     * @return 结果
-     */
-    boolean checkPhoneUnique(SysUserBo user);
+  /**
+   * 校验手机号码是否唯一
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  boolean checkPhoneUnique(SysUserBo user);
 
-    /**
-     * 校验email是否唯一
-     *
-     * @param user 用户信息
-     * @return 结果
-     */
-    boolean checkEmailUnique(SysUserBo user);
+  /**
+   * 校验email是否唯一
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  boolean checkEmailUnique(SysUserBo user);
 
-    /**
-     * 修改用户基本信息
-     *
-     * @param user 用户信息
-     * @return 结果
-     */
-    int updateUserProfile(SysUserBo user);
+  /**
+   * 修改用户基本信息
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  int updateUserProfile(SysUserBo user);
 
+  /**
+   * 重置用户密码
+   *
+   * @param userId 用户ID
+   * @param password 密码
+   * @return 结果
+   */
+  int resetUserPwd(String userId, String password);
 
-    /**
-     * 重置用户密码
-     *
-     * @param userId   用户ID
-     * @param password 密码
-     * @return 结果
-     */
-    int resetUserPwd(String userId, String password);
+  /**
+   * 根据条件分页查询用户列表
+   *
+   * @param user 用户信息
+   * @param pageQuery 发呢也
+   * @return 用户信息
+   */
+  TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
 
-    /**
-     * 根据条件分页查询用户列表
-     *
-     * @param user      用户信息
-     * @param pageQuery 发呢也
-     * @return 用户信息
-     */
-    TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
+  /**
+   * 校验用户是否允许操作
+   *
+   * @param userId 用户ID
+   */
+  void checkUserAllowed(String userId);
 
-    /**
-     * 校验用户是否有数据权限
-     *
-     * @param userId 用户id
-     */
-    void checkUserDataScope(String userId);
+  /**
+   * 校验用户是否有数据权限
+   *
+   * @param userId 用户id
+   */
+  void checkUserDataScope(String userId);
+
+  /**
+   * 校验用户名称是否唯一
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  boolean checkUserNameUnique(SysUserBo user);
+
+  /**
+   * 修改用户信息
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  int updateUser(SysUserBo user);
 }

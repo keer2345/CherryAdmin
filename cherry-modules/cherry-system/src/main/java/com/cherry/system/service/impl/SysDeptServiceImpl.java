@@ -3,12 +3,19 @@ package com.cherry.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.cherry.common.core.constant.CacheNames;
 import com.cherry.common.core.constant.SystemConstants;
+import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.core.service.DeptService;
 import com.cherry.common.core.utils.*;
 import com.cherry.common.flex.helper.DataBaseHelper;
+import com.cherry.common.flex.permission.DataColumn;
+import com.cherry.common.flex.utils.SearchUtils;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysDept;
+import com.cherry.system.domain.SysUser;
 import com.cherry.system.domain.bo.SysDeptBo;
 import com.cherry.system.domain.vo.SysDeptVo;
 import com.cherry.system.mapper.SysDeptMapper;
@@ -20,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,8 +45,28 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
 
   private final SysDeptMapper deptMapper;
 
+  /**
+   * 校验部门是否有数据权限
+   *
+   * @param deptId 部门id
+   */
+  @Override
+  public void checkDeptDataScope(String deptId) {
+    if (ObjectUtil.isNull(deptId) || LoginHelper.isSuperAdmin()) {
+      return;
+    }
+
+    QueryWrapper queryWrapper = QueryWrapper.create().eq(SysDept::getId, deptId);
+      log.info("checkDeptDataScope sql 1: {}", queryWrapper.toSQL());
+    SearchUtils.getQueryDataScope(queryWrapper, DataColumn.of("deptName", "id"));
+    log.info("checkDeptDataScope sql 2: {}", queryWrapper.toSQL());
+    if (NumberUtil.equals(this.count(queryWrapper), 0)) {
+      throw new ServiceException("没有权限访问部门数据！");
+    }
+  }
+
   // todo
-  // @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
+  @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
   @Override
   public SysDeptVo selectDeptById(String deptId) {
     Optional<SysDept> sysDeptOpt = this.getByIdOpt(deptId);
