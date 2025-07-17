@@ -22,6 +22,10 @@ public class SysPerm extends BaseDO {
      */
     private String permissionName;
     /**
+     * 角色key
+     */
+    private String permissionKey;
+    /**
      * 角色状态（0正常 1停用）
      */
     private String status;

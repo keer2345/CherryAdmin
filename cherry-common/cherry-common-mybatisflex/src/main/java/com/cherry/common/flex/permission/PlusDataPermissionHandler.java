@@ -39,7 +39,7 @@ import java.util.function.Function;
  * @date 2025-07-15
  */
 @Slf4j
-@Component
+//@Component
 public class PlusDataPermissionHandler {
   // todo
 
@@ -101,7 +101,7 @@ public class PlusDataPermissionHandler {
     DataPermissionHelper.getContext().forEach(context::setVariable);
     Set<String> conditions = new HashSet<>();
     for (RoleDTO role : user.getRoles()) {
-      user.setRoleId(role.getRoleId());
+      user.setRoleId(role.getId());
       // 获取角色权限泛型
       DataScopeType type = DataScopeType.findCode(role.getDataScope());
       if (ObjectUtil.isNull(type)) {

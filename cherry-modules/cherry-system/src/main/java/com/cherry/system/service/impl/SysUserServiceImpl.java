@@ -7,11 +7,9 @@ import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.core.service.UserService;
 import com.cherry.common.core.utils.*;
-import com.cherry.common.flex.permission.DataColumn;
-import com.cherry.common.flex.permission.DataPermission;
-import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
+import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysRole;
 import com.cherry.system.domain.SysUser;
@@ -38,8 +36,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.Query;
-
 /**
  * 用户 业务层处理
  *
@@ -57,14 +53,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   private final SysPostMapper postMapper;
   private final SysUserRoleMapper userRoleMapper;
   private final SysUserPostMapper userPostMapper;
+  private final SysDataScopeServiceImpl dataScopeService;
 
   @Override
   public SysUserVo selectUserById(String userId) {
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
-    SearchUtils.getQueryDataScope(
-        QueryWrapper.create().where("1 = 1"),
-        DataColumn.of("deptName", "dept_id"),
-        DataColumn.of("userName", "sys_user.id"));
+    log.info("selectUserById sql 1:{}", queryWrapper.toSQL());
+    dataScopeService.getQueryWithDataScope(queryWrapper);
+    log.info("selectUserById sql 2:{}", queryWrapper.toSQL());
+    //    SearchUtils.getQueryDataScope(
+    //        QueryWrapper.create().where("1 = 1"),
+    //        DataColumn.of("deptName", "dept_id"),
+    //        DataColumn.of("userName", "sys_user.id"));
     //      Optional<SysUser> userOpt = this.getByIdOpt(userId);
     Optional<SysUser> userOpt = this.getOneOpt(queryWrapper);
     if (userOpt.isEmpty()) {
@@ -241,10 +241,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     // DataColumn.of("userName", "sys_user.user_id")};
     //    getQueryPerm(
     //        qw, columns);
-    SearchUtils.getQueryDataScope(
-        QueryWrapper.create().where("1=1"),
-        DataColumn.of("deptName", "dept_id"),
-        DataColumn.of("userName", "id"));
+//    SearchUtils.getQueryDataScope(
+//        QueryWrapper.create().where("1=1"),
+//        DataColumn.of("deptName", "dept_id"),
+//        DataColumn.of("userName", "id"));
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -325,6 +325,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     // 新增用户与岗位管理
     insertUserPost(user, true);
     SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
+    sysUser.setPassword(null);
     // 防止错误更新后导致的数据误删除
     int flag = userMapper.update(sysUser);
     if (flag < 1) {

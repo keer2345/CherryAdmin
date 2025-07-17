@@ -1124,7 +1124,9 @@ create table sys_perm
 (
     id             varchar(32) NOT NULL,
     permission_name        varchar(100) ,
+    permission_key        varchar(32) ,
     status         char(1)      default '0'::bpchar,
+    creator        varchar(32) ,
     create_dept     varchar(32),
     create_time    timestamp   ,
     updater        varchar(32) ,

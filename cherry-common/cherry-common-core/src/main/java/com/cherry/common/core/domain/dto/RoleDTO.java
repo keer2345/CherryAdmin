@@ -21,7 +21,7 @@ public class RoleDTO implements Serializable {
     /**
      * 角色ID
      */
-    private String roleId;
+    private String id;
 
     /**
      * 角色名称

@@ -1,5 +1,9 @@
 package com.cherry.system.service;
 
+import com.cherry.system.domain.SysPerm;
+
+import java.util.List;
+
 /**
  * 通用 数据权限 服务
  *
@@ -22,5 +26,7 @@ public interface ISysDataScopeService {
      * @return 部门id组
      */
     String getDeptAndChild(String deptId);
+
+
 
 }
