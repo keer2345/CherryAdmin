@@ -8,3 +8,5 @@
 - https://gitee.com/dromara/RuoYi-Vue-Plus
 - https://gitee.com/JavaLionLi/plus-ui
 - https://gitee.com/ding-wanren/base-vue-flex
+- https://github1s.com/ageerle/ruoyi-ai
+- https://github.com/KonBAI-Q/RuoYi-Flowable-Plus

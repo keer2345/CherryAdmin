@@ -83,7 +83,6 @@ public class PlusDataPermissionHandler {
 //    } else {
       queryWrapper.and( " ( "+dataFilterSql+" ) ");
 //    }
-    log.info("query wrapper sql: {}", queryWrapper.toSQL());
   }
 
   public String getSQL(DataPermission dataPermission, boolean isSelect) {
@@ -96,7 +95,6 @@ public class PlusDataPermissionHandler {
   private String buildDataFilter(DataColumn[] dataColumns, boolean isSelect) {
     // 更新或删除需满足所有条件
     String joinStr = isSelect ? " OR " : " AND ";
-    log.info("join  str : {}", joinStr);
     LoginUser user = DataPermissionHelper.getVariable("user");
     StandardEvaluationContext context = new StandardEvaluationContext();
     context.setBeanResolver(beanResolver);
@@ -136,25 +134,19 @@ public class PlusDataPermissionHandler {
             parser
                 .parseExpression(type.getSqlTemplate(), parserContext)
                 .getValue(context, String.class);
-        log.info("join  sql 1 : {}", sql);
         conditions.add(joinStr + sql);
-        log.info("join  sql 2 : {}", joinStr + sql);
-        log.info("join  sql set : {}",conditions);
         isSuccess = true;
       }
       // 未处理成功则填充兜底方案
       if (!isSuccess && StringUtils.isNotBlank(type.getElseSql())) {
-        log.info("join  sql 3 ");
         conditions.add(joinStr + type.getElseSql());
       }
     }
 
     if (CollUtil.isNotEmpty(conditions)) {
-      log.info("join  sql 4 ");
       String sql = StreamUtils.join(conditions, Function.identity(), "");
       return sql.substring(joinStr.length());
     }
-    log.info("join  sql 5 ");
     return "";
   }
 }

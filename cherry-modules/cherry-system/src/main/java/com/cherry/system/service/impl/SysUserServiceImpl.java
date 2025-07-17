@@ -15,13 +15,13 @@ import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysRole;
 import com.cherry.system.domain.SysUser;
+import com.cherry.system.domain.SysUserPost;
+import com.cherry.system.domain.SysUserRole;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
-import com.cherry.system.mapper.SysPostMapper;
-import com.cherry.system.mapper.SysRoleMapper;
-import com.cherry.system.mapper.SysUserMapper;
+import com.cherry.system.mapper.*;
 import com.cherry.system.service.ISysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -55,12 +55,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   private final SysUserMapper userMapper;
   private final SysRoleMapper roleMapper;
   private final SysPostMapper postMapper;
+  private final SysUserRoleMapper userRoleMapper;
+  private final SysUserPostMapper userPostMapper;
 
   @Override
   public SysUserVo selectUserById(String userId) {
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
     SearchUtils.getQueryDataScope(
-        QueryWrapper.create().where( "1 = 1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "sys_user.id"));
+        QueryWrapper.create().where("1 = 1"),
+        DataColumn.of("deptName", "dept_id"),
+        DataColumn.of("userName", "sys_user.id"));
     //      Optional<SysUser> userOpt = this.getByIdOpt(userId);
     Optional<SysUser> userOpt = this.getOneOpt(queryWrapper);
     if (userOpt.isEmpty()) {
@@ -238,7 +242,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     //    getQueryPerm(
     //        qw, columns);
     SearchUtils.getQueryDataScope(
-        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
+        QueryWrapper.create().where("1=1"),
+        DataColumn.of("deptName", "dept_id"),
+        DataColumn.of("userName", "id"));
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -266,14 +272,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       return;
     }
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
-    SearchUtils.getQueryDataScope(
-        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
+    //    SearchUtils.getQueryDataScope(
+    //        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"),
+    // DataColumn.of("userName", "id"));
     if (NumberUtil.equals(this.count(queryWrapper), 0)) {
       throw new ServiceException("没有权限访问用户数据！");
     }
     ;
   }
-
 
   private QueryWrapper buildQueryWrapper(SysUserBo user, PageQuery pageQuery) {
     Map<String, Object> params = user.getParams();
@@ -317,15 +323,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     // 新增用户与角色管理
     insertUserRole(user, true);
     // 新增用户与岗位管理
-//    insertUserPost(user, true);
+    insertUserPost(user, true);
     SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
     // 防止错误更新后导致的数据误删除
-//    int flag = baseMapper.updateById(sysUser);
-//    if (flag < 1) {
-//      throw new ServiceException("修改用户" + user.getUserName() + "信息失败");
-//
-//    return flag;
-      return 0;
+    int flag = userMapper.update(sysUser);
+    if (flag < 1) {
+      throw new ServiceException("修改用户" + user.getUserName() + "信息失败");
+    }
+    return flag;
   }
 
   /**
@@ -346,25 +351,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
    * @param clear 清除已存在的关联数据
    */
   private void insertUserRole(String userId, String[] roleIds, boolean clear) {
+
     if (ArrayUtil.isNotEmpty(roleIds)) {
       List<String> roleList = new ArrayList<>(List.of(roleIds));
       if (!LoginHelper.isSuperAdmin(userId)) {
         roleList.remove(SystemConstants.SUPER_ADMIN_ID);
       }
       // 判断是否具有此角色的操作权限
-        QueryWrapper roleQueryWrapper = QueryWrapper.create().from(SysRole.class).in(SysRole::getId, roleList);
-       SearchUtils.getQueryDataScope(QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "sys_dept.dept_id"), DataColumn.of("userName", "creator"));
-      List<SysRoleVo> roles =
-          roleMapper.selectListByQueryAs(roleQueryWrapper, SysRoleVo.class);
-//          roleMapper.selectRoleList(new QueryWrapper<SysRole>().in("r.role_id", roleList));
+      //        todo 数据权限加上 2,3,4 d.dept_id ,  5：role.createor
+      QueryWrapper roleQueryWrapper =
+          QueryWrapper.create().from(SysRole.class).in(SysRole::getId, roleList);
+      //       SearchUtils.getQueryDataScope(QueryWrapper.create().where("1=1"),
+      // DataColumn.of("deptName", "sys_dept.dept_id"), DataColumn.of("userName", "creator"));
+      List<SysRoleVo> roles = roleMapper.selectListByQueryAs(roleQueryWrapper, SysRoleVo.class);
+      //          roleMapper.selectRoleList(new QueryWrapper<SysRole>().in("r.role_id", roleList));
       if (CollUtil.isEmpty(roles)) {
         throw new ServiceException("没有权限访问角色的数据");
       }
-      /*
       if (clear) {
         // 删除用户与角色关联
-        userRoleMapper.delete(
-            new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
+        userRoleMapper.deleteByQuery(QueryWrapper.create().eq(SysUserRole::getUserId, userId));
       }
       // 新增用户与角色管理
       List<SysUserRole> list =
@@ -377,8 +383,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
                 return ur;
               });
       userRoleMapper.insertBatch(list);
+    }
+  }
 
-       */
+  /**
+   * 新增用户岗位信息
+   *
+   * @param user 用户对象
+   * @param clear 清除已存在的关联数据
+   */
+  private void insertUserPost(SysUserBo user, boolean clear) {
+    String[] posts = user.getPostIds();
+    if (ArrayUtil.isNotEmpty(posts)) {
+      if (clear) {
+        // 删除用户与岗位关联
+        userPostMapper.deleteByQuery(
+            QueryWrapper.create().in(SysUserPost::getUserId, user.getId()));
+      }
+      // 新增用户与岗位管理
+      List<SysUserPost> list =
+          StreamUtils.toList(
+              List.of(posts),
+              postId -> {
+                SysUserPost up = new SysUserPost();
+                up.setUserId(user.getId());
+                up.setPostId(postId);
+                return up;
+              });
+      userPostMapper.insertBatch(list);
     }
   }
 }

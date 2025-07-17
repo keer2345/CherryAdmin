@@ -3,6 +3,7 @@ package com.cherry.system.controller.system;
 import static com.cherry.common.core.utils.CollectionUtils.convertList;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -131,7 +132,9 @@ public class SysUserController extends BaseController {
   @Log(title = "用户管理", businessType = BusinessType.UPDATE)
   @PutMapping
   public R<Void> edit(@Validated @RequestBody SysUserBo user) {
-    log.info("update user: {}", user);
+
+      log.info("update user 0: {}", user);
+    System.out.println(CollUtil.toList( user.getRoleIds()));
     userService.checkUserAllowed(user.getId());
     userService.checkUserDataScope(user.getId());
     deptService.checkDeptDataScope(user.getDeptId());
@@ -143,6 +146,7 @@ public class SysUserController extends BaseController {
     } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
       return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
     }
+
     return toAjax(userService.updateUser(user));
   }
 }

@@ -732,8 +732,8 @@ create table sys_role_menu
     update_time   timestamp   ,
     delete_id     VARCHAR(32) ,
     delete_time   TIMESTAMP ,
-    deleted       BOOLEAN NULL DEFAULT FALSE,
-    constraint sys_role_menu_pk primary key (role_id, menu_id)
+    deleted       BOOLEAN NULL DEFAULT FALSE
+--     constraint sys_role_menu_pk primary key (role_id, menu_id)
 );
 
 comment on table sys_role_menu              is '角色和菜单关联表';
@@ -1047,8 +1047,8 @@ create table sys_user_post
     update_time    timestamp   ,
     delete_id      VARCHAR(32) ,
     delete_time    TIMESTAMP ,
-    deleted        BOOLEAN NULL DEFAULT FALSE,
-    constraint sys_user_post_pk primary key (user_id, post_id)
+    deleted        BOOLEAN NULL DEFAULT FALSE
+--     constraint sys_user_post_pk primary key (user_id, post_id)
 );
 
 comment on table sys_user_post              is '用户与岗位关联表';
@@ -1076,8 +1076,7 @@ create table sys_user_role
     update_time    timestamp   ,
     delete_id      VARCHAR(32) ,
     delete_time    TIMESTAMP ,
-    deleted        BOOLEAN NULL DEFAULT FALSE,
-    constraint sys_user_role_pk primary key (user_id, role_id)
+    deleted        BOOLEAN NULL DEFAULT FALSE
 );
 
 comment on table sys_user_role              is '用户和角色关联表';
@@ -1107,8 +1106,7 @@ create table if not exists sys_role_dept
     update_time    timestamp   ,
     delete_id      VARCHAR(32) ,
     delete_time    TIMESTAMP ,
-    deleted        BOOLEAN NULL DEFAULT FALSE,
-    constraint sys_role_dept_pk primary key (role_id, dept_id)
+    deleted        BOOLEAN NULL DEFAULT FALSE
     );
 
 comment on table sys_role_dept              is '角色和部门关联表';

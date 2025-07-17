@@ -58,7 +58,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
 
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysDept::getId, deptId);
 //      log.info("checkDeptDataScope sql 1: {}", queryWrapper.toSQL());
-    SearchUtils.getQueryDataScope(QueryWrapper.create().where("1 = 1"), DataColumn.of("deptName", "id"));
+//    SearchUtils.getQueryDataScope(QueryWrapper.create().where("1 = 1"), DataColumn.of("deptName", "id"));
 //    log.info("checkDeptDataScope sql 2: {}", queryWrapper.toSQL());
     if (NumberUtil.equals(this.count(queryWrapper), 0)) {
       throw new ServiceException("没有权限访问部门数据！");
