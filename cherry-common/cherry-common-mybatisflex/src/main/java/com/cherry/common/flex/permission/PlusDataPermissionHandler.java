@@ -42,6 +42,9 @@ import java.util.function.Function;
 @Component
 public class PlusDataPermissionHandler {
   // todo
+
+//    https://gitee.com/dromara/RuoYi-Vue-Plus/blob/5.X/ruoyi-common/ruoyi-common-mybatis/src/main/java/org/dromara/common/mybatis/handler/PlusDataPermissionHandler.java
+
   /** spel 解析器 */
   private final ExpressionParser parser = new SpelExpressionParser();
 
@@ -75,22 +78,21 @@ public class PlusDataPermissionHandler {
     if (queryWrapper == null) {
       queryWrapper = new QueryWrapper();
     }
-    queryWrapper.and(dataFilterSql);
+//    if (isSelect) {
+//      queryWrapper.or(dataFilterSql);
+//    } else {
+      queryWrapper.and( " ( "+dataFilterSql+" ) ");
+//    }
+    log.info("query wrapper sql: {}", queryWrapper.toSQL());
   }
 
   public String getSQL(DataPermission dataPermission, boolean isSelect) {
     return buildDataFilter(dataPermission.getValue(), isSelect);
   }
 
-
-    /**
-     * 构建数据过滤条件的 SQL 语句
-     *
-     * @param dataPermission 数据权限注解
-     * @param isSelect       标志当前操作是否为查询操作，查询操作和更新或删除操作在处理过滤条件时会有不同的处理方式
-     * @return 构建的数据过滤条件的 SQL 语句
-     * @throws ServiceException 如果角色的数据范围异常或者 key 与 value 的长度不匹配，则抛出 ServiceException 异常
-     */
+  /**
+   * 构建数据过滤条件的 SQL 语句
+   */
   private String buildDataFilter(DataColumn[] dataColumns, boolean isSelect) {
     // 更新或删除需满足所有条件
     String joinStr = isSelect ? " OR " : " AND ";
@@ -134,25 +136,25 @@ public class PlusDataPermissionHandler {
             parser
                 .parseExpression(type.getSqlTemplate(), parserContext)
                 .getValue(context, String.class);
-          log.info("join  sql 1 : {}", sql);
+        log.info("join  sql 1 : {}", sql);
         conditions.add(joinStr + sql);
-          log.info("join  sql 2 : {}",joinStr + sql);
-
+        log.info("join  sql 2 : {}", joinStr + sql);
+        log.info("join  sql set : {}",conditions);
         isSuccess = true;
       }
       // 未处理成功则填充兜底方案
       if (!isSuccess && StringUtils.isNotBlank(type.getElseSql())) {
-          log.info("join  sql 3 ");
+        log.info("join  sql 3 ");
         conditions.add(joinStr + type.getElseSql());
       }
     }
 
     if (CollUtil.isNotEmpty(conditions)) {
-        log.info("join  sql 4 ");
+      log.info("join  sql 4 ");
       String sql = StreamUtils.join(conditions, Function.identity(), "");
       return sql.substring(joinStr.length());
     }
-      log.info("join  sql 5 ");
+    log.info("join  sql 5 ");
     return "";
   }
 }

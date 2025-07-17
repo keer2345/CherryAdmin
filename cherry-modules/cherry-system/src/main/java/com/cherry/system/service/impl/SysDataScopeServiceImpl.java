@@ -35,13 +35,16 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
 
   @Override
   public String getRoleCustom(String roleId) {
+      QueryWrapper qw =
+          QueryWrapper.create()
+              .select(SysRoleDept::getDeptId)
+              .from(SysRoleDept.class)
+              .where(SysRoleDept::getRoleId)
+              .eq(roleId);
     List<SysRoleDept> list =
         roleDeptMapper.selectListByQuery(
-            QueryWrapper.create()
-                .select(SysRoleDept::getDeptId)
-                .from(SysRoleDept.class)
-                .where(SysRoleDept::getRoleId)
-                .eq(roleId));
+            qw
+        );
     if (CollUtil.isNotEmpty(list)) {
       return StreamUtils.join(list, rd -> Convert.toStr(rd.getDeptId()));
     }

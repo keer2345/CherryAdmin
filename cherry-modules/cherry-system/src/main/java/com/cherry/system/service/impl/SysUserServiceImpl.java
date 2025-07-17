@@ -38,6 +38,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.Query;
+
 /**
  * 用户 业务层处理
  *
@@ -58,7 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   public SysUserVo selectUserById(String userId) {
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
     SearchUtils.getQueryDataScope(
-        queryWrapper, DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
+        QueryWrapper.create().where( "1 = 1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "sys_user.id"));
     //      Optional<SysUser> userOpt = this.getByIdOpt(userId);
     Optional<SysUser> userOpt = this.getOneOpt(queryWrapper);
     if (userOpt.isEmpty()) {
@@ -236,8 +238,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     //    getQueryPerm(
     //        qw, columns);
     SearchUtils.getQueryDataScope(
-        qw, DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
-    log.info("query user sql: {}", qw.toSQL());
+        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -266,7 +267,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     }
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
     SearchUtils.getQueryDataScope(
-        queryWrapper, DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
+        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"), DataColumn.of("userName", "id"));
     if (NumberUtil.equals(this.count(queryWrapper), 0)) {
       throw new ServiceException("没有权限访问用户数据！");
     }
@@ -352,10 +353,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       }
       // 判断是否具有此角色的操作权限
         QueryWrapper roleQueryWrapper = QueryWrapper.create().from(SysRole.class).in(SysRole::getId, roleList);
-        log.info("query 1");
-       SearchUtils.getQueryDataScope(roleQueryWrapper, DataColumn.of("deptName", "sys_dept.dept_id"), DataColumn.of("userName", "creator"));
-        log.info("query 2: {}",roleQueryWrapper);
-        log.info("query 3");
+       SearchUtils.getQueryDataScope(QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "sys_dept.dept_id"), DataColumn.of("userName", "creator"));
       List<SysRoleVo> roles =
           roleMapper.selectListByQueryAs(roleQueryWrapper, SysRoleVo.class);
 //          roleMapper.selectRoleList(new QueryWrapper<SysRole>().in("r.role_id", roleList));
