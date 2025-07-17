@@ -1094,7 +1094,9 @@ insert into sys_user_role values ('3','4', '4','1','103',now());
 -- ----------------------------
 -- 角色和部门关联表  角色1-N部门
 -- ----------------------------
-create table if not exists sys_role_dept
+
+DROP TABLE IF EXISTS sys_role_dept;
+create table sys_role_dept
 (
     id             varchar(32) NOT NULL,
     role_id varchar(32) NOT NULL,
@@ -1112,3 +1114,46 @@ create table if not exists sys_role_dept
 comment on table sys_role_dept              is '角色和部门关联表';
 comment on column sys_role_dept.role_id     is '角色ID';
 comment on column sys_role_dept.dept_id     is '部门ID';
+
+
+-- ----------------------------
+-- 数据权限表
+-- ----------------------------
+DROP TABLE IF EXISTS sys_perm;
+create table sys_perm
+(
+    id             varchar(32) NOT NULL,
+    permission_name        varchar(100) ,
+    status         char(1)      default '0'::bpchar,
+    create_dept     varchar(32),
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
+    deleted        BOOLEAN NULL DEFAULT FALSE
+);
+
+comment on table sys_perm              is '数据权限表';
+-- ----------------------------
+-- 角色和数据权限关联表  角色1-N数据权限
+-- ----------------------------
+DROP TABLE IF EXISTS sys_role_perm;
+create table sys_role_perm
+(
+    id             varchar(32) NOT NULL,
+    role_id varchar(32) NOT NULL,
+    permission_id varchar(32) NOT NULL,
+    creator        varchar(32) ,
+    create_dept     varchar(32),
+    create_time    timestamp   ,
+    updater        varchar(32) ,
+    update_time    timestamp   ,
+    delete_id      VARCHAR(32) ,
+    delete_time    TIMESTAMP ,
+    deleted        BOOLEAN NULL DEFAULT FALSE
+    );
+
+comment on table sys_role_perm              is '角色和部门关联表';
+comment on column sys_role_perm.role_id     is '角色ID';
+comment on column sys_role_perm.permission_id     is '数据权限ID';
