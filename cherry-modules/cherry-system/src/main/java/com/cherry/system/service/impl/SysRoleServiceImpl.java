@@ -1,32 +1,31 @@
 package com.cherry.system.service.impl;
 
+import static com.cherry.common.core.utils.CollectionUtils.convertSet;
+
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.cherry.common.core.utils.CollectionUtils;
 import com.cherry.common.core.utils.MapstructUtils;
-import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.flex.utils.SearchUtils;
+import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.SysRole;
+import com.cherry.system.domain.SysUserRole;
 import com.cherry.system.domain.bo.SysRoleBo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.mapper.SysRoleMapper;
+import com.cherry.system.mapper.SysUserRoleMapper;
 import com.cherry.system.service.ISysRoleService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.security.Provider;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.cherry.common.core.utils.CollectionUtils.convertSet;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * 角色 业务层处理
@@ -42,6 +41,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
   // todo
 
   private final SysRoleMapper roleMapper;
+  private final SysUserRoleMapper userRoleMapper;
 
   /**
    * 根据条件分页查询角色数据
@@ -66,6 +66,26 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
   @Override
   public List<SysRoleVo> selectRoleList(SysRoleBo role) {
     QueryWrapper qw = buildQueryWrapper(role, null);
+    return this.listAs(qw, SysRoleVo.class);
+  }
+
+  /**
+   * 根据条件查询角色数据
+   *
+   * @param role 角色信息
+   * @return 角色数据集合信息
+   */
+  @Override
+  public List<SysRoleVo> selectRoleListByLoginUser(SysRoleBo role) {
+    QueryWrapper qw = buildQueryWrapper(role, null);
+    List<String> loginUserRoleIds =
+        StreamUtils.toList(
+            userRoleMapper.selectListByQuery(
+                QueryWrapper.create().eq(SysUserRole::getUserId, LoginHelper.getUserId())),
+            SysUserRole::getRoleId);
+    if(CollUtil.isNotEmpty(loginUserRoleIds)) {
+        qw.in(SysRole::getId, loginUserRoleIds);
+    }
     return this.listAs(qw, SysRoleVo.class);
   }
 

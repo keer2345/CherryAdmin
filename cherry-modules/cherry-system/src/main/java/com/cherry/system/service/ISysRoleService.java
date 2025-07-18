@@ -26,13 +26,20 @@ public interface ISysRoleService {
    */
   TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role, PageQuery pageQuery);
 
+    /**
+     * 根据条件查询角色数据
+     *
+     * @param role 角色信息
+     * @return 角色数据集合信息
+     */
+    List<SysRoleVo> selectRoleList(SysRoleBo role);
   /**
    * 根据条件查询角色数据
    *
    * @param role 角色信息
    * @return 角色数据集合信息
    */
-  List<SysRoleVo> selectRoleList(SysRoleBo role);
+  List<SysRoleVo> selectRoleListByLoginUser(SysRoleBo role);
 
   /**
    * 根据用户ID查询角色权限

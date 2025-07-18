@@ -274,6 +274,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       return;
     }
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysUser::getId, userId);
+    dataScopeService.getQueryWithDataScope(queryWrapper);
     //    SearchUtils.getQueryDataScope(
     //        QueryWrapper.create().where("1=1"), DataColumn.of("deptName", "dept_id"),
     // DataColumn.of("userName", "id"));

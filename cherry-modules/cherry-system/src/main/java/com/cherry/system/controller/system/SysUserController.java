@@ -119,7 +119,10 @@ public class SysUserController extends BaseController {
 
     SysRoleBo roleBo = new SysRoleBo();
     roleBo.setStatus(SystemConstants.NORMAL);
-    List<SysRoleVo> roles = roleService.selectRoleList(roleBo);
+    List<SysRoleVo> roles =
+        LoginHelper.isSuperAdmin()
+            ? roleService.selectRoleList(roleBo)
+            : roleService.selectRoleListByLoginUser(roleBo);
     userInfoVo.setRoles(
         LoginHelper.isSuperAdmin(userId)
             ? roles
@@ -133,8 +136,8 @@ public class SysUserController extends BaseController {
   @PutMapping
   public R<Void> edit(@Validated @RequestBody SysUserBo user) {
 
-      log.info("update user 0: {}", user);
-    System.out.println(CollUtil.toList( user.getRoleIds()));
+    log.info("update user 0: {}", user);
+    System.out.println(CollUtil.toList(user.getRoleIds()));
     userService.checkUserAllowed(user.getId());
     userService.checkUserDataScope(user.getId());
     deptService.checkDeptDataScope(user.getDeptId());
