@@ -47,7 +47,7 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
 
   @Override
   public String getRoleCustom(String userId) {
-      log.info("get custom dept ");
+    log.info("get custom dept ");
     List<String> roleIds =
         convertList(
             userRoleMapper.selectListByQuery(
@@ -79,7 +79,7 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
 
   @Override
   public String getDeptAndChild(String deptId) {
-      log.info("get dept and child");
+    log.info("get dept and child");
     List<SysDept> deptList =
         deptMapper.selectListByQuery(
             QueryWrapper.create()
@@ -145,6 +145,7 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
         String tableName = "";
         // 获取已构建的 queryWrapper 的表名
         List<QueryTable> queryTables = CPI.getQueryTables(qw);
+
         if (ObjUtil.isNotNull(queryTables)) {
           tableName = CPI.getQueryTables(qw).get(0).getName();
         }
@@ -154,7 +155,7 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
         sql.append(" ( ");
 
         sql.append(deptColumnName);
-         sql.append(" in ( ");
+        sql.append(" in ( ");
         if (CollUtil.contains(permKeys, "DEPT_AND_CHILD")
             || CollUtil.contains(permKeys, "CUSTOM")) {
           StringBuilder deptIds = new StringBuilder();
@@ -167,31 +168,34 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
             customDepts = this.getRoleCustom(user.getUserId());
           }
           if (StrUtil.isNotBlank(deptAndChild) && StrUtil.isNotBlank(customDepts)) {
-              log.info("cc 1 {}, {}",deptAndChild,customDepts);
             deptIds.append(deptAndChild).append(" , ").append(customDepts);
           } else if (StrUtil.isBlank(deptAndChild)) {
-              log.info("cc 2 {}",customDepts);
             deptIds.append(customDepts + " ,'" + user.getDeptId() + "'");
           } else if (StrUtil.isBlank(customDepts)) {
-              log.info("cc 3 {}",deptAndChild);
             deptIds.append(deptAndChild);
           } else {
             deptIds.append("''");
           }
           sql.append(deptIds);
           sql.append(" )) ");
-            qw.and(sql.toString());
-            log.info("qw2: {}", qw.toSQL());
+          qw.and(sql.toString());
+          log.info("qw2: {}", qw.toSQL());
           return;
         }
         if (CollUtil.contains(permKeys, "DEPT")) {
           sql.append("'" + user.getDeptId() + "'");
           sql.append(" )) ");
-            qw.and(sql.toString());
-            log.info("qw2: {}", qw.toSQL());
+          qw.and(sql.toString());
+          log.info("qw3: {}", qw.toSQL());
           return;
         }
 
+        if (CollUtil.contains(permKeys, "SELF")
+            && StrUtil.equals(tableName.toLowerCase(), "sys_user")) {
+          qw.and(" and (sys_user.id = '" + user.getUserId() + "') ");
+          log.info("qw4: {}", qw.toSQL());
+          return;
+        }
       }
     }
   }

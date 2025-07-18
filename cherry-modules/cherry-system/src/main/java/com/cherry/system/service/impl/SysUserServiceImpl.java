@@ -21,6 +21,8 @@ import com.cherry.system.service.ISysDeptService;
 import com.cherry.system.service.ISysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateChain;
+import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import java.util.ArrayList;
@@ -308,7 +310,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       // 部门树搜索
       qw.and(
           x -> {
-            List<SysDept> deptList =deptService.selectListByParentId(user.getDeptId());
+            List<SysDept> deptList = deptService.selectListByParentId(user.getDeptId());
             List<String> deptIds = StreamUtils.toList(deptList, SysDept::getId);
             deptIds.add(user.getDeptId());
             x.in(SysUser::getDeptId, deptIds);
@@ -427,5 +429,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
               });
       userPostMapper.insertBatch(list);
     }
+  }
+
+  /**
+   * 修改用户状态
+   *
+   * @param userId 用户ID
+   * @param status 帐号状态
+   * @return 结果
+   */
+  @Override
+  public boolean updateUserStatus(String userId, String status) {
+    SysUser user = UpdateEntity.of(SysUser.class ,userId);
+    user.setStatus(status);
+    return userMapper.update(user) > 0;
   }
 }

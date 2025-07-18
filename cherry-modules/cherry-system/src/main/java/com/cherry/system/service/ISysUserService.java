@@ -109,4 +109,13 @@ public interface ISysUserService {
    * @return 结果
    */
   int updateUser(SysUserBo user);
+
+    /**
+     * 修改用户状态
+     *
+     * @param userId 用户ID
+     * @param status 帐号状态
+     * @return 结果
+     */
+    boolean updateUserStatus(String userId, String status);
 }

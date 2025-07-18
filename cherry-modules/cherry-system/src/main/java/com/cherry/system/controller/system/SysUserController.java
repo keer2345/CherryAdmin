@@ -153,4 +153,16 @@ public class SysUserController extends BaseController {
 
     return toAjax(userService.updateUser(user));
   }
+
+    /**
+     * 状态修改
+     */
+    @SaCheckPermission("system:user:edit")
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public R<Void> changeStatus(@RequestBody SysUserBo user) {
+        userService.checkUserAllowed(user.getId());
+        userService.checkUserDataScope(user.getId());
+        return toAjax(userService.updateUserStatus(user.getId(), user.getStatus()));
+    }
 }
