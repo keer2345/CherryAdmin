@@ -1,5 +1,6 @@
 package com.cherry.system.service.impl;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.*;
 import com.cherry.common.core.constant.CacheNames;
@@ -35,6 +36,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 用户 业务层处理
@@ -440,8 +444,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
    */
   @Override
   public boolean updateUserStatus(String userId, String status) {
-    SysUser user = UpdateEntity.of(SysUser.class ,userId);
+    SysUser user = UpdateEntity.of(SysUser.class, userId);
     user.setStatus(status);
     return userMapper.update(user) > 0;
+  }
+
+  /**
+   * 新增保存用户信息
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int insertUser(SysUserBo user) {
+    SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
+    // 新增用户信息
+    int rows = userMapper.insert(sysUser);
+    user.setId(sysUser.getId());
+    // 新增用户岗位关联
+    insertUserPost(user, false);
+    // 新增用户与角色管理
+    insertUserRole(user, false);
+    return rows;
   }
 }

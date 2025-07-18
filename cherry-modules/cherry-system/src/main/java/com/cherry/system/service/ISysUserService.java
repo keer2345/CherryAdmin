@@ -118,4 +118,12 @@ public interface ISysUserService {
      * @return 结果
      */
     boolean updateUserStatus(String userId, String status);
+
+    /**
+     * 新增用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    int insertUser(SysUserBo user);
 }

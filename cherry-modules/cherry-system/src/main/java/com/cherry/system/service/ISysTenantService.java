@@ -22,4 +22,9 @@ public interface ISysTenantService {
      * 基于租户ID查询租户
      */
     SysTenantVo queryByTenantId(String tenantId);
+
+    /**
+     * 校验账号余额
+     */
+    boolean checkAccountBalance(String tenantId);
 }

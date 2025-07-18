@@ -1,9 +1,11 @@
 package com.cherry.common.tenant.helper;
 
 import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.context.model.SaStorage;
 import cn.hutool.core.convert.Convert;
 import com.cherry.common.core.constant.GlobalConstants;
 import com.cherry.common.core.utils.SpringUtils;
+import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.redis.utils.RedisUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import lombok.AccessLevel;
@@ -86,6 +88,35 @@ public class TenantHelper {
   }
 
   /**
+   * 获取动态租户(一直有效 需要手动清理)
+   *
+   * <p>如果为未登录状态下 那么只在当前线程内生效
+   */
+  public static String getDynamic() {
+    if (!isEnable()) {
+      return null;
+    }
+    if (!LoginHelper.isLogin()) {
+      return TEMP_DYNAMIC_TENANT.get();
+    }
+    // 如果线程内有值 优先返回
+    String tenantId = TEMP_DYNAMIC_TENANT.get();
+    if (StringUtils.isNotBlank(tenantId)) {
+      return tenantId;
+    }
+    SaStorage storage = SaHolder.getStorage();
+    String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
+    tenantId = storage.getString(cacheKey);
+    // 如果为 -1 说明已经查过redis并且不存在值 则直接返回null
+    if (StringUtils.isNotBlank(tenantId)) {
+      return tenantId.equals("-1") ? null : tenantId;
+    }
+    tenantId = RedisUtils.getCacheObject(cacheKey);
+    storage.set(cacheKey, StringUtils.isBlank(tenantId) ? "-1" : tenantId);
+    return tenantId;
+  }
+
+  /**
    * 在动态租户中执行
    *
    * @param handle 处理执行方法
@@ -97,5 +128,17 @@ public class TenantHelper {
     } finally {
       clearDynamic();
     }
+  }
+
+  /** 获取当前租户id(动态租户优先) */
+  public static String getTenantId() {
+    if (!isEnable()) {
+      return null;
+    }
+    String tenantId = TenantHelper.getDynamic();
+    if (StringUtils.isBlank(tenantId)) {
+      tenantId = LoginHelper.getTenantId();
+    }
+    return tenantId;
   }
 }

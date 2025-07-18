@@ -3,6 +3,7 @@ package com.cherry.system.controller.system;
 import static com.cherry.common.core.utils.CollectionUtils.convertList;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjUtil;
@@ -10,6 +11,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginUser;
+import com.cherry.common.core.enums.UserType;
 import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.flex.core.page.PageQuery;
@@ -24,10 +26,8 @@ import com.cherry.system.domain.bo.SysPostBo;
 import com.cherry.system.domain.bo.SysRoleBo;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.*;
-import com.cherry.system.service.ISysDeptService;
-import com.cherry.system.service.ISysPostService;
-import com.cherry.system.service.ISysRoleService;
-import com.cherry.system.service.ISysUserService;
+import com.cherry.system.service.*;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +51,7 @@ public class SysUserController extends BaseController {
   private final ISysDeptService deptService;
   private final ISysRoleService roleService;
   private final ISysPostService postService;
+  private final ISysTenantService tenantService;
 
   /** 获取用户列表 */
   @SaCheckPermission("system:user:list")
@@ -154,15 +155,46 @@ public class SysUserController extends BaseController {
     return toAjax(userService.updateUser(user));
   }
 
-    /**
-     * 状态修改
-     */
-    @SaCheckPermission("system:user:edit")
-    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus")
-    public R<Void> changeStatus(@RequestBody SysUserBo user) {
-        userService.checkUserAllowed(user.getId());
-        userService.checkUserDataScope(user.getId());
-        return toAjax(userService.updateUserStatus(user.getId(), user.getStatus()));
+  /** 新增用户 */
+  @SaCheckPermission("system:user:add")
+  @Log(title = "用户管理", businessType = BusinessType.INSERT)
+  @PostMapping
+  public R<Void> add(@Validated @RequestBody SysUserBo user) {
+    deptService.checkDeptDataScope(user.getDeptId());
+    if (!userService.checkUserNameUnique(user)) {
+      return R.fail("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+    } else if (StringUtils.isNotEmpty(user.getPhonenumber())
+        && !userService.checkPhoneUnique(user)) {
+      return R.fail("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+    } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
+      return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
     }
+    if (TenantHelper.isEnable()) {
+      if (!tenantService.checkAccountBalance(TenantHelper.getTenantId())) {
+        return R.fail("当前租户下用户名额不足，请联系管理员");
+      }
+    }
+    if(StringUtils.isEmpty(user.getPassword())){
+        user.setPassword("123456");
+    }
+    if(StringUtils.isEmpty(user.getNickName())){
+        user.setNickName(user.getUserName());
+    }
+    if(StringUtils.isEmpty(user.getTenantId())){user.setTenantId(TenantHelper.getTenantId());}
+    if(StringUtils.isEmpty(user.getUserType())){
+      user.setUserType(UserType.SYS_USER.getUserType());
+    }
+    user.setPassword(BCrypt.hashpw(user.getPassword()));
+    return toAjax(userService.insertUser(user));
+  }
+
+  /** 状态修改 */
+  @SaCheckPermission("system:user:edit")
+  @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+  @PutMapping("/changeStatus")
+  public R<Void> changeStatus(@RequestBody SysUserBo user) {
+    userService.checkUserAllowed(user.getId());
+    userService.checkUserDataScope(user.getId());
+    return toAjax(userService.updateUserStatus(user.getId(), user.getStatus()));
+  }
 }

@@ -58,9 +58,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     }
 
     QueryWrapper queryWrapper = QueryWrapper.create().eq(SysDept::getId, deptId);
-//      log.info("checkDeptDataScope sql 1: {}", queryWrapper.toSQL());
-//    SearchUtils.getQueryDataScope(QueryWrapper.create().where("1 = 1"), DataColumn.of("deptName", "id"));
-//    log.info("checkDeptDataScope sql 2: {}", queryWrapper.toSQL());
+    //      log.info("checkDeptDataScope sql 1: {}", queryWrapper.toSQL());
+    //    SearchUtils.getQueryDataScope(QueryWrapper.create().where("1 = 1"),
+    // DataColumn.of("deptName", "id"));
+    //    log.info("checkDeptDataScope sql 2: {}", queryWrapper.toSQL());
     if (NumberUtil.equals(this.count(queryWrapper), 0)) {
       throw new ServiceException("没有权限访问部门数据！");
     }
@@ -78,8 +79,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     SysDeptVo dept = MapstructUtils.convert(sysDeptOpt.get(), SysDeptVo.class);
 
     SysDeptVo parentDept =
-        this.getOneAs(new QueryWrapper().eq(SysDept::getId, dept.getParentId()), SysDeptVo.class);
-    dept.setParentName(parentDept.getDeptName());
+        this.getOneAs(
+            QueryWrapper.create().eq(SysDept::getId, dept.getParentId()), SysDeptVo.class);
+    dept.setParentName(ObjectUtils.notNullGetter(parentDept, SysDeptVo::getParentName));
     return dept;
   }
 
@@ -111,15 +113,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
   @Override
   public List<Tree<String>> selectDeptTreeList(SysDeptBo bo) {
     QueryWrapper qw = buildQueryWrapper(bo);
-    log.info("tree sql 1 : {}",qw.toSQL());
+    log.info("tree sql 1 : {}", qw.toSQL());
     dataScopeService.getQueryWithDataScope(qw);
-      log.info("tree sql 2 : {}",qw.toSQL());
+    log.info("tree sql 2 : {}", qw.toSQL());
     List<SysDeptVo> depts = this.listAs(qw, SysDeptVo.class);
     return buildDeptTreeSelect(depts);
   }
 
   private QueryWrapper buildQueryWrapper(SysDeptBo bo) {
-    QueryWrapper qw = new QueryWrapper().create().from(SysDept.class);
+    QueryWrapper qw = QueryWrapper.create().from(SysDept.class);
     qw.eq(SysDept::getId, bo.getId());
     qw.eq(SysDept::getParentId, bo.getParentId());
     qw.like(SysDept::getDeptName, bo.getDeptName());
@@ -178,7 +180,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
   @Override
   public List<SysDept> selectListByParentId(String parentId) {
     return this.list(
-        new QueryWrapper()
+        QueryWrapper.create()
             .select(SysDept::getId)
             .where(DataBaseHelper.findInSet(parentId, "ancestors")));
   }
