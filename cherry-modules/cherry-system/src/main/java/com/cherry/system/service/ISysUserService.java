@@ -110,20 +110,20 @@ public interface ISysUserService {
    */
   int updateUser(SysUserBo user);
 
-    /**
-     * 修改用户状态
-     *
-     * @param userId 用户ID
-     * @param status 帐号状态
-     * @return 结果
-     */
-    boolean updateUserStatus(String userId, String status);
+  /**
+   * 修改用户状态
+   *
+   * @param userId 用户ID
+   * @param status 帐号状态
+   * @return 结果
+   */
+  boolean updateUserStatus(String userId, String status);
 
-    /**
-     * 新增用户信息
-     *
-     * @param user 用户信息
-     * @return 结果
-     */
-    int insertUser(SysUserBo user);
+  /**
+   * 新增用户信息
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  int insertUser(SysUserBo user);
 }

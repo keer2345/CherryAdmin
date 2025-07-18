@@ -468,4 +468,5 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     insertUserRole(user, false);
     return rows;
   }
+
 }

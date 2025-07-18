@@ -197,4 +197,18 @@ public class SysUserController extends BaseController {
     userService.checkUserDataScope(user.getId());
     return toAjax(userService.updateUserStatus(user.getId(), user.getStatus()));
   }
+
+    /**
+     * 重置密码
+     */
+//    @ApiEncrypt
+    @SaCheckPermission("system:user:resetPwd")
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/resetPwd")
+    public R<Void> resetPwd(@RequestBody SysUserBo user) {
+        userService.checkUserAllowed(user.getId());
+        userService.checkUserDataScope(user.getId());
+        user.setPassword(BCrypt.hashpw(user.getPassword()));
+        return toAjax(userService.resetUserPwd(user.getId(), user.getPassword()));
+    }
 }
