@@ -111,7 +111,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
   @Override
   public List<Tree<String>> selectDeptTreeList(SysDeptBo bo) {
     QueryWrapper qw = buildQueryWrapper(bo);
+    log.info("tree sql 1 : {}",qw.toSQL());
     dataScopeService.getQueryWithDataScope(qw);
+      log.info("tree sql 2 : {}",qw.toSQL());
     List<SysDeptVo> depts = this.listAs(qw, SysDeptVo.class);
     return buildDeptTreeSelect(depts);
   }

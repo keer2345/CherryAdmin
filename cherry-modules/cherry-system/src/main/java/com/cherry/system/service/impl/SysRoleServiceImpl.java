@@ -70,7 +70,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
   }
 
   /**
-   * 根据条件查询角色数据
+   * 查询登录用户所属的角色
    *
    * @param role 角色信息
    * @return 角色数据集合信息

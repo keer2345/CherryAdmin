@@ -12,10 +12,7 @@ import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.flex.helper.DataBaseHelper;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.system.domain.*;
-import com.cherry.system.mapper.SysDeptMapper;
-import com.cherry.system.mapper.SysPermMapper;
-import com.cherry.system.mapper.SysRoleDeptMapper;
-import com.cherry.system.mapper.SysRolePermMapper;
+import com.cherry.system.mapper.*;
 import com.cherry.system.service.ISysDataScopeService;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryTable;
@@ -25,6 +22,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.cherry.common.core.utils.CollectionUtils.convertList;
 
 /**
  * 数据权限 实现
@@ -44,24 +43,43 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
   private final SysRoleDeptMapper roleDeptMapper;
   private final SysDeptMapper deptMapper;
   private final SysPermMapper permMapper;
+  private final SysUserRoleMapper userRoleMapper;
 
   @Override
-  public String getRoleCustom(String roleId) {
+  public String getRoleCustom(String userId) {
+      log.info("get custom dept ");
+    List<String> roleIds =
+        convertList(
+            userRoleMapper.selectListByQuery(
+                QueryWrapper.create()
+                    .from(SysUserRole.class)
+                    .leftJoin(SysRole.class)
+                    .on(SysUserRole::getRoleId, SysRole::getId)
+                    .eq(SysRole::getStatus, SystemConstants.NORMAL)
+                    .where(SysUserRole::getUserId)
+                    .eq(userId)),
+            SysUserRole::getRoleId);
+
+    if (roleIds.size() == 0) {
+      return null;
+    }
+
     QueryWrapper qw =
         QueryWrapper.create()
             .select(SysRoleDept::getDeptId)
             .from(SysRoleDept.class)
             .where(SysRoleDept::getRoleId)
-            .eq(roleId);
+            .in(roleIds);
     List<SysRoleDept> list = roleDeptMapper.selectListByQuery(qw);
     if (CollUtil.isNotEmpty(list)) {
-      return StreamUtils.join(list, rd -> Convert.toStr(rd.getDeptId()));
+      return StreamUtils.join(list, rd -> "'" + Convert.toStr(rd.getDeptId()) + "'");
     }
     return null;
   }
 
   @Override
   public String getDeptAndChild(String deptId) {
+      log.info("get dept and child");
     List<SysDept> deptList =
         deptMapper.selectListByQuery(
             QueryWrapper.create()
@@ -120,30 +138,60 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
         if (CollUtil.contains(permKeys, "ALL")) {
           return;
         }
-        if (CollUtil.contains(permKeys, "DEPT_AND_CHILD")) {
-          StringBuilder sql = new StringBuilder();
 
-            String deptColumnName = "dept_id";
-            String tableName="";
-          // 获取已构建的 queryWrapper 的表名
-          List<QueryTable> queryTables = CPI.getQueryTables(qw);
-          if (ObjUtil.isNotNull(queryTables)) {
-            tableName = CPI.getQueryTables(qw).get(0).getName();
+        StringBuilder sql = new StringBuilder();
+
+        String deptColumnName = "dept_id";
+        String tableName = "";
+        // 获取已构建的 queryWrapper 的表名
+        List<QueryTable> queryTables = CPI.getQueryTables(qw);
+        if (ObjUtil.isNotNull(queryTables)) {
+          tableName = CPI.getQueryTables(qw).get(0).getName();
+        }
+        if (StrUtil.equals(tableName.toLowerCase(), "sys_dept")) {
+          deptColumnName = "id";
+        }
+        sql.append(" ( ");
+
+        sql.append(deptColumnName);
+         sql.append(" in ( ");
+        if (CollUtil.contains(permKeys, "DEPT_AND_CHILD")
+            || CollUtil.contains(permKeys, "CUSTOM")) {
+          StringBuilder deptIds = new StringBuilder();
+          String deptAndChild = "";
+          String customDepts = "";
+          if (CollUtil.contains(permKeys, "DEPT_AND_CHILD")) {
+            deptAndChild = this.getDeptAndChild(user.getDeptId());
           }
-          if (StrUtil.equals(tableName.toLowerCase(), "sys_dept")) {
-            deptColumnName = "id";
+          if (CollUtil.contains(permKeys, "CUSTOM")) {
+            customDepts = this.getRoleCustom(user.getUserId());
           }
-          sql.append(" ( ");
-
-          sql.append(deptColumnName);
-          sql.append(" in ( " + this.getDeptAndChild(user.getDeptId()) + " ) ");
-
-          sql.append(" ) ");
-
-          qw.and(sql.toString());
-          log.info("qw2: {}", qw.toSQL());
+          if (StrUtil.isNotBlank(deptAndChild) && StrUtil.isNotBlank(customDepts)) {
+              log.info("cc 1 {}, {}",deptAndChild,customDepts);
+            deptIds.append(deptAndChild).append(" , ").append(customDepts);
+          } else if (StrUtil.isBlank(deptAndChild)) {
+              log.info("cc 2 {}",customDepts);
+            deptIds.append(customDepts + " ,'" + user.getDeptId() + "'");
+          } else if (StrUtil.isBlank(customDepts)) {
+              log.info("cc 3 {}",deptAndChild);
+            deptIds.append(deptAndChild);
+          } else {
+            deptIds.append("''");
+          }
+          sql.append(deptIds);
+          sql.append(" )) ");
+            qw.and(sql.toString());
+            log.info("qw2: {}", qw.toSQL());
           return;
         }
+        if (CollUtil.contains(permKeys, "DEPT")) {
+          sql.append("'" + user.getDeptId() + "'");
+          sql.append(" )) ");
+            qw.and(sql.toString());
+            log.info("qw2: {}", qw.toSQL());
+          return;
+        }
+
       }
     }
   }

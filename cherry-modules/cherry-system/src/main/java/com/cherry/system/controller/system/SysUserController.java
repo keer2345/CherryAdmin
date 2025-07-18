@@ -119,10 +119,11 @@ public class SysUserController extends BaseController {
 
     SysRoleBo roleBo = new SysRoleBo();
     roleBo.setStatus(SystemConstants.NORMAL);
-    List<SysRoleVo> roles =
-        LoginHelper.isSuperAdmin()
-            ? roleService.selectRoleList(roleBo)
-            : roleService.selectRoleListByLoginUser(roleBo);
+    List<SysRoleVo> roles = roleService.selectRoleList(roleBo);
+    //    List<SysRoleVo> roles =
+    //        LoginHelper.isSuperAdmin()
+    //            ? roleService.selectRoleList(roleBo)
+    //            : roleService.selectRoleListByLoginUser(roleBo);
     userInfoVo.setRoles(
         LoginHelper.isSuperAdmin(userId)
             ? roles

@@ -15,10 +15,10 @@ public interface ISysDataScopeService {
   /**
    * 获取角色自定义权限
    *
-   * @param roleId 角色id
+   * @param userId 角色id
    * @return 部门id组
    */
-  String getRoleCustom(String roleId);
+  String getRoleCustom(String userId);
 
   /**
    * 获取部门及以下权限
