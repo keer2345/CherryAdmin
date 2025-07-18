@@ -11,15 +11,13 @@ import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.flex.utils.SearchUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
-import com.cherry.system.domain.SysRole;
-import com.cherry.system.domain.SysUser;
-import com.cherry.system.domain.SysUserPost;
-import com.cherry.system.domain.SysUserRole;
+import com.cherry.system.domain.*;
 import com.cherry.system.domain.bo.SysUserBo;
 import com.cherry.system.domain.vo.SysPostVo;
 import com.cherry.system.domain.vo.SysRoleVo;
 import com.cherry.system.domain.vo.SysUserVo;
 import com.cherry.system.mapper.*;
+import com.cherry.system.service.ISysDeptService;
 import com.cherry.system.service.ISysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -54,6 +52,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   private final SysUserRoleMapper userRoleMapper;
   private final SysUserPostMapper userPostMapper;
   private final SysDataScopeServiceImpl dataScopeService;
+  private final ISysDeptService deptService;
 
   @Override
   public SysUserVo selectUserById(String userId) {
@@ -237,14 +236,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
     QueryWrapper qw = buildQueryWrapper(user, pageQuery);
+    log.info("selectPageUserList sql 1:{}", qw.toSQL());
+    dataScopeService.getQueryWithDataScope(qw);
+    log.info("selectPageUserList sql 2:{}", qw.toSQL());
     //    DataColumn[] columns = {DataColumn.of("deptName", "sys_user.dept_id"),
     // DataColumn.of("userName", "sys_user.user_id")};
     //    getQueryPerm(
     //        qw, columns);
-//    SearchUtils.getQueryDataScope(
-//        QueryWrapper.create().where("1=1"),
-//        DataColumn.of("deptName", "dept_id"),
-//        DataColumn.of("userName", "id"));
+    //    SearchUtils.getQueryDataScope(
+    //        QueryWrapper.create().where("1=1"),
+    //        DataColumn.of("deptName", "dept_id"),
+    //        DataColumn.of("userName", "id"));
     Page<SysUserVo> page = this.pageAs(pageQuery.build(), qw, SysUserVo.class);
     return TableDataInfo.build(page);
   }
@@ -300,6 +302,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
                 SysUser::getId,
                 StringUtils.splitList(user.getExcludeUserIds()),
                 StrUtil.isNotBlank(user.getId()));
+
+    if (ObjectUtil.isNotNull(user.getDeptId())) {
+      // 部门树搜索
+      qw.and(
+          x -> {
+            List<SysDept> deptList =deptService.selectListByParentId(user.getDeptId());
+            List<String> deptIds = StreamUtils.toList(deptList, SysDept::getId);
+            deptIds.add(user.getDeptId());
+            x.in(SysUser::getDeptId, deptIds);
+          });
+    }
 
     SearchUtils.buildTimeBetween(qw, "create_time", params.get("beginTime"), params.get("endTime"));
 

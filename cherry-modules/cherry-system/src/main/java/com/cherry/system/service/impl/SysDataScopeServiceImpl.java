@@ -3,6 +3,7 @@ package com.cherry.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.domain.dto.RoleDTO;
 import com.cherry.common.core.domain.model.LoginUser;
@@ -16,6 +17,8 @@ import com.cherry.system.mapper.SysPermMapper;
 import com.cherry.system.mapper.SysRoleDeptMapper;
 import com.cherry.system.mapper.SysRolePermMapper;
 import com.cherry.system.service.ISysDataScopeService;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +44,6 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
   private final SysRoleDeptMapper roleDeptMapper;
   private final SysDeptMapper deptMapper;
   private final SysPermMapper permMapper;
-  private final SysRolePermMapper rolePermMapper;
 
   @Override
   public String getRoleCustom(String roleId) {
@@ -75,71 +77,74 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
     return null;
   }
 
+  @Override
   public void getQueryWithDataScope(QueryWrapper qw) {
     log.info("getQueryWithDataScope begin");
-      LoginUser user = LoginHelper.getLoginUser();
-      log.info("getQueryWithDataScope login user : {}", user);
-      // 如果是超级管理员或租户管理员，则不过滤数据
-      if (LoginHelper.isSuperAdmin() || LoginHelper.isTenantAdmin()) {
-        log.info("admin");
-        qw.and("( 1 = 1 ) ");
-        return;
-      }
-      if (ObjUtil.isNotNull(user)) {
-        List<RoleDTO> roleDTOList = user.getRoles();
-        //            获取角色ID
-        List<String> roleIds =
-            roleDTOList.stream().map(RoleDTO::getId).collect(Collectors.toList());
+    LoginUser user = LoginHelper.getLoginUser();
+    // 如果是超级管理员或租户管理员，则不过滤数据
+    if (LoginHelper.isSuperAdmin() || LoginHelper.isTenantAdmin()) {
+      return;
+    }
+    if (ObjUtil.isNotNull(user)) {
+      List<RoleDTO> roleDTOList = user.getRoles();
+      //            获取角色ID
+      List<String> roleIds = roleDTOList.stream().map(RoleDTO::getId).collect(Collectors.toList());
 
-        List<SysPerm> permList;
+      List<SysPerm> permList;
 
-        if (ObjUtil.isNotNull(roleDTOList)) {
-          QueryWrapper qw1 =
-              QueryWrapper.create()
-                  .select()
-                  .from(SysPerm.class)
-                  .as("a")
-                  .leftJoin(SysRolePerm.class)
-                  .as("b")
-                  .on(SysPerm::getId, SysRolePerm::getPermissionId)
-                  .leftJoin(SysRole.class)
-                  .on(SysRole::getId, SysRolePerm::getRoleId)
-                  .where(SysRole::getId)
-                  .in(roleIds)
-                  .eq(SysRole::getStatus, SystemConstants.NORMAL)
-                  .eq(SysPerm::getStatus, SystemConstants.NORMAL);
+      if (ObjUtil.isNotNull(roleDTOList)) {
+        QueryWrapper qw1 =
+            QueryWrapper.create()
+                .select()
+                .from(SysPerm.class)
+                .as("a")
+                .leftJoin(SysRolePerm.class)
+                .as("b")
+                .on(SysPerm::getId, SysRolePerm::getPermissionId)
+                .leftJoin(SysRole.class)
+                .on(SysRole::getId, SysRolePerm::getRoleId)
+                .where(SysRole::getId)
+                .in(roleIds)
+                .eq(SysRole::getStatus, SystemConstants.NORMAL)
+                .eq(SysPerm::getStatus, SystemConstants.NORMAL);
 
-          //              QueryWrapper.create()
-          //                  .select("b.*")
-          //                  .from(SysPerm.class)
-          //                  .as("a")
-          //                  .from(SysRole.class)
-          //                  .as("b")
-          //                  .from(SysRolePerm.class)
-          //                  .as("c")
-          //                  .where(SysPerm::getId)
-          //                  .eq(SysRolePerm::getPermissionId)
-          //                  .and(SysRole::getId)
-          //                  .eq(SysRolePerm::getRoleId)
-          //                  .eq(SysRole::getStatus, SystemConstants.NORMAL)
-          //                  .eq(SysPerm::getStatus, SystemConstants.NORMAL)
-          //                  .in(SysRole::getId, roleIds);
+        permList = permMapper.selectListByQuery(qw1);
 
-          log.info("qw1: {}", qw1.toSQL());
-          permList = permMapper.selectListByQuery(qw1);
+        if (CollUtil.isEmpty(permList)) {
+          log.info("角色异常");
+          throw new ServiceException("角色数据范围异常，没有对应的数据权限");
+        }
 
-          if (CollUtil.isEmpty(permList)) {
-            log.info("角色异常");
-            throw new ServiceException("角色数据范围异常，没有对应的数据权限");
+        //          获取数据权限KEY
+        List<String> permKeys = StreamUtils.toList(permList, SysPerm::getPermissionKey);
+        if (CollUtil.contains(permKeys, "ALL")) {
+          return;
+        }
+        if (CollUtil.contains(permKeys, "DEPT_AND_CHILD")) {
+          StringBuilder sql = new StringBuilder();
+
+            String deptColumnName = "dept_id";
+            String tableName="";
+          // 获取已构建的 queryWrapper 的表名
+          List<QueryTable> queryTables = CPI.getQueryTables(qw);
+          if (ObjUtil.isNotNull(queryTables)) {
+            tableName = CPI.getQueryTables(qw).get(0).getName();
           }
-
-          //          获取数据权限KEY
-          List<String> permKeys = StreamUtils.toList(permList, SysPerm::getPermissionKey);
-          if (CollUtil.contains(permKeys, "ALL")) {
-            qw.where(" 1 = 1 ");
-            return;
+          if (StrUtil.equals(tableName.toLowerCase(), "sys_dept")) {
+            deptColumnName = "id";
           }
+          sql.append(" ( ");
+
+          sql.append(deptColumnName);
+          sql.append(" in ( " + this.getDeptAndChild(user.getDeptId()) + " ) ");
+
+          sql.append(" ) ");
+
+          qw.and(sql.toString());
+          log.info("qw2: {}", qw.toSQL());
+          return;
         }
       }
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.cherry.system.service;
 
 import com.cherry.system.domain.SysPerm;
+import com.mybatisflex.core.query.QueryWrapper;
 
 import java.util.List;
 
@@ -11,22 +12,25 @@ import java.util.List;
  */
 public interface ISysDataScopeService {
 
-    /**
-     * 获取角色自定义权限
-     *
-     * @param roleId 角色id
-     * @return 部门id组
-     */
-    String getRoleCustom(String roleId);
+  /**
+   * 获取角色自定义权限
+   *
+   * @param roleId 角色id
+   * @return 部门id组
+   */
+  String getRoleCustom(String roleId);
+
+  /**
+   * 获取部门及以下权限
+   *
+   * @param deptId 部门id
+   * @return 部门id组
+   */
+  String getDeptAndChild(String deptId);
 
     /**
-     * 获取部门及以下权限
-     *
-     * @param deptId 部门id
-     * @return 部门id组
+     * 构建SQL
+     * @param qw
      */
-    String getDeptAndChild(String deptId);
-
-
-
+  void getQueryWithDataScope(QueryWrapper qw);
 }

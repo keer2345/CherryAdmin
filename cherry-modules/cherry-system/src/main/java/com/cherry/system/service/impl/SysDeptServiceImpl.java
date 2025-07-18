@@ -44,6 +44,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
   // todo
 
   private final SysDeptMapper deptMapper;
+  private final SysDataScopeServiceImpl dataScopeService;
 
   /**
    * 校验部门是否有数据权限
@@ -110,8 +111,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
   @Override
   public List<Tree<String>> selectDeptTreeList(SysDeptBo bo) {
     QueryWrapper qw = buildQueryWrapper(bo);
+    dataScopeService.getQueryWithDataScope(qw);
     List<SysDeptVo> depts = this.listAs(qw, SysDeptVo.class);
-    //        MapstructUtils.convert(deptMapper.selectDeptList(qw), SysDeptVo.class);
     return buildDeptTreeSelect(depts);
   }
 
