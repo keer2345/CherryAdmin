@@ -8,6 +8,7 @@ import com.cherry.common.core.constant.SystemConstants;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.domain.model.LoginBody;
 import com.cherry.common.core.utils.*;
+import com.cherry.common.encrypt.annotation.ApiEncrypt;
 import com.cherry.common.json.utils.JsonUtils;
 import com.cherry.common.satoken.utils.LoginHelper;
 import com.cherry.common.sse.dto.SseMessageDto;
@@ -58,7 +59,7 @@ public class AuthController {
    *
    * @param body
    */
-  // @ApiEncrypt
+   @ApiEncrypt
   @PostMapping("/login")
   public R<LoginVo> login(@RequestBody String body) {
     LoginBody loginBody = JsonUtils.parseObject(body, LoginBody.class);

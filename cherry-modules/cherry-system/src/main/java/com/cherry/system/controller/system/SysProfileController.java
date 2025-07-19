@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.cherry.common.core.domain.R;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.encrypt.annotation.ApiEncrypt;
 import com.cherry.common.log.annotation.Log;
 import com.cherry.common.log.enums.BusinessType;
 import com.cherry.common.satoken.utils.LoginHelper;
@@ -72,8 +73,8 @@ public class SysProfileController extends BaseController {
    *
    * @param bo 新旧密码
    */
-  // @RepeatSubmit
-  // @ApiEncrypt
+//   @RepeatSubmit
+   @ApiEncrypt
   @Log(title = "个人信息", businessType = BusinessType.UPDATE)
   @PutMapping("/updatePwd")
   public R<Void> updatePwd(@Validated @RequestBody SysUserPasswordBo bo) {
