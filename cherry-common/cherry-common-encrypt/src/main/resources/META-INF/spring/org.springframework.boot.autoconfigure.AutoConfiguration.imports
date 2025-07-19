@@ -1,2 +1,2 @@
-# com.cherry.common.encrypt.config.EncryptorAutoConfiguration
-# com.cherry.common.encrypt.config.ApiDecryptAutoConfiguration
+com.cherry.common.encrypt.config.EncryptorAutoConfiguration
+com.cherry.common.encrypt.config.ApiDecryptAutoConfiguration

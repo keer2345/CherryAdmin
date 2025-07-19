@@ -14,6 +14,7 @@ import com.cherry.common.core.domain.model.LoginUser;
 import com.cherry.common.core.enums.UserType;
 import com.cherry.common.core.utils.StreamUtils;
 import com.cherry.common.core.utils.StringUtils;
+import com.cherry.common.encrypt.annotation.ApiEncrypt;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.log.annotation.Log;
@@ -201,7 +202,7 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
-//    @ApiEncrypt
+    @ApiEncrypt
     @SaCheckPermission("system:user:resetPwd")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
