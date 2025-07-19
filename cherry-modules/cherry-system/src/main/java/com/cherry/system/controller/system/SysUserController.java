@@ -6,6 +6,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.cherry.common.core.constant.SystemConstants;
@@ -211,5 +212,20 @@ public class SysUserController extends BaseController {
         userService.checkUserDataScope(user.getId());
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         return toAjax(userService.resetUserPwd(user.getId(), user.getPassword()));
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param userIds 角色ID串
+     */
+    @SaCheckPermission("system:user:remove")
+    @Log(title = "用户管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{userIds}")
+    public R<Void> remove(@PathVariable String[] userIds) {
+        if (ArrayUtil.contains(userIds, LoginHelper.getUserId())) {
+            return R.fail("当前用户不能删除");
+        }
+        return toAjax(userService.deleteUserByIds(userIds));
     }
 }

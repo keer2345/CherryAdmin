@@ -469,4 +469,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     return rows;
   }
 
+  /**
+   * 批量删除用户信息
+   *
+   * @param userIds 需要删除的用户ID
+   * @return 结果
+   */
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int deleteUserByIds(String[] userIds) {
+    for (String userId : userIds) {
+      checkUserAllowed(userId);
+      checkUserDataScope(userId);
+    }
+    List<String> ids = List.of(userIds);
+    // 删除用户与角色关联
+    userRoleMapper.deleteByQuery(
+        QueryWrapper.create().from(SysUserRole.class).where(SysUserRole::getUserId).in(ids));
+    // 删除用户与岗位表
+    userPostMapper.deleteByQuery(
+        QueryWrapper.create().from(SysUserPost.class).where(SysUserPost::getUserId).in(ids));
+    // 防止更新失败导致的数据删除
+    int flag = userMapper.deleteBatchByIds(ids);
+    if (flag < 1) {
+      throw new ServiceException("删除用户失败!");
+    }
+    return flag;
+  }
 }
