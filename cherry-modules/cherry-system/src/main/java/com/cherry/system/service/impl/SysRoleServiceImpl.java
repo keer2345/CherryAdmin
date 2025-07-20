@@ -4,8 +4,13 @@ import static com.cherry.common.core.utils.CollectionUtils.convertSet;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.cherry.common.core.constant.SystemConstants;
+import com.cherry.common.core.constant.TenantConstants;
+import com.cherry.common.core.exception.ServiceException;
 import com.cherry.common.core.utils.MapstructUtils;
 import com.cherry.common.core.utils.StreamUtils;
+import com.cherry.common.core.utils.StringUtils;
 import com.cherry.common.flex.core.page.PageQuery;
 import com.cherry.common.flex.core.page.TableDataInfo;
 import com.cherry.common.flex.utils.SearchUtils;
@@ -19,6 +24,7 @@ import com.cherry.system.mapper.SysUserRoleMapper;
 import com.cherry.system.service.ISysRoleService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import java.util.List;
 import java.util.Map;
@@ -83,18 +89,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
             userRoleMapper.selectListByQuery(
                 QueryWrapper.create().eq(SysUserRole::getUserId, LoginHelper.getUserId())),
             SysUserRole::getRoleId);
-    if(CollUtil.isNotEmpty(loginUserRoleIds)) {
-        qw.in(SysRole::getId, loginUserRoleIds);
+    if (CollUtil.isNotEmpty(loginUserRoleIds)) {
+      qw.in(SysRole::getId, loginUserRoleIds);
     }
     return this.listAs(qw, SysRoleVo.class);
   }
 
   private QueryWrapper buildQueryWrapper(SysRoleBo bo, PageQuery pageQuery) {
     Map<String, Object> params = bo.getParams();
-    QueryWrapper qw = new QueryWrapper();
-    qw.create()
-        .select()
-        .from(SysRole.class)
+    QueryWrapper qw = QueryWrapper.create().select();
+    qw.from(SysRole.class)
         .eq(SysRole::getId, bo.getId())
         .like(SysRole::getRoleName, bo.getRoleName())
         .eq(SysRole::getStatus, bo.getStatus())
@@ -131,5 +135,85 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     List<SysRoleVo> list =
         MapstructUtils.convert(roleMapper.selectRolesByUserId(userId), SysRoleVo.class);
     return list;
+  }
+
+  /**
+   * 校验角色是否允许操作
+   *
+   * @param role 角色信息
+   */
+  @Override
+  public void checkRoleAllowed(SysRoleBo role) {
+    if (ObjectUtil.isNotNull(role.getId()) && LoginHelper.isSuperAdmin(role.getId())) {
+      throw new ServiceException("不允许操作超级管理员角色");
+    }
+    String[] keys =
+        new String[] {TenantConstants.SUPER_ADMIN_ROLE_KEY, TenantConstants.TENANT_ADMIN_ROLE_KEY};
+    // 新增不允许使用 管理员标识符
+    if (ObjectUtil.isNull(role.getId()) && StringUtils.equalsAny(role.getRoleKey(), keys)) {
+      throw new ServiceException("不允许使用系统内置管理员角色标识符!");
+    }
+    // 修改不允许修改 管理员标识符
+    if (ObjectUtil.isNotNull(role.getId())) {
+      SysRole sysRole = this.getById(role.getId());
+      // 如果标识符不相等 判断为修改了管理员标识符
+      if (!StringUtils.equals(sysRole.getRoleKey(), role.getRoleKey())) {
+        if (StringUtils.equalsAny(sysRole.getRoleKey(), keys)) {
+          throw new ServiceException("不允许修改系统内置管理员角色标识符!");
+        } else if (StringUtils.equalsAny(role.getRoleKey(), keys)) {
+          throw new ServiceException("不允许使用系统内置管理员角色标识符!");
+        }
+      }
+    }
+  }
+
+  /**
+   * 校验角色是否有数据权限
+   *
+   * @param roleId 角色id
+   */
+  @Override
+  public void checkRoleDataScope(String roleId) {
+    if (ObjectUtil.isNull(roleId)) {
+      return;
+    }
+    if (LoginHelper.isSuperAdmin()) {
+      return;
+    }
+    List<SysRoleVo> roles = this.selectRoleList(new SysRoleBo(roleId));
+    if (CollUtil.isEmpty(roles)) {
+      throw new ServiceException("没有权限访问角色数据！");
+    }
+  }
+
+  /**
+   * 修改角色状态
+   *
+   * @param roleId 角色ID
+   * @param status 角色状态
+   * @return 结果
+   */
+  @Override
+  public boolean updateRoleStatus(String roleId, String status) {
+    if (SystemConstants.DISABLE.equals(status) && this.countUserRoleByRoleId(roleId) > 0) {
+      throw new ServiceException("角色已分配，不能禁用!");
+    }
+    return UpdateChain.of(SysRole.class)
+        .set(SysRole::getStatus, status)
+        .where(SysRole::getId)
+        .eq(roleId)
+        .update();
+  }
+
+  /**
+   * 通过角色ID查询角色使用数量
+   *
+   * @param roleId 角色ID
+   * @return 结果
+   */
+  @Override
+  public long countUserRoleByRoleId(String roleId) {
+    return userRoleMapper.selectCountByQuery(
+        QueryWrapper.create().from(SysUserRole.class).where(SysUserRole::getRoleId).eq(roleId));
   }
 }

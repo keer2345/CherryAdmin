@@ -56,4 +56,35 @@ public interface ISysRoleService {
    * @return 角色列表
    */
   List<SysRoleVo> selectRolesByUserId(String userId);
+
+    /**
+     * 校验角色是否允许操作
+     *
+     * @param role 角色信息
+     */
+    void checkRoleAllowed(SysRoleBo role);
+
+    /**
+     * 校验角色是否有数据权限
+     *
+     * @param roleId 角色id
+     */
+    void checkRoleDataScope(String roleId);
+
+    /**
+     * 修改角色状态
+     *
+     * @param roleId 角色ID
+     * @param status 角色状态
+     * @return 结果
+     */
+    boolean updateRoleStatus(String roleId, String status);
+
+    /**
+     * 通过角色ID查询角色使用数量
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    long countUserRoleByRoleId(String roleId) ;
 }
