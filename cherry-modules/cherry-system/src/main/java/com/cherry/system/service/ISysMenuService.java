@@ -1,7 +1,9 @@
 package com.cherry.system.service;
 
 import com.cherry.system.domain.SysMenu;
+import com.cherry.system.domain.bo.SysMenuBo;
 import com.cherry.system.domain.vo.RouterVo;
+import com.cherry.system.domain.vo.SysMenuVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,19 +26,28 @@ public interface ISysMenuService {
    */
   Set<String> selectMenuPermsByUserId(String userId);
 
-    /**
-     * 根据用户ID查询菜单树信息
-     *
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    List<SysMenu> selectMenuTreeByUserId(String userId);
+  /**
+   * 根据用户ID查询菜单树信息
+   *
+   * @param userId 用户ID
+   * @return 菜单列表
+   */
+  List<SysMenu> selectMenuTreeByUserId(String userId);
 
-    /**
-     * 构建前端路由所需要的菜单
-     *
-     * @param menus 菜单列表
-     * @return 路由列表
-     */
-    List<RouterVo> buildMenus(List<SysMenu> menus);
+  /**
+   * 构建前端路由所需要的菜单
+   *
+   * @param menus 菜单列表
+   * @return 路由列表
+   */
+  List<RouterVo> buildMenus(List<SysMenu> menus);
+
+  /**
+   * 根据用户查询系统菜单列表
+   *
+   * @param menu 菜单信息
+   * @param userId 用户ID
+   * @return 菜单列表
+   */
+  List<SysMenuVo> selectMenuList(SysMenuBo menu, String userId);
 }
